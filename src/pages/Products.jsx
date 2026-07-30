@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
 import Pagination from '../components/Pagination'
-import products from '../data/products'
+import { fetchProducts } from '../services/productService'
 
 const SORT_OPTIONS = [
   { value: 'recommended', label: 'Recommended' },
@@ -23,6 +23,7 @@ const BRANDS = ['Nanit', 'Apple', 'Bose', 'UPPAbaby']
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
+  const [allProducts, setAllProducts] = useState([])
   const [page, setPage] = useState(1)
   const pageSize = 12
   const [sort, setSort] = useState('recommended')
@@ -38,6 +39,10 @@ export default function Products() {
   const categoryQuery = searchParams.get('category')
   const searchQuery = searchParams.get('search')
   const dealsQuery = searchParams.get('deals')
+
+  useEffect(() => {
+    fetchProducts().then(setAllProducts)
+  }, [])
 
   // Initialize from search URL parameters
   useEffect(() => {
@@ -79,7 +84,7 @@ export default function Products() {
   }
 
   // Filter products logic
-  let filtered = products.filter(p => p.category !== 'streaming') // exclude streaming subs in normal catalog
+  let filtered = allProducts.filter(p => p.category !== 'streaming') // exclude streaming subs in normal catalog
 
   // 1. Search Query
   if (searchQuery) {

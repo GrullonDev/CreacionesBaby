@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
-import { getFeaturedProducts } from '../data/products'
+import { fetchFeaturedProducts } from '../services/productService'
 
 export default function Home() {
   const [featured, setFeatured] = useState([])
   const [quickViewProduct, setQuickViewProduct] = useState(null)
 
   useEffect(() => {
-    getFeaturedProducts().then(setFeatured)
+    fetchFeaturedProducts().then(setFeatured)
   }, [])
 
   return (

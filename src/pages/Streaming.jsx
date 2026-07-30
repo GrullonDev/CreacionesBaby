@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
-import products from '../data/products'
+import { fetchProducts } from '../services/productService'
 
 export default function Streaming() {
   const { addItem } = useCart()
   const [streamingItems, setStreamingItems] = useState([])
 
   useEffect(() => {
-    // Filter streaming category
-    const items = products.filter(p => p.category === 'streaming')
-    setStreamingItems(items)
+    fetchProducts().then((all) => {
+      const items = all.filter(p => p.category === 'streaming')
+      setStreamingItems(items)
+    })
   }, [])
 
   // Dynamic branding colors for subscription cards

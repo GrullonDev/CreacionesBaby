@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
-import { getProductById, getRelatedProducts } from '../data/products'
+import { fetchProductById, fetchRelatedProducts } from '../services/productService'
 import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
@@ -24,14 +24,14 @@ export default function ProductDetail() {
 
   useEffect(() => {
     setLoading(true)
-    getProductById(id).then((p) => {
+    fetchProductById(id).then((p) => {
       setProduct(p)
       if (p) {
         // Set default selects
         if (p.colors && p.colors.length > 0) setSelectedColor(p.colors[0])
         if (p.sizes && p.sizes.length > 0) setSelectedSize(p.sizes[0])
         
-        getRelatedProducts(p.category, p.id).then(setRelated)
+        fetchRelatedProducts(p.category, p.id).then(setRelated)
       }
       setLoading(false)
       setQuantity(1)
