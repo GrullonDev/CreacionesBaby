@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useWishlist } from '../context/WishlistContext'
+import { useWishlist } from '../context/useWishlist'
 
 export default function Account() {
   const { items: wishlist, clearWishlist } = useWishlist()

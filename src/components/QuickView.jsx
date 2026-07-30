@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { useWishlist } from '../context/WishlistContext'
+import { useCart } from '../context/useCart'
+import { useWishlist } from '../context/useWishlist'
 import Rating from './Rating'
 
 export default function QuickView({ product, onClose }) {

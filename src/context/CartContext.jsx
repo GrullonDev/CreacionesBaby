@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useReducer, useEffect } from 'react'
 
 const CartContext = createContext()
 
@@ -57,8 +57,4 @@ export function CartProvider({ children }) {
   )
 }
 
-export function useCart() {
-  const ctx = useContext(CartContext)
-  if (!ctx) throw new Error('useCart must be used within CartProvider')
-  return ctx
-}
+export { CartContext }

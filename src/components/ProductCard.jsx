@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
-import { useWishlist } from '../context/WishlistContext'
+import { useCart } from '../context/useCart'
+import { useWishlist } from '../context/useWishlist'
 
 export default function ProductCard({ product, onQuickView }) {
   const { addItem } = useCart()

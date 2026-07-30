@@ -1,4 +1,4 @@
-import { createContext, useContext, useReducer, useEffect } from 'react'
+import { createContext, useReducer, useEffect } from 'react'
 
 const WishlistContext = createContext()
 
@@ -42,8 +42,4 @@ export function WishlistProvider({ children }) {
   )
 }
 
-export function useWishlist() {
-  const ctx = useContext(WishlistContext)
-  if (!ctx) throw new Error('useWishlist must be used within WishlistProvider')
-  return ctx
-}
+export { WishlistContext }

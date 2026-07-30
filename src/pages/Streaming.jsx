@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
+import { useCart } from '../context/useCart'
 import products from '../data/products'
 
 export default function Streaming() {
