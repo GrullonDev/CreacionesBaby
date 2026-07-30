@@ -13,198 +13,217 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="flex-grow">
-      {/* Hero Section */}
-      <section className="relative h-[600px] bg-slate-100 flex items-center overflow-hidden">
-        <div className="absolute inset-0">
-          <img 
-            alt="Ropa de bebé de algodón orgánico" 
-            className="w-full h-full object-cover object-center" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBezkUr28nhggeQJQ2LmHCstYHSSMxyny0IzhIpGq3w0y5Yt9zD647fBq-YRw4Wuyo_dq2It6-ZsUnqTjLk1580kh4pxGh7a6MlVRf3ZSV7Z8ElS6Rpkgzm6no64ZLYrbK-LmTBttd5ZOf4x7OPWnzdn8mZPKGFQAhtcfkvpwb4ffsgBdWBX8ALB4in68xeimvHPAS1VbuFpZ26I-SulFe0c6wdvyyx7VJorHs0ou7JbQgyJJZvr4S6BxK4-eD12byNyaPS2x8-argC"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-white/90 to-transparent dark:from-background-dark/95 dark:to-transparent"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full z-10">
-          <div className="max-w-xl">
-            <span className="inline-block px-3 py-1 mb-4 text-[10px] font-extrabold tracking-widest text-primary uppercase bg-primary/10 rounded-full">
-              Nueva Colección Pima
-            </span>
-            <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white leading-tight mb-6">
-              Seguridad en la que confías, comodidad que ellos aman
-            </h1>
-            <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 mb-8 max-w-md">
-              Descubre nuestra línea de textiles premium diseñados para las pieles más delicadas. Calidad artesanal que crece con ellos.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <Link 
-                to="/products" 
-                className="bg-primary hover:bg-opacity-95 text-white px-8 py-4 rounded-xl font-bold shadow-lg shadow-primary/25 transition-all flex items-center gap-2"
-              >
-                Ver Colección
-                <span className="material-symbols-outlined text-base">arrow_forward</span>
-              </Link>
-              <a 
-                href="#about" 
-                className="bg-white/80 hover:bg-white text-slate-900 dark:bg-slate-900/80 dark:hover:bg-slate-900 dark:text-white px-8 py-4 rounded-xl font-bold border border-slate-200/55 dark:border-slate-800 transition-all"
-              >
-                Nuestra Historia
-              </a>
+    <main className="flex-grow bg-white dark:bg-slate-900">
+      
+      {/* Hero Banner Section */}
+      <section className="relative bg-[#fff1f2]/80 dark:bg-rose-950/20 py-20 lg:py-28 overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Text details */}
+            <div className="lg:col-span-6 space-y-6 text-left">
+              <span className="inline-block px-3 py-1 text-[10px] font-bold tracking-widest text-[#5c4c3e] dark:text-rose-200 uppercase bg-[#5c4c3e]/10 rounded-full">
+                NUEVA COLECCIÓN SOFT
+              </span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#5c4c3e] dark:text-white leading-tight">
+                Cuidamos cada pequeño detalle
+              </h1>
+              <p className="text-sm sm:text-base text-stone-600 dark:text-slate-300 leading-relaxed max-w-lg">
+                Descubre un mundo de ternura con nuestra selección de textiles orgánicos, muebles artesanales y accesorios diseñados para los sueños más dulces.
+              </p>
+              <div className="flex flex-wrap gap-4 pt-2">
+                <Link 
+                  to="/products?category=baby_gear" 
+                  className="bg-[#5c4c3e] hover:bg-[#4a3e35] text-white px-8 py-3.5 rounded-full font-bold shadow-md transition-all text-xs"
+                >
+                  Explorar Colección
+                </Link>
+                <Link 
+                  to="/account" 
+                  className="border border-[#5c4c3e] text-[#5c4c3e] dark:border-rose-300 dark:text-rose-200 hover:bg-[#5c4c3e]/5 px-8 py-3.5 rounded-full font-bold transition-all text-xs"
+                >
+                  Lista de Nacimiento
+                </Link>
+              </div>
+            </div>
+
+            {/* Image Illustration */}
+            <div className="lg:col-span-6 flex justify-center relative">
+              <div className="w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-lg bg-stone-100">
+                <img 
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv" 
+                  alt="Portabebé ergonómico" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              {/* Decorative background shape */}
+              <div className="absolute -z-10 -bottom-10 -right-10 w-72 h-72 rounded-full bg-rose-200/50 filter blur-3xl"></div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Trust Bar */}
-      <section className="py-12 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-2xl">local_shipping</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Envío a domicilio</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Entrega rápida en todo el país</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-2xl">verified</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Algodón Pima Certificado</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Suavidad pura para la piel de tu bebé</p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined text-2xl">security</span>
-              </div>
-              <div>
-                <h4 className="font-bold text-sm text-slate-900 dark:text-white">Compra Segura</h4>
-                <p className="text-xs text-slate-500 dark:text-slate-400">Garantía de devolución de 30 días</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories Grid */}
-      <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Compra por Etapa</h2>
-          <p className="text-slate-500 dark:text-slate-400 mt-2">Encuentra la prenda perfecta según el crecimiento de tu bebé.</p>
+      {/* Categories Section */}
+      <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="mb-12">
+          <h2 className="text-3xl font-extrabold text-[#5c4c3e] dark:text-white">Nuestras Categorías</h2>
+          <p className="text-xs text-slate-400 mt-2 uppercase tracking-widest font-bold">Todo lo necesario para su crecimiento</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <Link to="/products?category=recien_nacidos" className="group relative block overflow-hidden rounded-2xl">
-            <div className="aspect-square overflow-hidden bg-slate-200">
-              <img 
-                alt="Recién Nacidos" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvg0CpquvOUQe-vcuJ3url2KYmvVjyd9HeAe29b2mKXWBawN88LkELkuXGz5LK6PI1HmjrL31N4tGsjb_NAx9cJxyQco2EMcoczoMBnaM2kcTttOVYqe7tfiN3Ev7i0a4McmLsfsk40buzxyxWxnUlJNbwYRZYyhYUnB4CfVQJSxW46vkSMdKX9f89X9OTnofYcf5kFUTMHKWXTxlWJ4gl9j12wFTzFGeKRIX7Y8imV0GmTZQlG6trJbXZ5xuRf0OQY5TKrP2koIxP"
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">Recién Nacido</h3>
-              <p className="text-xs text-slate-300 mt-1">Prendas ultra suaves de 0 a 6 meses</p>
-            </div>
-          </Link>
-
-          <Link to="/products?category=mamelucos" className="group relative block overflow-hidden rounded-2xl">
-            <div className="aspect-square overflow-hidden bg-slate-200">
-              <img 
-                alt="Bebés" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV5pZiWwbADtme4ewiO47wv3Fp8Wd6A74ptFWlWVUhg31qt6XpJXH8Nr6X3UaOftV4Fa1GIKUYihPMEpQkCJHPVyMk5ZwRSsFJRPqlTu7mn0CI3mxC3Xkh1fhHROsy9TY2Pv1he4N48vUGWERkJwI0fPCgto8GYxYk2nkgx5GLffKJBuRRsBXyaSz0ews_FSxq9JJtU0PRsOZw-uHU79sK0ZyC_E8v8K1oGmiEM1i-g7mU65N6SAIC3J5xttKX457cR4xmllijvHcy"
-              />
-            </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">Mamelucos & Rompers</h3>
-              <p className="text-xs text-slate-300 mt-1">Comodidad y libertad de 6 a 24 meses</p>
+          {/* Category 1 */}
+          <Link to="/products?category=baby_gear" className="group relative block overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 shadow-sm">
+            <img 
+              alt="Recién Nacido" 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvg0CpquvOUQe-vcuJ3url2KYmvVjyd9HeAe29b2mKXWBawN88LkELkuXGz5LK6PI1HmjrL31N4tGsjb_NAx9cJxyQco2EMcoczoMBnaM2kcTttOVYqe7tfiN3Ev7i0a4McmLsfsk40buzxyxWxnUlJNbwYRZYyhYUnB4CfVQJSxW46vkSMdKX9f89X9OTnofYcf5kFUTMHKWXTxlWJ4gl9j12wFTzFGeKRIX7Y8imV0GmTZQlG6trJbXZ5xuRf0OQY5TKrP2koIxP"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex flex-col justify-end p-6 text-left">
+              <span className="text-[10px] font-bold text-rose-300 uppercase tracking-widest block mb-0.5">Cuidado y Amor</span>
+              <h3 className="text-lg font-bold text-white group-hover:text-rose-200 transition-colors">Recién Nacido</h3>
+              <span className="text-[10px] text-slate-300 mt-2 flex items-center gap-1">
+                Ver Colección
+                <span className="material-symbols-outlined text-xs">arrow_forward</span>
+              </span>
             </div>
           </Link>
 
-          <Link to="/products?category=conjuntos" className="group relative block overflow-hidden rounded-2xl">
-            <div className="aspect-square overflow-hidden bg-slate-200">
-              <img 
-                alt="Niños" 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjeDetrF4pBrJzTvMCfORza0f9CWX5dS5uVD39Y2oN4bbc7qUZQ2XUaSsFZqgjP83fvpw02JMoiwHayDyFxCIUi76BWNykpVCxj9ch3O1x-4N9GE4aUzcVE7L3KkSR-9RfNoUZqSo-46n271udcgbEKOhQuhIzjM6f6Xq6L_EpyDBsHeVyW5wCltwUUALYSYbueKlzEohaySsViBYVZma6cjz4K3siHwKmj4kzpbwzwWL2nDe175r5zGgvxJ5XvUdBvjvhiRwQqeoH"
-              />
+          {/* Category 2 */}
+          <Link to="/products?category=baby_gear" className="group relative block overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 shadow-sm">
+            <img 
+              alt="La Habitación" 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuC5r88sGeoasfN61uQYqXgRp-C7_WgUFh3Qg14Hlz7lUhXFFl9EFGCezRybU2qOi0Jkgo1W0GXpVjl8ZFguP_RLiuok8mBsdY726ir893DfWoSroZsvEZXf0CXN0RfnF5fYLZSTs-5WYC6uPD5ibx5zgdodaCNvXf-pghslAASj7HGVlsro0TE3RiMVMpOi5SXnxDDbU8itURPAqrgSk3aZ-fwKRZv1YrAHTnJphw36pL-jB77Z2OGhu9MPWTvrugdbveUI-vue29uF"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex flex-col justify-end p-6 text-left">
+              <span className="text-[10px] font-bold text-rose-300 uppercase tracking-widest block mb-0.5">Espacios Soñados</span>
+              <h3 className="text-lg font-bold text-white group-hover:text-rose-200 transition-colors">La Habitación</h3>
+              <span className="text-[10px] text-slate-300 mt-2 flex items-center gap-1">
+                Ver Mobiliario
+                <span className="material-symbols-outlined text-xs">arrow_forward</span>
+              </span>
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent flex flex-col justify-end p-6">
-              <h3 className="text-xl font-bold text-white group-hover:text-primary transition-colors">Conjuntos</h3>
-              <p className="text-xs text-slate-300 mt-1">Estilo y calidad de 2 a 5 años</p>
+          </Link>
+
+          {/* Category 3 */}
+          <Link to="/products?category=baby_gear" className="group relative block overflow-hidden rounded-2xl aspect-[4/5] bg-stone-100 shadow-sm">
+            <img 
+              alt="Accesorios" 
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjeDetrF4pBrJzTvMCfORza0f9CWX5dS5uVD39Y2oN4bbc7qUZQ2XUaSsFZqgjP83fvpw02JMoiwHayDyFxCIUi76BWNykpVCxj9ch3O1x-4N9GE4aUzcVE7L3KkSR-9RfNoUZqSo-46n271udcgbEKOhQuhIzjM6f6Xq6L_EpyDBsHeVyW5wCltwUUALYSYbueKlzEohaySsViBYVZma6cjz4K3siHwKmj4kzpbwzwWL2nDe175r5zGgvxJ5XvUdBvjvhiRwQqeoH"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent flex flex-col justify-end p-6 text-left">
+              <span className="text-[10px] font-bold text-rose-300 uppercase tracking-widest block mb-0.5">Paseo y Juego</span>
+              <h3 className="text-lg font-bold text-white group-hover:text-rose-200 transition-colors">Accesorios</h3>
+              <span className="text-[10px] text-slate-300 mt-2 flex items-center gap-1">
+                Explorar
+                <span className="material-symbols-outlined text-xs">arrow_forward</span>
+              </span>
             </div>
           </Link>
         </div>
       </section>
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
-        <section className="py-24 bg-white dark:bg-slate-900">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-12 gap-4">
-              <div>
-                <h2 className="text-3xl font-extrabold text-slate-900 dark:text-white">Los más vendidos</h2>
-                <p className="text-slate-500 dark:text-slate-400 mt-2">Nuestros esenciales favoritos por las mamás.</p>
-              </div>
-              <Link to="/products" className="text-primary font-bold hover:underline flex items-center gap-1 text-sm">
-                Ver todos los productos
-                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-              </Link>
-            </div>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-              {featured.map((p) => (
-                <ProductCard 
-                  key={p.id} 
-                  product={p} 
-                  onQuickView={setQuickViewProduct}
-                />
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Brand Values / About section */}
-      <section id="about" className="py-24 bg-background-light dark:bg-slate-900/30 overflow-hidden">
+      {/* Best Sellers Section */}
+      <section className="py-20 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <div className="lg:w-1/2 relative">
-              <div className="aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl">
-                <img 
-                  alt="Nuestra historia" 
-                  className="w-full h-full object-cover" 
-                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvg0CpquvOUQe-vcuJ3url2KYmvVjyd9HeAe29b2mKXWBawN88LkELkuXGz5LK6PI1HmjrL31N4tGsjb_NAx9cJxyQco2EMcoczoMBnaM2kcTttOVYqe7tfiN3Ev7i0a4McmLsfsk40buzxyxWxnUlJNbwYRZYyhYUnB4CfVQJSxW46vkSMdKX9f89X9OTnofYcf5kFUTMHKWXTxlWJ4gl9j12wFTzFGeKRIX7Y8imV0GmTZQlG6trJbXZ5xuRf0OQY5TKrP2koIxP"
-                />
-              </div>
-              <div className="absolute -bottom-6 -right-6 bg-primary p-8 rounded-xl text-white shadow-xl hidden md:block">
-                <p className="text-3xl font-extrabold italic">"Solo lo mejor para ellos"</p>
-              </div>
+          <div className="flex justify-between items-end mb-10">
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#5c4c3e] dark:text-white">Los Favoritos de Mamá</h2>
+              <p className="text-xs text-slate-400 mt-2">Productos estrella elegidos por nuestra comunidad.</p>
             </div>
-            <div className="lg:w-1/2 space-y-6">
-              <span className="text-primary font-extrabold text-xs uppercase tracking-widest block">
-                Nuestra Filosofía
-              </span>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white leading-tight">
-                Hecho con amor y algodón de pureza incomparable
-              </h2>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base">
-                Cada prenda en Creaciones Baby se elabora pensando en el bienestar físico y el descanso diario de tu bebé. Trabajamos exclusivamente con algodón Pima de origen ético, garantizando una suavidad sedosa, alta durabilidad frente a lavados frecuentes, y nulas reacciones alérgicas.
-              </p>
-              <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-sm">
-                Nuestros artesanos vigilan de cerca cada detalle, desde la flexibilidad de los costuras hasta la presión justa de los cierres elásticos. Es calidad familiar diseñada para acompañar su crecimiento saludable.
-              </p>
-              <div className="pt-4">
-                <Link to="/products" className="bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-6 py-3.5 rounded-xl font-bold transition-all text-xs hover:scale-105">
-                  Descubre las Colecciones
-                </Link>
+            <Link 
+              to="/products" 
+              className="text-xs font-bold text-[#5c4c3e] dark:text-rose-300 hover:underline flex items-center gap-1"
+            >
+              Ver catálogo completo
+              <span className="material-symbols-outlined text-xs">arrow_forward</span>
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {featured.map((p) => (
+              <ProductCard 
+                key={p.id} 
+                product={p} 
+                onQuickView={setQuickViewProduct}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter & Comunidad Section */}
+      <section className="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-[#fff1f2] dark:bg-rose-950/20 rounded-3xl p-8 sm:p-12 lg:p-16 border border-rose-100/50 dark:border-rose-900/50">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+              
+              {/* Form Side */}
+              <div className="space-y-6 text-left">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-[#5c4c3e] dark:text-white">
+                  Comunidad CreacionesBaby
+                </h3>
+                <p className="text-xs sm:text-sm text-stone-600 dark:text-slate-300 leading-relaxed max-w-md">
+                  Únete a nuestra newsletter para recibir consejos de crianza, guías de estilo y promociones exclusivas para tu familia.
+                </p>
+                <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3 max-w-md">
+                  <input 
+                    type="email" 
+                    placeholder="Tu correo electrónico" 
+                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-5 py-3 text-xs w-full focus:outline-none focus:ring-2 focus:ring-[#5c4c3e] text-slate-800 dark:text-slate-200"
+                  />
+                  <button 
+                    type="submit" 
+                    className="bg-[#5c4c3e] hover:bg-[#4a3e35] text-white text-xs font-bold px-8 py-3 rounded-full transition-all shrink-0 cursor-pointer"
+                  >
+                    Suscribirse
+                  </button>
+                </form>
               </div>
+
+              {/* Badges Info Side */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-left">
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-[#5c4c3e] dark:text-rose-300 shadow-sm flex-shrink-0">
+                    <span className="material-symbols-outlined text-lg">verified</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-[#5c4c3e] dark:text-white">Seguridad Certificada</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Normas internacionales estrictas</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-[#5c4c3e] dark:text-rose-300 shadow-sm flex-shrink-0">
+                    <span className="material-symbols-outlined text-lg">eco</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-[#5c4c3e] dark:text-white">Materiales Orgánicos</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Algodón Pima 100% puro</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-[#5c4c3e] dark:text-rose-300 shadow-sm flex-shrink-0">
+                    <span className="material-symbols-outlined text-lg">support_agent</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-[#5c4c3e] dark:text-white">Asesoría Personal</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Te ayudamos en cada etapa</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-white dark:bg-slate-950 flex items-center justify-center text-[#5c4c3e] dark:text-rose-300 shadow-sm flex-shrink-0">
+                    <span className="material-symbols-outlined text-lg">featured_seasonal</span>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-xs text-[#5c4c3e] dark:text-white">Envoltorio Regalo</h4>
+                    <p className="text-[10px] text-slate-400 mt-0.5">Detalles especiales sin costo</p>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </div>

@@ -10,6 +10,7 @@ import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
 import Account from './pages/Account'
 import Orders from './pages/Orders'
+import Streaming from './pages/Streaming'
 
 export default function App() {
   return (
@@ -25,6 +26,7 @@ export default function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/account" element={<Account />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/streaming" element={<Streaming />} />
           </Routes>
           <Footer />
         </WishlistProvider>

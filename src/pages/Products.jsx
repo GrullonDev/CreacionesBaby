@@ -1,110 +1,115 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
 import Pagination from '../components/Pagination'
 import products from '../data/products'
 
-const PAGE_SIZES = [8, 12, 16, 24]
-
 const SORT_OPTIONS = [
-  { value: 'default', label: 'Ordenar por' },
-  { value: 'price-asc', label: 'Precio: Menor a Mayor' },
-  { value: 'price-desc', label: 'Precio: Mayor a Menor' },
-  { value: 'rating', label: 'Más Valorados' },
+  { value: 'recommended', label: 'Recommended' },
+  { value: 'price-asc', label: 'Price: Low to High' },
+  { value: 'price-desc', label: 'Price: High to Low' },
+  { value: 'rating', label: 'Highest Rated' },
 ]
 
-const SIZES = ['RN', '0-3m', '3-6m', '6-12m', '1-2 años', '3-5 años']
-
-const COLORS = [
-  { name: 'Crema', hex: '#fdf5e6' },
-  { name: 'Blanco', hex: '#ffffff' },
-  { name: 'Gris', hex: '#d1d5db' },
-  { name: 'Verde', hex: '#dcfce7' },
-  { name: 'Rosa', hex: '#fce7f3' },
-  { name: 'Azul', hex: '#dbeafe' },
-  { name: 'Café', hex: '#78350f' },
+const CATEGORY_MAPPING = [
+  { id: 'baby_gear', label: 'Baby Essentials' },
+  { id: 'smart_tech', label: 'Smart Technology' },
+  { id: 'audio_gear', label: 'Audio Gear' },
+  { id: 'wearables', label: 'Nursery Tech' }
 ]
 
-const CATEGORY_LABELS = {
-  'mamelucos': 'Mamelucos',
-  'conjuntos': 'Conjuntos',
-  'pijamas': 'Pijamas',
-  'accesorios': 'Accesorios',
-  'calzado': 'Calzado',
-  'recien_nacidos': 'Recién Nacidos'
-}
+const BRANDS = ['Nanit', 'Apple', 'Bose', 'UPPAbaby']
 
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(8)
-  const [sort, setSort] = useState('default')
+  const pageSize = 12
+  const [sort, setSort] = useState('recommended')
   
-  // Local filter states
-  const [priceMin, setPriceMin] = useState('')
-  const [priceMax, setPriceMax] = useState('')
-  const [selectedSize, setSelectedSize] = useState('')
-  const [selectedColor, setSelectedColor] = useState('')
+  // Filters state
+  const [selectedCats, setSelectedCats] = useState([])
+  const [maxPrice, setMaxPrice] = useState(2000)
+  const [selectedBrands, setSelectedBrands] = useState([])
+  const [minRating, setMinRating] = useState(null)
+  
   const [quickViewProduct, setQuickViewProduct] = useState(null)
 
-  const activeCategory = searchParams.get('category') || 'all'
-  const searchQuery = searchParams.get('search') || ''
+  const categoryQuery = searchParams.get('category')
+  const searchQuery = searchParams.get('search')
+  const dealsQuery = searchParams.get('deals')
 
-  // Reset page when filters change
+  // Initialize from search URL parameters
+  useEffect(() => {
+    if (categoryQuery) {
+      setSelectedCats([categoryQuery])
+    } else {
+      setSelectedCats([])
+    }
+  }, [categoryQuery])
+
+  // Reset page when filter changes
   useEffect(() => {
     setPage(1)
-  }, [activeCategory, searchQuery, priceMin, priceMax, selectedSize, selectedColor, sort])
+  }, [selectedCats, maxPrice, selectedBrands, minRating, sort, searchQuery, dealsQuery])
 
-  const handleCategoryChange = (categoryKey) => {
-    const params = {}
-    if (categoryKey !== 'all') params.category = categoryKey
-    if (searchQuery) params.search = searchQuery
-    setSearchParams(params)
+  const handleCatCheckboxChange = (catId) => {
+    if (selectedCats.includes(catId)) {
+      setSelectedCats(selectedCats.filter(c => c !== catId))
+    } else {
+      setSelectedCats([...selectedCats, catId])
+    }
+  }
+
+  const handleBrandCheckboxChange = (brand) => {
+    if (selectedBrands.includes(brand)) {
+      setSelectedBrands(selectedBrands.filter(b => b !== brand))
+    } else {
+      setSelectedBrands([...selectedBrands, brand])
+    }
   }
 
   const handleClearFilters = () => {
-    setPriceMin('')
-    setPriceMax('')
-    setSelectedSize('')
-    setSelectedColor('')
-    setSort('default')
+    setSelectedCats([])
+    setMaxPrice(2000)
+    setSelectedBrands([])
+    setMinRating(null)
+    setSort('recommended')
     setSearchParams({})
   }
 
   // Filter products logic
-  let filtered = [...products]
+  let filtered = products.filter(p => p.category !== 'streaming') // exclude streaming subs in normal catalog
 
-  // 1. Category Filter
-  if (activeCategory !== 'all') {
-    filtered = filtered.filter((p) => p.category === activeCategory)
-  }
-
-  // 2. Search Query Filter
+  // 1. Search Query
   if (searchQuery) {
-    filtered = filtered.filter(
-      (p) =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase())
+    filtered = filtered.filter(p => 
+      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      p.description.toLowerCase().includes(searchQuery.toLowerCase())
     )
   }
 
-  // 3. Price Filter
-  if (priceMin !== '') {
-    filtered = filtered.filter((p) => p.price >= Number(priceMin))
-  }
-  if (priceMax !== '') {
-    filtered = filtered.filter((p) => p.price <= Number(priceMax))
+  // 2. Deals / Sale Query
+  if (dealsQuery) {
+    filtered = filtered.filter(p => p.originalPrice !== null)
   }
 
-  // 4. Size Filter
-  if (selectedSize) {
-    filtered = filtered.filter((p) => p.sizes && p.sizes.includes(selectedSize))
+  // 3. Category Filter
+  if (selectedCats.length > 0) {
+    filtered = filtered.filter(p => selectedCats.includes(p.category))
   }
 
-  // 5. Color Filter
-  if (selectedColor) {
-    filtered = filtered.filter((p) => p.colors && p.colors.includes(selectedColor))
+  // 4. Price Filter
+  filtered = filtered.filter(p => p.price <= maxPrice)
+
+  // 5. Brand Filter
+  if (selectedBrands.length > 0) {
+    filtered = filtered.filter(p => selectedBrands.includes(p.brand))
+  }
+
+  // 6. Rating Filter
+  if (minRating) {
+    filtered = filtered.filter(p => p.rating >= minRating)
   }
 
   // Sorting
@@ -118,6 +123,10 @@ export default function Products() {
     case 'rating':
       filtered.sort((a, b) => b.rating - a.rating)
       break
+    default:
+      // recommended: sort popular first or by ID
+      filtered.sort((a, b) => b.rating - a.rating)
+      break
   }
 
   // Pagination
@@ -126,195 +135,139 @@ export default function Products() {
   const paginatedProducts = filtered.slice(startIdx, startIdx + pageSize)
 
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
-      {/* Breadcrumb */}
-      <nav className="flex items-center gap-2 text-xs text-slate-500 mb-8 overflow-x-auto whitespace-nowrap">
-        <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
-        <span className="material-symbols-outlined text-[10px]">chevron_right</span>
-        <span className="text-slate-900 dark:text-slate-100 font-bold">Catálogo</span>
-        {activeCategory !== 'all' && (
-          <>
-            <span className="material-symbols-outlined text-[10px]">chevron_right</span>
-            <span className="text-slate-400 capitalize">{CATEGORY_LABELS[activeCategory] || activeCategory}</span>
-          </>
-        )}
-      </nav>
-
-      <div className="flex flex-col lg:flex-row gap-10">
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow text-slate-800 dark:text-slate-100">
+      <div className="flex flex-col lg:flex-row gap-10 items-start">
+        
         {/* Sidebar Filters */}
-        <aside className="w-full lg:w-64 flex-shrink-0 space-y-6">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-            <h3 className="font-bold text-base flex items-center gap-2 text-slate-900 dark:text-white">
-              <span className="material-symbols-outlined text-primary text-xl">filter_list</span>
-              Filtros
-            </h3>
-            {(activeCategory !== 'all' || searchQuery || priceMin || priceMax || selectedSize || selectedColor || sort !== 'default') && (
-              <button 
-                onClick={handleClearFilters}
-                className="text-xs text-primary font-bold hover:underline"
-              >
-                Limpiar todo
-              </button>
-            )}
+        <aside className="w-full lg:w-60 flex-shrink-0 space-y-8 text-left bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 className="font-extrabold text-base tracking-tight">Filters</h3>
+            <button 
+              onClick={handleClearFilters}
+              className="text-xs text-slate-400 hover:text-primary transition-colors font-semibold"
+            >
+              Clear all
+            </button>
           </div>
 
-          {/* Categories Accordion */}
-          <details className="group border-b border-slate-100 dark:border-slate-800 pb-4" open>
-            <summary className="flex items-center justify-between cursor-pointer list-none py-2 text-slate-900 dark:text-white font-bold text-sm">
-              Categorías
-              <span className="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400">expand_more</span>
-            </summary>
-            <div className="mt-3 space-y-2">
-              <button 
-                onClick={() => handleCategoryChange('all')}
-                className={`w-full text-left text-xs py-1.5 px-3 rounded-lg transition-colors ${
-                  activeCategory === 'all' 
-                    ? 'bg-primary/10 text-primary font-bold' 
-                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900'
-                }`}
-              >
-                Todos los productos
-              </button>
-              {Object.keys(CATEGORY_LABELS).map((catKey) => (
-                <button
-                  key={catKey}
-                  onClick={() => handleCategoryChange(catKey)}
-                  className={`w-full text-left text-xs py-1.5 px-3 rounded-lg transition-colors ${
-                    activeCategory === catKey 
-                      ? 'bg-primary/10 text-primary font-bold' 
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900'
-                  }`}
-                >
-                  {CATEGORY_LABELS[catKey]}
-                </button>
+          {/* Categories */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Categories</h4>
+            <div className="space-y-2">
+              {CATEGORY_MAPPING.map((cat) => (
+                <label key={cat.id} className="flex items-center gap-3 text-xs font-medium cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-800">
+                  <input 
+                    type="checkbox" 
+                    checked={selectedCats.includes(cat.id)}
+                    onChange={() => handleCatCheckboxChange(cat.id)}
+                    className="rounded border-slate-300 text-primary focus:ring-primary size-4"
+                  />
+                  {cat.label}
+                </label>
               ))}
             </div>
-          </details>
-
-          {/* Sizes Accordion */}
-          <details className="group border-b border-slate-100 dark:border-slate-800 pb-4" open>
-            <summary className="flex items-center justify-between cursor-pointer list-none py-2 text-slate-900 dark:text-white font-bold text-sm">
-              Talla
-              <span className="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400">expand_more</span>
-            </summary>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              {SIZES.map((sz) => (
-                <button
-                  key={sz}
-                  onClick={() => setSelectedSize(selectedSize === sz ? '' : sz)}
-                  className={`py-2 text-center rounded-lg border text-xs font-semibold transition-all ${
-                    selectedSize === sz
-                      ? 'border-primary bg-primary/10 text-primary font-bold scale-95'
-                      : 'border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 hover:border-primary/50'
-                  }`}
-                >
-                  {sz}
-                </button>
-              ))}
-            </div>
-          </details>
-
-          {/* Color Accordion */}
-          <details className="group border-b border-slate-100 dark:border-slate-800 pb-4" open>
-            <summary className="flex items-center justify-between cursor-pointer list-none py-2 text-slate-900 dark:text-white font-bold text-sm">
-              Color
-              <span className="material-symbols-outlined group-open:rotate-180 transition-transform text-slate-400">expand_more</span>
-            </summary>
-            <div className="mt-3 flex flex-wrap gap-2">
-              {COLORS.map((col) => (
-                <button
-                  key={col.name}
-                  onClick={() => setSelectedColor(selectedColor === col.name ? '' : col.name)}
-                  className={`size-7 rounded-full border transition-all ${
-                    selectedColor === col.name
-                      ? 'ring-2 ring-primary ring-offset-2 dark:ring-offset-background-dark scale-95 border-primary'
-                      : 'border-slate-200 dark:border-slate-800 hover:scale-105'
-                  }`}
-                  style={{ backgroundColor: col.hex }}
-                  title={col.name}
-                />
-              ))}
-            </div>
-          </details>
+          </div>
 
           {/* Price Range */}
           <div className="space-y-3">
-            <h4 className="text-slate-900 dark:text-white font-bold text-sm">Rango de Precio</h4>
-            <div className="flex items-center gap-2">
-              <input
-                type="number"
-                placeholder="Mín"
-                value={priceMin}
-                onChange={(e) => setPriceMin(e.target.value)}
-                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs p-2 text-slate-800 dark:text-slate-200 focus:ring-primary focus:border-primary"
-                min="0"
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Price Range</h4>
+            <div className="space-y-1">
+              <input 
+                type="range" 
+                min="0" 
+                max="2000" 
+                step="50"
+                value={maxPrice}
+                onChange={(e) => setMaxPrice(Number(e.target.value))}
+                className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#5c4c3e]"
               />
-              <span className="text-slate-400">—</span>
-              <input
-                type="number"
-                placeholder="Máx"
-                value={priceMax}
-                onChange={(e) => setPriceMax(e.target.value)}
-                className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs p-2 text-slate-800 dark:text-slate-200 focus:ring-primary focus:border-primary"
-                min="0"
-              />
+              <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-1">
+                <span>$0</span>
+                <span className="font-extrabold text-slate-700 dark:text-slate-300">${maxPrice === 2000 ? '2,000+' : maxPrice}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Top Brands */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Top Brands</h4>
+            <div className="space-y-2">
+              {BRANDS.map((brand) => (
+                <label key={brand} className="flex items-center gap-3 text-xs font-medium cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-800">
+                  <input 
+                    type="checkbox"
+                    checked={selectedBrands.includes(brand)}
+                    onChange={() => handleBrandCheckboxChange(brand)}
+                    className="rounded border-slate-300 text-primary focus:ring-primary size-4"
+                  />
+                  {brand}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Min. Rating */}
+          <div className="space-y-3">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Min. Rating</h4>
+            <div className="flex gap-2">
+              {[4, 3, 2].map((rating) => (
+                <button
+                  key={rating}
+                  onClick={() => setMinRating(minRating === rating ? null : rating)}
+                  className={`flex-grow py-1.5 px-3 rounded-lg border text-xs font-bold transition-all ${
+                    minRating === rating
+                      ? 'bg-primary border-primary text-white'
+                      : 'border-slate-200 dark:border-slate-800 hover:border-primary/50 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  {rating}+
+                </button>
+              ))}
             </div>
           </div>
         </aside>
 
-        {/* Catalog Main Content */}
-        <div className="flex-grow">
-          {/* Controls Bar */}
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 dark:border-slate-800 pb-6 mb-8 gap-4">
-            <div>
-              <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">
-                {searchQuery 
-                  ? `Resultados para "${searchQuery}"`
-                  : activeCategory === 'all'
-                    ? 'Todos los Productos'
-                    : CATEGORY_LABELS[activeCategory] || 'Productos'}
+        {/* Main Grid Content */}
+        <div className="flex-grow w-full">
+          {/* Section Header */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 dark:border-slate-800 pb-5 mb-8 gap-4">
+            <div className="text-left">
+              <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                {searchQuery ? 'Search Results' : 'Baby & Tech'}
               </h2>
-              <p className="text-xs text-slate-400 mt-1">
-                {filtered.length} producto{filtered.length !== 1 ? 's' : ''} encontrado{filtered.length !== 1 ? 's' : ''}
+              <p className="text-xs text-slate-400 mt-1 font-medium">
+                Showing {filtered.length > 0 ? startIdx + 1 : 0}-{Math.min(startIdx + pageSize, filtered.length)} of {filtered.length} products
               </p>
             </div>
 
-            <div className="flex items-center gap-3 w-full sm:w-auto">
+            {/* Sort options */}
+            <div className="flex items-center gap-2 self-end sm:self-center">
+              <span className="text-xs text-slate-400 font-semibold whitespace-nowrap">Sort by:</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
-                className="text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 rounded-lg p-2 focus:ring-primary focus:border-primary"
+                className="text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 rounded-lg p-2.5 focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer"
               >
                 {SORT_OPTIONS.map((o) => (
                   <option key={o.value} value={o.value}>{o.label}</option>
                 ))}
               </select>
-
-              <select
-                value={pageSize}
-                onChange={(e) => setPageSize(Number(e.target.value))}
-                className="text-xs border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 rounded-lg p-2 focus:ring-primary focus:border-primary"
-              >
-                {PAGE_SIZES.map((s) => (
-                  <option key={s} value={s}>{s} por pág.</option>
-                ))}
-              </select>
             </div>
           </div>
 
-          {/* Grid Products */}
+          {/* Grid */}
           {filtered.length === 0 ? (
             <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-4">
               <span className="material-symbols-outlined text-4xl text-slate-300">search_off</span>
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white">No encontramos productos</h3>
-                <p className="text-xs text-slate-400 mt-1">Prueba cambiando los filtros o la búsqueda.</p>
+                <h3 className="font-bold text-slate-800 dark:text-white">No products found</h3>
+                <p className="text-xs text-slate-400 mt-1">Try resetting the filters or modifying your search query.</p>
               </div>
               <button 
                 onClick={handleClearFilters}
-                className="bg-primary hover:bg-opacity-95 text-white py-2 px-6 rounded-lg text-xs font-bold transition-all shadow-sm"
+                className="bg-primary hover:bg-opacity-95 text-white py-2 px-6 rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer"
               >
-                Restablecer Filtros
+                Reset Filters
               </button>
             </div>
           ) : (
@@ -332,9 +285,6 @@ export default function Products() {
               {/* Pagination */}
               <div className="mt-12 flex flex-col items-center gap-2 border-t border-slate-100 dark:border-slate-800 pt-8">
                 <Pagination page={page} totalPages={totalPages} onPageChange={setPage} />
-                <span className="text-xs text-slate-400">
-                  Mostrando {startIdx + 1}–{Math.min(startIdx + pageSize, filtered.length)} de {filtered.length} productos
-                </span>
               </div>
             </>
           )}
