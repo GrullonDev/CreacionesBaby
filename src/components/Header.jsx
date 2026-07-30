@@ -1,12 +1,10 @@
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { useWishlist } from '../context/WishlistContext'
 
 export default function Header() {
   const { itemCount } = useCart()
-  const { count: wishlistCount } = useWishlist()
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -17,100 +15,107 @@ export default function Header() {
     }
   }
 
+  const isHome = pathname === '/'
+  const isBaby = search.includes('category=baby_gear')
+  const isTech = search.includes('category=smart_tech')
+  const isStreaming = pathname === '/streaming'
+  const isDeals = search.includes('deals=true')
+
   return (
-    <header className="sticky top-0 z-50 glass-header border-b border-slate-200 dark:border-slate-800">
+    <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
-            <Link to="/" className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white uppercase">
-              Creaciones<span className="text-primary">.</span>Baby
+            <Link to="/" className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
+              Creaciones<span className="text-primary font-black">Baby</span>
             </Link>
           </div>
 
-          {/* Navigation */}
-          <nav className="hidden md:flex space-x-8">
+          {/* Navigation Links */}
+          <nav className="hidden md:flex space-x-6">
             <Link 
-              to="/products" 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${pathname === '/products' && !location.search ? 'text-primary' : 'text-slate-600 dark:text-slate-300'}`}
+              to="/" 
+              className={`text-sm font-semibold transition-colors relative py-1 hover:text-slate-900 dark:hover:text-white ${
+                isHome ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+              }`}
             >
-              Todos
+              Inicio
+              {isHome && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>}
             </Link>
             <Link 
-              to="/products?category=mamelucos" 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${location.search.includes('category=mamelucos') ? 'text-primary' : 'text-slate-600 dark:text-slate-300'}`}
+              to="/products?category=baby_gear" 
+              className={`text-sm font-semibold transition-colors relative py-1 hover:text-slate-900 dark:hover:text-white ${
+                isBaby ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+              }`}
             >
-              Mamelucos
+              Baby
+              {isBaby && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>}
             </Link>
             <Link 
-              to="/products?category=conjuntos" 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${location.search.includes('category=conjuntos') ? 'text-primary' : 'text-slate-600 dark:text-slate-300'}`}
+              to="/products?category=smart_tech" 
+              className={`text-sm font-semibold transition-colors relative py-1 hover:text-slate-900 dark:hover:text-white ${
+                isTech ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+              }`}
             >
-              Conjuntos
+              Tech
+              {isTech && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>}
             </Link>
             <Link 
-              to="/products?category=recien_nacidos" 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${location.search.includes('category=recien_nacidos') ? 'text-primary' : 'text-slate-600 dark:text-slate-300'}`}
+              to="/streaming" 
+              className={`text-sm font-semibold transition-colors relative py-1 hover:text-slate-900 dark:hover:text-white ${
+                isStreaming ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+              }`}
             >
-              Recién Nacidos
+              Streaming
+              {isStreaming && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>}
             </Link>
             <Link 
-              to="/products?category=accesorios" 
-              className={`text-sm font-semibold transition-colors hover:text-primary ${location.search.includes('category=accesorios') ? 'text-primary' : 'text-slate-600 dark:text-slate-300'}`}
+              to="/products?deals=true" 
+              className={`text-sm font-semibold transition-colors relative py-1 hover:text-slate-900 dark:hover:text-white ${
+                isDeals ? 'text-primary' : 'text-slate-500 dark:text-slate-400'
+              }`}
             >
-              Accesorios
+              Deals
+              {isDeals && <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full"></span>}
             </Link>
           </nav>
 
-          {/* Search & Actions */}
-          <div className="flex items-center space-x-4">
-            {/* Search Bar */}
-            <form onSubmit={handleSearchSubmit} className="hidden lg:flex items-center bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-4 py-1.5">
-              <span className="material-symbols-outlined text-slate-400 text-lg mr-2">search</span>
+          {/* Search Bar & Icons */}
+          <div className="flex items-center gap-4">
+            {/* Search Input */}
+            <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-900 rounded-lg px-3 py-1.5 border border-transparent focus-within:border-slate-200 dark:focus-within:border-slate-800 transition-all">
+              <span className="material-symbols-outlined text-slate-400 text-sm mr-2 select-none">search</span>
               <input 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="bg-transparent border-none focus:ring-0 text-xs w-36 placeholder-slate-400 p-0 text-slate-800 dark:text-slate-200" 
-                placeholder="Buscar productos..." 
+                placeholder="Buscar para tu bebé..." 
+                className="bg-transparent border-none outline-none text-xs w-44 placeholder-slate-400 text-slate-800 dark:text-slate-200 p-0"
               />
             </form>
 
-            {/* Wishlist */}
-            <Link 
-              to="/account" 
-              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Wishlist"
-            >
-              <span className="material-symbols-outlined text-2xl">favorite</span>
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-[10px] flex items-center justify-center rounded-full text-white font-bold border-2 border-background-light dark:border-background-dark animate-pulse">
-                  {wishlistCount}
-                </span>
-              )}
-            </Link>
-
-            {/* Cart */}
+            {/* Cart Icon */}
             <Link 
               to="/cart" 
-              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Cart"
+              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900"
+              aria-label="Carrito"
             >
-              <span className="material-symbols-outlined text-2xl">shopping_cart</span>
+              <span className="material-symbols-outlined text-xl">shopping_cart</span>
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 h-5 w-5 bg-primary text-[10px] flex items-center justify-center rounded-full text-white font-bold border-2 border-background-light dark:border-background-dark">
+                <span className="absolute top-1 right-1 bg-[#5c4c3e] text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center border border-white">
                   {itemCount}
                 </span>
               )}
             </Link>
 
-            {/* Profile */}
+            {/* User Profile */}
             <Link 
               to="/account" 
-              className="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"
-              aria-label="Profile"
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900"
+              aria-label="Perfil"
             >
-              <span className="material-symbols-outlined text-2xl">person</span>
+              <span className="material-symbols-outlined text-xl">account_circle</span>
             </Link>
           </div>
         </div>
