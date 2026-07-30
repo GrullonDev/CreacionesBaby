@@ -1,334 +1,182 @@
 const products = [
   {
     id: 1,
-    name: 'Baby Dream Crib',
-    category: 'baby',
-    price: 299.99,
-    originalPrice: 349.99,
-    description: 'Premium baby crib crafted from sustainable wood with adjustable mattress height. Converts to a toddler bed for extended use.',
-    image: 'https://placehold.co/400x400/10b981/ffffff?text=Baby+Dream+Crib',
+    name: 'Mameluco de Algodón Orgánico',
+    category: 'mamelucos',
+    price: 45.00,
+    originalPrice: null,
+    description: 'Suave mameluco confeccionado al 100% con algodón orgánico certificado, ideal para la piel sensible de tu recién nacido. Cuenta con broches hipoalergénicos libres de níquel para un cambio fácil.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF',
     images: [
-      'https://placehold.co/600x600/10b981/ffffff?text=Baby+Dream+Crib',
-      'https://placehold.co/600x600/34d399/1e293b?text=Dream+Crib+Side',
-      'https://placehold.co/600x600/a7f3d0/1e293b?text=Dream+Crib+Detail',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF'
     ],
-    rating: 4.8,
-    reviews: 234,
-    features: ['Adjustable mattress height (3 positions)', 'Converts to toddler bed', 'Non-toxic finish', 'JPMA certified'],
+    rating: 4.9,
+    reviews: 145,
+    features: ['100% Algodón Orgánico', 'Tinte natural hipoalergénico', 'Broches libres de níquel', 'Apto para lavadora'],
     inStock: true,
-    createdAt: '2025-01-15',
+    createdAt: '2025-01-10',
+    colors: ['Crema', 'Blanco', 'Gris'],
+    sizes: ['RN', '0-3m', '3-6m', '6-12m']
   },
   {
     id: 2,
-    name: 'Wireless Noise-Canceling Headphones',
-    category: 'electronics',
-    price: 249.99,
-    originalPrice: null,
-    description: 'Premium over-ear headphones with active noise cancellation, 30-hour battery life, and crystal-clear audio.',
-    image: 'https://placehold.co/400x400/3b82f6/ffffff?text=Noise-Canceling+Headphones',
+    name: 'Conjunto de Lino Primavera',
+    category: 'conjuntos',
+    price: 68.90,
+    originalPrice: 85.00,
+    description: 'Conjunto fresco de lino y algodón suave en color verde menta. Incluye camisa de botones de madera y pantalón corto con cintura elástica cómoda.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv',
     images: [
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Headphones',
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Headphones+Side',
-      'https://placehold.co/600x600/93c5fd/1e293b?text=Headphones+Case',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv'
     ],
     rating: 4.7,
-    reviews: 1892,
-    features: ['Active noise cancellation', '30-hour battery life', 'Bluetooth 5.3', 'Foldable design'],
+    reviews: 98,
+    features: ['Mezcla Premium Lino/Algodón', 'Botones de madera natural', 'Cintura ajustable', 'Transpirable y liviano'],
     inStock: true,
-    createdAt: '2025-02-20',
+    createdAt: '2025-02-15',
+    colors: ['Verde Menta', 'Beige', 'Azul'],
+    sizes: ['3-6m', '6-12m', '1-2 años', '3-5 años']
   },
   {
     id: 3,
-    name: 'Organic Baby Onesie Set',
-    category: 'baby',
-    price: 34.99,
-    originalPrice: null,
-    description: 'Set of 5 organic cotton onesies with envelope necklines and snap closures. Gentle on sensitive skin.',
-    image: 'https://placehold.co/400x400/34d399/1e293b?text=Onesie+Set',
+    name: 'Pijama Soft Nightbear',
+    category: 'pijamas',
+    price: 32.00,
+    originalPrice: 40.00,
+    description: 'Pijama cómoda de dos piezas con adorable estampado de ositos. Fabricado en algodón perchado ultra suave para las noches más tranquilas.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCO8fa5Js-erQgIwSew5ta542boru4zGVhnl_VCo06LiQqP2B9IRXInboYv6cW1Mdb9mbcy8vC0e789K422Fh1w1oN70Cz_mZeowj_9VFmHcj3es4COrP-omPb7x0ajPefFhpkKhzsLF2-VAiZlBWNDIj5SFjWvWdwTeNMRMovA6CI5foTRFaM9YOE7WASKg3TtUBoVh4CUQVyfYUmdcVNIioycFCj51MQxXJcVCEMjjOF_v9clWgi6KLcL1Dbij9HB2fci14b8x3NF',
     images: [
-      'https://placehold.co/600x600/34d399/1e293b?text=Onesie+Set',
-      'https://placehold.co/600x600/6ee7b7/1e293b?text=Onesie+Patterns',
-      'https://placehold.co/600x600/fbd38d/1e293b?text=Onesie+Pack',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCO8fa5Js-erQgIwSew5ta542boru4zGVhnl_VCo06LiQqP2B9IRXInboYv6cW1Mdb9mbcy8vC0e789K422Fh1w1oN70Cz_mZeowj_9VFmHcj3es4COrP-omPb7x0ajPefFhpkKhzsLF2-VAiZlBWNDIj5SFjWvWdwTeNMRMovA6CI5foTRFaM9YOE7WASKg3TtUBoVh4CUQVyfYUmdcVNIioycFCj51MQxXJcVCEMjjOF_v9clWgi6KLcL1Dbij9HB2fci14b8x3NF'
     ],
-    rating: 4.9,
-    reviews: 567,
-    features: ['100% organic cotton', 'Envelope neckline', 'Snap closures', 'Machine washable'],
+    rating: 4.8,
+    reviews: 215,
+    features: ['Algodón perchado premium', 'Estampado ecológico al agua', 'Puños acanalados', 'Corte relajado'],
     inStock: true,
     createdAt: '2025-03-01',
+    colors: ['Azul Grisáceo', 'Rosa Pastel', 'Crema'],
+    sizes: ['6-12m', '1-2 años', '3-5 años']
   },
   {
     id: 4,
-    name: 'Smartphone 128GB',
-    category: 'electronics',
-    price: 799.99,
-    originalPrice: 899.99,
-    description: 'Latest-gen smartphone with 6.7" AMOLED display, 128GB storage, and pro-grade camera system.',
-    image: 'https://placehold.co/400x400/60a5fa/ffffff?text=Smartphone+128GB',
+    name: 'Gorro Tejido Nube',
+    category: 'accesorios',
+    price: 18.50,
+    originalPrice: null,
+    description: 'Sombrerito de punto tejido a mano en hilo de algodón hipoalergénico. Mantiene la cabeza de tu bebé abrigada con suavidad excepcional y estilo adorable.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBIJ-epbEGKoBO-styIW847aqmbhTnWvUAYD_ahsV_QakvUStF68FGEJARiurvurmH1zeMpn819btd4HBlAuuOkfdvjO-2wtLoxpdS0NcWJ5hBCiy20LsNs533vovXOpgcsV3SgzTxVXYJL5N3TtuBJxfLlZ3cOKkzYlmhXb69fHTQRb7CCttEeMlhBwz_5yYyGFC8Y3_UgRhx1ocdeMLMmY38gAwMS6zJCndsDqYHM3S5CEJjs05EmuPs8J8iBvu9LWKEgL_oICRP',
     images: [
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Smartphone+Front',
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Smartphone+Back',
-      'https://placehold.co/600x600/1e40af/ffffff?text=Smartphone+Side',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCBIJ-epbEGKoBO-styIW847aqmbhTnWvUAYD_ahsV_QakvUStF68FGEJARiurvurmH1zeMpn819btd4HBlAuuOkfdvjO-2wtLoxpdS0NcWJ5hBCiy20LsNs533vovXOpgcsV3SgzTxVXYJL5N3TtuBJxfLlZ3cOKkzYlmhXb69fHTQRb7CCttEeMlhBwz_5yYyGFC8Y3_UgRhx1ocdeMLMmY38gAwMS6zJCndsDqYHM3S5CEJjs05EmuPs8J8iBvu9LWKEgL_oICRP'
     ],
-    rating: 4.6,
-    reviews: 3421,
-    features: ['6.7" AMOLED display', '128GB storage', 'Triple camera system', 'IP68 water resistant'],
+    rating: 4.9,
+    reviews: 62,
+    features: ['Tejido a mano artesanal', '100% Hilo de Algodón', 'Muy flexible y suave', 'Hipoalergénico'],
     inStock: true,
-    createdAt: '2025-04-10',
+    createdAt: '2025-01-20',
+    colors: ['Blanco Nube', 'Rosa', 'Amarillo'],
+    sizes: ['RN', '0-3m', '3-6m']
   },
   {
     id: 5,
-    name: 'Baby Stroller X1',
-    category: 'baby',
-    price: 449.99,
-    originalPrice: 499.99,
-    description: 'All-terrain stroller with one-hand fold, adjustable handlebar, and multi-position reclining seat.',
-    image: 'https://placehold.co/400x400/6ee7b7/1e293b?text=Baby+Stroller+X1',
+    name: 'Patucos de Piel Suave',
+    category: 'calzado',
+    price: 55.00,
+    originalPrice: null,
+    description: 'Zapatitos artesanales de cuero natural extra suave en tono beige. Suela flexible que respeta el crecimiento natural del pie de tu bebé.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBP3bnCuyNLmzv1POZX2jy7UzrC_XSHNdPK3SxSlBRI0UeGRFdVwEYWlSwuJ2jX-0WS8-nzx9503-KFFeWDGAkaOJ7icuvQ-rBo-_ZSx8IY6RHBZtdav_pxGf_NnWXSIl0FbS_J3JHrOA_7U3xDX4CrVFlSjy4nw_A5RiDv-mqpZGtcPaRpNUa8VvmMpxsIZbmbnh3UBIUNjv5_1QnFucx6GgA1tq5RhRxI9KIaifMFnlVjFMWUg6Xl0ImXuFMWE86mGZfa2niSFf8Z',
     images: [
-      'https://placehold.co/600x600/6ee7b7/1e293b?text=Stroller+Front',
-      'https://placehold.co/600x600/10b981/ffffff?text=Stroller+Side',
-      'https://placehold.co/600x600/34d399/1e293b?text=Stroller+Folded',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBP3bnCuyNLmzv1POZX2jy7UzrC_XSHNdPK3SxSlBRI0UeGRFdVwEYWlSwuJ2jX-0WS8-nzx9503-KFFeWDGAkaOJ7icuvQ-rBo-_ZSx8IY6RHBZtdav_pxGf_NnWXSIl0FbS_J3JHrOA_7U3xDX4CrVFlSjy4nw_A5RiDv-mqpZGtcPaRpNUa8VvmMpxsIZbmbnh3UBIUNjv5_1QnFucx6GgA1tq5RhRxI9KIaifMFnlVjFMWUg6Xl0ImXuFMWE86mGZfa2niSFf8Z'
     ],
-    rating: 4.7,
-    reviews: 892,
-    features: ['One-hand fold', 'All-terrain wheels', 'Adjustable handlebar', 'Multi-position recline'],
+    rating: 4.6,
+    reviews: 73,
+    features: ['Cuero natural curtido ecológico', 'Suela de gamuza antideslizante', 'Elástico de ajuste suave', 'Hecho a mano'],
     inStock: true,
-    createdAt: '2025-02-05',
+    createdAt: '2025-02-10',
+    colors: ['Beige', 'Gris', 'Café'],
+    sizes: ['0-3m', '3-6m', '6-12m']
   },
   {
     id: 6,
-    name: 'Bluetooth Speaker',
-    category: 'electronics',
-    price: 79.99,
-    originalPrice: 99.99,
-    description: 'Portable waterproof speaker with 360-degree sound, 12-hour battery, and built-in microphone.',
-    image: 'https://placehold.co/400x400/93c5fd/1e293b?text=Bluetooth+Speaker',
+    name: 'Set Marinerito Algodón',
+    category: 'conjuntos',
+    price: 42.90,
+    originalPrice: null,
+    description: 'Conjunto marinero de dos piezas. Incluye un body de manga corta de algodón de rayas azules y pantalón liso a juego con cordón decorativo.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBvYM_yi7YHwTgpjN5kHBM1cmlyhH82mxczNISgiiejHdSWB-j743wbEzCH0W-B4RP4LK0BQ33AeZXm9Qe594iJI1QssTXjag1UgFM2xbwGuyaYikzNp7oQHecJMUqTExERvf4nTGZIuii7VHIW38lJ-gxgEFMwYTQYOlmtAFPAEZO2fjY5YA2vePp8u00SvL293cCkUQs8lyj-883FoDLwckpPjlQlKrkw_xFYsj5cRTlYgCFky-8O93yJTeOtOHaiTJg4PCVthjNT',
     images: [
-      'https://placehold.co/600x600/93c5fd/1e293b?text=Speaker+Front',
-      'https://placehold.co/600x600/bfdbfe/1e293b?text=Speaker+Top',
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Speaker+Side',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBvYM_yi7YHwTgpjN5kHBM1cmlyhH82mxczNISgiiejHdSWB-j743wbEzCH0W-B4RP4LK0BQ33AeZXm9Qe594iJI1QssTXjag1UgFM2xbwGuyaYikzNp7oQHecJMUqTExERvf4nTGZIuii7VHIW38lJ-gxgEFMwYTQYOlmtAFPAEZO2fjY5YA2vePp8u00SvL293cCkUQs8lyj-883FoDLwckpPjlQlKrkw_xFYsj5cRTlYgCFky-8O93yJTeOtOHaiTJg4PCVthjNT'
     ],
-    rating: 4.5,
-    reviews: 2156,
-    features: ['360-degree sound', 'IPX7 waterproof', '12-hour battery', 'Built-in mic'],
+    rating: 4.8,
+    reviews: 112,
+    features: ['100% Algodón Pima', 'Ajuste cómodo y elástico', 'Tinte libre de metales pesados', 'Estilo clásico náutico'],
     inStock: true,
-    createdAt: '2025-05-12',
+    createdAt: '2025-03-05',
+    colors: ['Rayas Azules', 'Blanco', 'Gris'],
+    sizes: ['RN', '0-3m', '3-6m', '6-12m']
   },
   {
     id: 7,
-    name: 'Baby Carrier Pro',
-    category: 'baby',
-    price: 89.99,
+    name: 'Pack x3 Baberos Silicona',
+    category: 'accesorios',
+    price: 29.00,
     originalPrice: null,
-    description: 'Ergonomic baby carrier with lumbar support, breathable mesh, and multiple carrying positions.',
-    image: 'https://placehold.co/400x400/fbd38d/1e293b?text=Baby+Carrier+Pro',
+    description: 'Set de 3 baberos de silicona grado alimenticio impermeables en colores pasteles muy estéticos. Con amplio bolsillo receptor y cierre de cuello ajustable.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCOJk5Jh0HhslAdrhi75n2wB2EwaiSPFUghLHNoMjBmzBUeLpj1gz5dk_DJ-S5ZrAl6uLs0R-DJ9fXaW3IrpI1DrIRE8INuYzbc87UanuPzKx2WKEm04dEuzmdPhTRrvywR9ESn-shIN7q6rXbrkxwB7-4BUQLZ7-1MDH9PP3NVYD6YjjKMdCaPDR5zfywoSL3CM0wvRizIr-dXn57vXgdI1qY7ssVCFX5OC8zzK9BZUVSwvh3U5RXCTsDDn_Mo-RXNNTyIMgge-CCw',
     images: [
-      'https://placehold.co/600x600/fbd38d/1e293b?text=Carrier+Front',
-      'https://placehold.co/600x600/6ee7b7/1e293b?text=Carrier+Back',
-      'https://placehold.co/600x600/fed7aa/1e293b?text=Carrier+Details',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuCOJk5Jh0HhslAdrhi75n2wB2EwaiSPFUghLHNoMjBmzBUeLpj1gz5dk_DJ-S5ZrAl6uLs0R-DJ9fXaW3IrpI1DrIRE8INuYzbc87UanuPzKx2WKEm04dEuzmdPhTRrvywR9ESn-shIN7q6rXbrkxwB7-4BUQLZ7-1MDH9PP3NVYD6YjjKMdCaPDR5zfywoSL3CM0wvRizIr-dXn57vXgdI1qY7ssVCFX5OC8zzK9BZUVSwvh3U5RXCTsDDn_Mo-RXNNTyIMgge-CCw'
     ],
-    rating: 4.6,
-    reviews: 445,
-    features: ['Ergonomic design', 'Lumbar support', 'Breathable mesh', 'Front/back carry'],
+    rating: 4.7,
+    reviews: 182,
+    features: ['100% Silicona Grado Alimenticio', 'Libre de BPA, PVC y Ftalatos', 'Impermeable y fácil de limpiar', 'Cuello ajustable de 4 posiciones'],
     inStock: true,
-    createdAt: '2025-01-28',
+    createdAt: '2025-04-01',
+    colors: ['Mix Pastel', 'Verde', 'Rosa', 'Gris'],
+    sizes: ['Ajustable']
   },
   {
     id: 8,
-    name: 'Laptop 15" Ultrabook',
-    category: 'electronics',
-    price: 1299.99,
-    originalPrice: 1499.99,
-    description: 'Ultra-thin laptop with 15.6" 4K display, 16GB RAM, 512GB SSD, and all-day battery life.',
-    image: 'https://placehold.co/400x400/1e40af/ffffff?text=Laptop+15+Ultrabook',
-    images: [
-      'https://placehold.co/600x600/1e40af/ffffff?text=Laptop+Open',
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Laptop+Closed',
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Laptop+Side',
-    ],
-    rating: 4.8,
-    reviews: 1567,
-    features: ['15.6" 4K display', '16GB RAM / 512GB SSD', 'Intel Core i7', '12-hour battery'],
-    inStock: true,
-    createdAt: '2025-03-22',
-  },
-  {
-    id: 9,
-    name: 'Baby Swing & Bouncer',
-    category: 'baby',
-    price: 129.99,
+    name: 'Conjunto Lana Merino',
+    category: 'recien_nacidos',
+    price: 95.00,
     originalPrice: null,
-    description: 'Soothing baby swing with 6 speeds, nature sounds, and removable toy bar. Birth to 6 months.',
-    image: 'https://placehold.co/400x400/fed7aa/1e293b?text=Baby+Swing',
+    description: 'Conjunto de invierno tejido en lana Merino superfina de primera calidad. Máximo confort térmico para el recién nacido con total transpirabilidad y suavidad sin picazón.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5r88sGeoasfN61uQYqXgRp-C7_WgUFh3Qg14Hlz7lUhXFFl9EFGCezRybU2qOi0Jkgo1W0GXpVjl8ZFguP_RLiuok8mBsdY726ir893DfWoSroZsvEZXf0CXN0RfnF5fYLZSTs-5WYC6uPD5ibx5zgdodaCNvXf-pghslAASj7HGVlsro0TE3RiMVMpOi5SXnxDDbU8itURPAqrgSk3aZ-fwKRZv1YrAHTnJphw36pL-jB77Z2OGhu9MPWTvrugdbveUI-vue29uF',
     images: [
-      'https://placehold.co/600x600/fed7aa/1e293b?text=Swing+Front',
-      'https://placehold.co/600x600/fbd38d/1e293b?text=Swing+Side',
-    ],
-    rating: 4.4,
-    reviews: 723,
-    features: ['6 swing speeds', 'Nature sounds & melodies', 'Removable toy bar', 'Compact fold'],
-    inStock: false,
-    createdAt: '2025-06-01',
-  },
-  {
-    id: 10,
-    name: 'Smartwatch Series 5',
-    category: 'electronics',
-    price: 349.99,
-    originalPrice: null,
-    description: 'Advanced smartwatch with health monitor, GPS, always-on display, and 7-day battery life.',
-    image: 'https://placehold.co/400x400/bfdbfe/1e293b?text=Smartwatch+Series+5',
-    images: [
-      'https://placehold.co/600x600/bfdbfe/1e293b?text=Watch+Face',
-      'https://placehold.co/600x600/93c5fd/1e293b?text=Watch+Band',
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Watch+Side',
-    ],
-    rating: 4.5,
-    reviews: 2789,
-    features: ['Health monitoring', 'Built-in GPS', 'Always-on display', '7-day battery'],
-    inStock: true,
-    createdAt: '2025-04-18',
-  },
-  {
-    id: 11,
-    name: 'Diaper Bag Backpack',
-    category: 'baby',
-    price: 59.99,
-    originalPrice: 74.99,
-    description: 'Spacious diaper bag backpack with insulated pockets, changing pad, and stroller straps.',
-    image: 'https://placehold.co/400x400/10b981/ffffff?text=Diaper+Bag',
-    images: [
-      'https://placehold.co/600x600/10b981/ffffff?text=Bag+Front',
-      'https://placehold.co/600x600/34d399/1e293b?text=Bag+Open',
-      'https://placehold.co/600x600/6ee7b7/1e293b?text=Bag+Back',
-    ],
-    rating: 4.7,
-    reviews: 1123,
-    features: ['Insulated pockets', 'Includes changing pad', 'Stroller straps', 'USB charging port'],
-    inStock: true,
-    createdAt: '2025-02-14',
-  },
-  {
-    id: 12,
-    name: 'Wireless Earbuds Pro',
-    category: 'electronics',
-    price: 149.99,
-    originalPrice: 179.99,
-    description: 'True wireless earbuds with adaptive noise cancellation, spatial audio, and 24-hour total battery.',
-    image: 'https://placehold.co/400x400/3b82f6/ffffff?text=Wireless+Earbuds',
-    images: [
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Earbuds+Case',
-      'https://placehold.co/600x600/93c5fd/1e293b?text=Earbuds+Top',
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Earbuds+Side',
-    ],
-    rating: 4.4,
-    reviews: 3456,
-    features: ['Adaptive noise cancellation', 'Spatial audio', 'IPX5 sweat resistant', 'Wireless charging case'],
-    inStock: true,
-    createdAt: '2025-05-30',
-  },
-  {
-    id: 13,
-    name: 'Baby Monitor HD',
-    category: 'baby',
-    price: 199.99,
-    originalPrice: null,
-    description: 'HD video baby monitor with night vision, two-way audio, temperature sensor, and smartphone app.',
-    image: 'https://placehold.co/400x400/34d399/1e293b?text=Baby+Monitor+HD',
-    images: [
-      'https://placehold.co/600x600/34d399/1e293b?text=Monitor+Unit',
-      'https://placehold.co/600x600/10b981/ffffff?text=Monitor+Screen',
-    ],
-    rating: 4.3,
-    reviews: 678,
-    features: ['1080p HD video', 'Night vision', 'Two-way audio', 'Smartphone app'],
-    inStock: true,
-    createdAt: '2025-06-15',
-  },
-  {
-    id: 14,
-    name: 'Tablet 10" WiFi',
-    category: 'electronics',
-    price: 449.99,
-    originalPrice: null,
-    description: 'Versatile 10" tablet with vibrant display, 256GB storage, and long-lasting battery for work and play.',
-    image: 'https://placehold.co/400x400/60a5fa/ffffff?text=Tablet+10+WiFi',
-    images: [
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Tablet+Front',
-      'https://placehold.co/600x600/1e40af/ffffff?text=Tablet+Back',
-      'https://placehold.co/600x600/93c5fd/1e293b?text=Tablet+Stand',
-    ],
-    rating: 4.6,
-    reviews: 1890,
-    features: ['10" Liquid Retina display', '256GB storage', 'A14 chip', '10-hour battery'],
-    inStock: true,
-    createdAt: '2025-03-08',
-  },
-  {
-    id: 15,
-    name: 'Baby Bath Tub',
-    category: 'baby',
-    price: 39.99,
-    originalPrice: null,
-    description: 'Ergonomic baby bathtub with non-slip surface, temperature indicator, and removable infant insert.',
-    image: 'https://placehold.co/400x400/6ee7b7/1e293b?text=Baby+Bath+Tub',
-    images: [
-      'https://placehold.co/600x600/6ee7b7/1e293b?text=Bath+Tub',
-      'https://placehold.co/600x600/10b981/ffffff?text=Bath+Tub+Insert',
-    ],
-    rating: 4.5,
-    reviews: 934,
-    features: ['Temperature indicator', 'Non-slip surface', 'Removable infant insert', 'Fits standard sinks'],
-    inStock: true,
-    createdAt: '2025-01-10',
-  },
-  {
-    id: 16,
-    name: 'Gaming Console',
-    category: 'electronics',
-    price: 499.99,
-    originalPrice: 549.99,
-    description: 'Next-gen gaming console with 4K gaming, ultra-fast SSD, and backward compatibility.',
-    image: 'https://placehold.co/400x400/1e40af/ffffff?text=Gaming+Console',
-    images: [
-      'https://placehold.co/600x600/1e40af/ffffff?text=Console+Front',
-      'https://placehold.co/600x600/60a5fa/ffffff?text=Console+Controller',
-      'https://placehold.co/600x600/3b82f6/ffffff?text=Console+Ports',
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuC5r88sGeoasfN61uQYqXgRp-C7_WgUFh3Qg14Hlz7lUhXFFl9EFGCezRybU2qOi0Jkgo1W0GXpVjl8ZFguP_RLiuok8mBsdY726ir893DfWoSroZsvEZXf0CXN0RfnF5fYLZSTs-5WYC6uPD5ibx5zgdodaCNvXf-pghslAASj7HGVlsro0TE3RiMVMpOi5SXnxDDbU8itURPAqrgSk3aZ-fwKRZv1YrAHTnJphw36pL-jB77Z2OGhu9MPWTvrugdbveUI-vue29uF'
     ],
     rating: 4.9,
-    reviews: 5678,
-    features: ['4K gaming', '1TB SSD', 'Ray tracing', 'Backward compatible'],
+    reviews: 43,
+    features: ['100% Lana Merino superfina', 'Regulador térmico natural', 'Hipoalergénico y antibacteriano', 'Diseño de punto clásico'],
     inStock: true,
-    createdAt: '2025-06-20',
-  },
-]
+    createdAt: '2025-01-05',
+    colors: ['Gris Oscuro', 'Beige', 'Azul'],
+    sizes: ['RN', '0-3m', '3-6m']
+  }
+];
 
-export const categories = [
-  { id: 'baby', name: 'Baby Products', icon: '👶' },
-  { id: 'electronics', name: 'Electronics', icon: '💻' },
-]
+export const getProducts = () => {
+  return Promise.resolve(products);
+};
 
-const delay = (ms) => new Promise((r) => setTimeout(r, ms))
+export const getProductById = (id) => {
+  const product = products.find(p => p.id === parseInt(id));
+  return Promise.resolve(product || null);
+};
 
-export async function getProductById(id) {
-  await delay(80)
-  return products.find((p) => p.id === Number(id)) || null
-}
+export const getFeaturedProducts = () => {
+  return Promise.resolve(products.slice(0, 4));
+};
 
-export async function getProductsByCategory(category) {
-  await delay(80)
-  if (!category || category === 'all') return [...products]
-  return products.filter((p) => p.category === category)
-}
+export const getRelatedProducts = (category, currentId) => {
+  const related = products.filter(p => p.category === category && p.id !== parseInt(currentId));
+  if (related.length === 0) {
+    return Promise.resolve(products.filter(p => p.id !== parseInt(currentId)).slice(0, 4));
+  }
+  return Promise.resolve(related.slice(0, 4));
+};
 
-export async function getFeaturedProducts() {
-  await delay(80)
-  return products.filter((p) => p.rating >= 4.7).slice(0, 4)
-}
+export const getCategories = () => {
+  const cats = [...new Set(products.map(p => p.category))];
+  return Promise.resolve(cats);
+};
 
-export async function searchProducts(query) {
-  await delay(80)
-  const q = query.toLowerCase()
-  return products.filter((p) => p.name.toLowerCase().includes(q) || p.description.toLowerCase().includes(q))
-}
-
-export default products
+export default products;
