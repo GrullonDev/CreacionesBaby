@@ -17,55 +17,118 @@ export default function Orders() {
   }, [])
 
   return (
-    <main className="main">
-      <div className="orders-page">
-        <div className="orders-header">
-          <h2>Order History</h2>
+    <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+      {/* Title */}
+      <div className="border-b border-slate-100 dark:border-slate-800 pb-6 mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Mis Pedidos</h1>
+          <p className="text-xs text-slate-400 mt-1">Historial de compras y seguimiento de envíos</p>
         </div>
+        <Link 
+          to="/products"
+          className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
+        >
+          <span className="material-symbols-outlined text-sm">arrow_back</span>
+          Seguir comprando
+        </Link>
+      </div>
 
-        {orders.length === 0 ? (
-          <div className="empty-state">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-              <line x1="3" y1="6" x2="21" y2="6" />
-              <path d="M16 10a4 4 0 0 1-8 0" />
-            </svg>
-            <h3>No orders yet</h3>
-            <p>When you place an order, it will appear here.</p>
-            <Link to="/products" className="btn btn-primary">Start Shopping</Link>
+      {orders.length === 0 ? (
+        <div className="text-center py-20 space-y-6 max-w-md mx-auto">
+          <div className="w-20 h-20 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center text-slate-400 mx-auto">
+            <span className="material-symbols-outlined text-4xl">local_mall</span>
           </div>
-        ) : (
-          <div className="orders-list">
-            {orders.toReversed().map((order, i) => (
-              <div key={i} className="order-card">
-                <div className="order-card-header">
-                  <div>
-                    <span className="order-number">Order #{order.id}</span>
-                    <span className="order-date">{new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
-                  </div>
-                  <span className="order-total">${order.total.toFixed(2)}</span>
+          <div>
+            <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white">Aún no tienes pedidos</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Cuando realices tu primera compra en nuestra tienda, podrás realizar el seguimiento aquí.
+            </p>
+          </div>
+          <Link 
+            to="/products" 
+            className="inline-block bg-primary hover:bg-opacity-95 text-white font-bold py-3 px-8 rounded-xl text-xs transition-all shadow-md shadow-primary/20"
+          >
+            Ver Productos
+          </Link>
+        </div>
+      ) : (
+        <div className="space-y-6 max-w-4xl mx-auto">
+          {orders.toReversed().map((order, i) => (
+            <div 
+              key={order.id || i} 
+              className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+            >
+              {/* Order Card Header */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-5 bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-800 gap-2">
+                <div>
+                  <span className="font-extrabold text-slate-900 dark:text-white text-sm sm:text-base block">
+                    Pedido #{order.id}
+                  </span>
+                  <span className="text-[10px] text-slate-400 mt-0.5 block">
+                    {new Date(order.date).toLocaleDateString('es-ES', { 
+                      year: 'numeric', 
+                      month: 'long', 
+                      day: 'numeric', 
+                      hour: '2-digit', 
+                      minute: '2-digit' 
+                    })}
+                  </span>
                 </div>
-                <div className="order-card-items">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="order-item">
-                      <img src={item.image} alt={item.name} />
-                      <div className="order-item-info">
-                        <span className="order-item-name">{item.name}</span>
-                        <span className="order-item-qty">Qty: {item.quantity}</span>
-                      </div>
-                      <span className="order-item-price">${(item.price * item.quantity).toFixed(2)}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="order-card-footer">
-                  <span className="order-status">Delivered</span>
-                  <span className="order-shipping">Shipped to {order.address?.name || order.shipping?.name}</span>
+                <div className="text-right">
+                  <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Pagado</span>
+                  <span className="font-black text-primary text-lg sm:text-xl block">
+                    ${order.total.toFixed(2)}
+                  </span>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+              {/* Order Items List */}
+              <div className="divide-y divide-slate-50 dark:divide-slate-800 px-5 py-2">
+                {order.items.map((item) => (
+                  <div key={item.id} className="flex items-center gap-4 py-4">
+                    <div className="w-12 aspect-[4/5] rounded-lg overflow-hidden bg-slate-100 flex-shrink-0">
+                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-grow min-w-0">
+                      <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white block line-clamp-1">
+                        {item.name}
+                      </span>
+                      <div className="flex gap-3 text-[10px] text-slate-400 mt-0.5">
+                        <span>Cant: <strong className="text-slate-600 dark:text-slate-300">{item.quantity}</strong></span>
+                        {item.selectedColor && (
+                          <span>Color: <strong className="text-slate-600 dark:text-slate-300">{item.selectedColor}</strong></span>
+                        )}
+                        {item.selectedSize && (
+                          <span>Talla: <strong className="text-slate-600 dark:text-slate-300">{item.selectedSize}</strong></span>
+                        )}
+                      </div>
+                    </div>
+                    <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white self-center whitespace-nowrap">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Order Card Footer */}
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-5 py-4 border-t border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 gap-3">
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                    <span className="size-1.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    Entregado
+                  </span>
+                  <span className="text-[10px] text-slate-400">
+                    Por Starken / Chilexpress
+                  </span>
+                </div>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">
+                  Despachado a: <strong>{order.address?.name || 'Cliente'}</strong>, {order.address?.address}, {order.address?.city}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   )
 }
