@@ -1,155 +1,287 @@
 const products = [
   {
     id: 1,
-    name: 'Mameluco de Algodón Orgánico',
-    category: 'mamelucos',
-    price: 45.00,
+    name: 'Nanit Pro Smart Camera',
+    category: 'smart_tech',
+    subcategory: 'Baby Tech',
+    brand: 'Nanit',
+    price: 299.99,
     originalPrice: null,
-    description: 'Suave mameluco confeccionado al 100% con algodón orgánico certificado, ideal para la piel sensible de tu recién nacido. Cuenta con broches hipoalergénicos libres de níquel para un cambio fácil.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF',
+    description: 'HD video with sleep tracking and breathing motion monitoring. Keep an eye on your baby with ultimate clarity.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBezkUr28nhggeQJQ2LmHCstYHSSMxyny0IzhIpGq3w0y5Yt9zD647fBq-YRw4Wuyo_dq2It6-ZsUnqTjLk1580kh4pxGh7a6MlVRf3ZSV7Z8ElS6Rpkgzm6no64ZLYrbK-LmTBttd5ZOf4x7OPWnzdn8mZPKGFQAhtcfkvpwb4ffsgBdWBX8ALB4in68xeimvHPAS1VbuFpZ26I-SulFe0c6wdvyyx7VJorHs0ou7JbQgyJJZvr4S6BxK4-eD12byNyaPS2x8-argC',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF'
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBezkUr28nhggeQJQ2LmHCstYHSSMxyny0IzhIpGq3w0y5Yt9zD647fBq-YRw4Wuyo_dq2It6-ZsUnqTjLk1580kh4pxGh7a6MlVRf3ZSV7Z8ElS6Rpkgzm6no64ZLYrbK-LmTBttd5ZOf4x7OPWnzdn8mZPKGFQAhtcfkvpwb4ffsgBdWBX8ALB4in68xeimvHPAS1VbuFpZ26I-SulFe0c6wdvyyx7VJorHs0ou7JbQgyJJZvr4S6BxK4-eD12byNyaPS2x8-argC'
     ],
     rating: 4.9,
-    reviews: 145,
-    features: ['100% Algodón Orgánico', 'Tinte natural hipoalergénico', 'Broches libres de níquel', 'Apto para lavadora'],
+    reviews: 124,
+    features: ['HD 1080p Video', 'Sleep Tracking', 'Breathing Motion Monitoring', 'Hipoalergénico'],
     inStock: true,
     createdAt: '2025-01-10',
-    colors: ['Crema', 'Blanco', 'Gris'],
-    sizes: ['RN', '0-3m', '3-6m', '6-12m']
+    colors: ['Blanco'],
+    sizes: ['Única']
   },
   {
     id: 2,
-    name: 'Conjunto de Lino Primavera',
-    category: 'conjuntos',
-    price: 68.90,
-    originalPrice: 85.00,
-    description: 'Conjunto fresco de lino y algodón suave en color verde menta. Incluye camisa de botones de madera y pantalón corto con cintura elástica cómoda.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv',
+    name: 'Phone Pro Max X',
+    category: 'smart_tech',
+    subcategory: 'Mobile Tech',
+    brand: 'Apple',
+    price: 1099.00,
+    originalPrice: null,
+    description: 'Titanium design, ultimate camera system, and the fastest chip ever in a smartphone. Built for professionals.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuANUHd-hiIzaKYIMqu70oZR4F4ijExjKG7K7fn3cp_dC9sJrArKQldMSPEr77DER1Gxcbhk37DcYaSSWGozjCOKWTSC7fC-IKYGscELa6hcCep1FB5jIFkcOXtzpdp4LKarv8h0eetjd8NjB4-IZ_ECq9pTnbESNKaJfyz82pxlRoQOuYbOar9TUUy7RQIw3LB5z_erSf1kPBjcFdhOtSqml7nYTKbuNJj55TgWs9q6OKk2Wc_k4ym-T6Kg_wB8-LnVdqGVHKzNeac6',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv'
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuANUHd-hiIzaKYIMqu70oZR4F4ijExjKG7K7fn3cp_dC9sJrArKQldMSPEr77DER1Gxcbhk37DcYaSSWGozjCOKWTSC7fC-IKYGscELa6hcCep1FB5jIFkcOXtzpdp4LKarv8h0eetjd8NjB4-IZ_ECq9pTnbESNKaJfyz82pxlRoQOuYbOar9TUUy7RQIw3LB5z_erSf1kPBjcFdhOtSqml7nYTKbuNJj55TgWs9q6OKk2Wc_k4ym-T6Kg_wB8-LnVdqGVHKzNeac6'
     ],
-    rating: 4.7,
-    reviews: 98,
-    features: ['Mezcla Premium Lino/Algodón', 'Botones de madera natural', 'Cintura ajustable', 'Transpirable y liviano'],
+    rating: 4.8,
+    reviews: 412,
+    features: ['Titanium Case', 'Super Retina XDR Display', 'A17 Pro Chip', 'Triple Camera System'],
     inStock: true,
     createdAt: '2025-02-15',
-    colors: ['Verde Menta', 'Beige', 'Azul'],
-    sizes: ['3-6m', '6-12m', '1-2 años', '3-5 años']
+    colors: ['Titanio', 'Negro', 'Azul'],
+    sizes: ['128GB', '256GB', '512GB']
   },
   {
     id: 3,
-    name: 'Pijama Soft Nightbear',
-    category: 'pijamas',
-    price: 32.00,
-    originalPrice: 40.00,
-    description: 'Pijama cómoda de dos piezas con adorable estampado de ositos. Fabricado en algodón perchado ultra suave para las noches más tranquilas.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCO8fa5Js-erQgIwSew5ta542boru4zGVhnl_VCo06LiQqP2B9IRXInboYv6cW1Mdb9mbcy8vC0e789K422Fh1w1oN70Cz_mZeowj_9VFmHcj3es4COrP-omPb7x0ajPefFhpkKhzsLF2-VAiZlBWNDIj5SFjWvWdwTeNMRMovA6CI5foTRFaM9YOE7WASKg3TtUBoVh4CUQVyfYUmdcVNIioycFCj51MQxXJcVCEMjjOF_v9clWgi6KLcL1Dbij9HB2fci14b8x3NF',
+    name: 'Vista V2 Convertible Stroller',
+    category: 'baby_gear',
+    subcategory: 'Baby Gear',
+    brand: 'UPPAbaby',
+    price: 999.99,
+    originalPrice: null,
+    description: 'Full-size stroller with reversible seat and modular components that convert easily as your family grows.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBjeDetrF4pBrJzTvMCfORza0f9CWX5dS5uVD39Y2oN4bbc7qUZQ2XUaSsFZqgjP83fvpw02JMoiwHayDyFxCIUi76BWNykpVCxj9ch3O1x-4N9GE4aUzcVE7L3KkSR-9RfNoUZqSo-46n271udcgbEKOhQuhIzjM6f6Xq6L_EpyDBsHeVyW5wCltwUUALYSYbueKlzEohaySsViBYVZma6cjz4K3siHwKmj4kzpbwzwWL2nDe175r5zGgvxJ5XvUdBvjvhiRwQqeoH',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCO8fa5Js-erQgIwSew5ta542boru4zGVhnl_VCo06LiQqP2B9IRXInboYv6cW1Mdb9mbcy8vC0e789K422Fh1w1oN70Cz_mZeowj_9VFmHcj3es4COrP-omPb7x0ajPefFhpkKhzsLF2-VAiZlBWNDIj5SFjWvWdwTeNMRMovA6CI5foTRFaM9YOE7WASKg3TtUBoVh4CUQVyfYUmdcVNIioycFCj51MQxXJcVCEMjjOF_v9clWgi6KLcL1Dbij9HB2fci14b8x3NF'
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBjeDetrF4pBrJzTvMCfORza0f9CWX5dS5uVD39Y2oN4bbc7qUZQ2XUaSsFZqgjP83fvpw02JMoiwHayDyFxCIUi76BWNykpVCxj9ch3O1x-4N9GE4aUzcVE7L3KkSR-9RfNoUZqSo-46n271udcgbEKOhQuhIzjM6f6Xq6L_EpyDBsHeVyW5wCltwUUALYSYbueKlzEohaySsViBYVZma6cjz4K3siHwKmj4kzpbwzwWL2nDe175r5zGgvxJ5XvUdBvjvhiRwQqeoH'
     ],
-    rating: 4.8,
-    reviews: 215,
-    features: ['Algodón perchado premium', 'Estampado ecológico al agua', 'Puños acanalados', 'Corte relajado'],
+    rating: 5.0,
+    reviews: 84,
+    features: ['Convertible design', 'One-step fold', 'Includes bassinet', 'Reversible toddler seat'],
     inStock: true,
     createdAt: '2025-03-01',
-    colors: ['Azul Grisáceo', 'Rosa Pastel', 'Crema'],
-    sizes: ['6-12m', '1-2 años', '3-5 años']
+    colors: ['Gris', 'Negro', 'Verde'],
+    sizes: ['Única']
   },
   {
     id: 4,
-    name: 'Gorro Tejido Nube',
-    category: 'accesorios',
-    price: 18.50,
+    name: 'QuietComfort Ultra',
+    category: 'audio_gear',
+    subcategory: 'Audio Gear',
+    brand: 'Bose',
+    price: 429.00,
     originalPrice: null,
-    description: 'Sombrerito de punto tejido a mano en hilo de algodón hipoalergénico. Mantiene la cabeza de tu bebé abrigada con suavidad excepcional y estilo adorable.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCBIJ-epbEGKoBO-styIW847aqmbhTnWvUAYD_ahsV_QakvUStF68FGEJARiurvurmH1zeMpn819btd4HBlAuuOkfdvjO-2wtLoxpdS0NcWJ5hBCiy20LsNs533vovXOpgcsV3SgzTxVXYJL5N3TtuBJxfLlZ3cOKkzYlmhXb69fHTQRb7CCttEeMlhBwz_5yYyGFC8Y3_UgRhx1ocdeMLMmY38gAwMS6zJCndsDqYHM3S5CEJjs05EmuPs8J8iBvu9LWKEgL_oICRP',
+    description: 'World-class noise cancellation, breakthrough spatialized audio, and premium materials for luxurious comfort.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWm0ELDtAoiqqHwcqNmck7y6TlPoXc3xMxBlelPg5eh8UNC_OTekQJoxdcHnmVVm1yw0ZyQUwAckN3bS5IAXxDXhv_HEJ9daT2IWsSprR_JQ5KeHE5etnGgWC48N_xo50SU2lmAU4MtzdnidC6Vrt9WsGm45nZuWaJcvdS-kkbB5Uo7socGmlONFOBF3JM5SrJqLPOb9lWey-X6lGvK3IucOzU5rY7YA3Vs9aoB0EWanpHUVOVHMbvbW9u_NPAlGwLry2GdJQBTjzP',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCBIJ-epbEGKoBO-styIW847aqmbhTnWvUAYD_ahsV_QakvUStF68FGEJARiurvurmH1zeMpn819btd4HBlAuuOkfdvjO-2wtLoxpdS0NcWJ5hBCiy20LsNs533vovXOpgcsV3SgzTxVXYJL5N3TtuBJxfLlZ3cOKkzYlmhXb69fHTQRb7CCttEeMlhBwz_5yYyGFC8Y3_UgRhx1ocdeMLMmY38gAwMS6zJCndsDqYHM3S5CEJjs05EmuPs8J8iBvu9LWKEgL_oICRP'
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAWm0ELDtAoiqqHwcqNmck7y6TlPoXc3xMxBlelPg5eh8UNC_OTekQJoxdcHnmVVm1yw0ZyQUwAckN3bS5IAXxDXhv_HEJ9daT2IWsSprR_JQ5KeHE5etnGgWC48N_xo50SU2lmAU4MtzdnidC6Vrt9WsGm45nZuWaJcvdS-kkbB5Uo7socGmlONFOBF3JM5SrJqLPOb9lWey-X6lGvK3IucOzU5rY7YA3Vs9aoB0EWanpHUVOVHMbvbW9u_NPAlGwLry2GdJQBTjzP'
     ],
-    rating: 4.9,
-    reviews: 62,
-    features: ['Tejido a mano artesanal', '100% Hilo de Algodón', 'Muy flexible y suave', 'Hipoalergénico'],
+    rating: 4.7,
+    reviews: 312,
+    features: ['Active Noise Cancelling', 'Spatial Audio', 'Up to 24 Hours Battery', 'CustomTune Technology'],
     inStock: true,
     createdAt: '2025-01-20',
-    colors: ['Blanco Nube', 'Rosa', 'Amarillo'],
-    sizes: ['RN', '0-3m', '3-6m']
+    colors: ['Plata', 'Negro'],
+    sizes: ['Única']
   },
   {
     id: 5,
-    name: 'Patucos de Piel Suave',
-    category: 'calzado',
-    price: 55.00,
+    name: 'Series 9 Ultra Watch',
+    category: 'wearables',
+    subcategory: 'Wearables',
+    brand: 'Apple',
+    price: 799.00,
     originalPrice: null,
-    description: 'Zapatitos artesanales de cuero natural extra suave en tono beige. Suela flexible que respeta el crecimiento natural del pie de tu bebé.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBP3bnCuyNLmzv1POZX2jy7UzrC_XSHNdPK3SxSlBRI0UeGRFdVwEYWlSwuJ2jX-0WS8-nzx9503-KFFeWDGAkaOJ7icuvQ-rBo-_ZSx8IY6RHBZtdav_pxGf_NnWXSIl0FbS_J3JHrOA_7U3xDX4CrVFlSjy4nw_A5RiDv-mqpZGtcPaRpNUa8VvmMpxsIZbmbnh3UBIUNjv5_1QnFucx6GgA1tq5RhRxI9KIaifMFnlVjFMWUg6Xl0ImXuFMWE86mGZfa2niSFf8Z',
+    description: 'The most capable and rugged wearable yet, designed for endurance, exploration, and heavy workout tracking.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD4bflcb2x_29ogysKf-LZhCD1mXwt0D5agvQhDL1AfXMLZjuCjtldMwvBLyaRVjkG9fXiD-olCMrppqizKhW5c8il4mT0mOAGp_cr1kGU9fLP7myJSh5LPgES1hiDNt9dZ60zHb3nCgkcPPARYfImsWNRU_kfYDwlt28_prFhT5aTg4aUW4In6m1t9U81EH20ynl54_XotdP206UhXCHMDqF8ifyHGPyfrl1P85dzCiNz6gLbf7lq1tuXVZtaN2OmhTmglwpK_VaVr',
     images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBP3bnCuyNLmzv1POZX2jy7UzrC_XSHNdPK3SxSlBRI0UeGRFdVwEYWlSwuJ2jX-0WS8-nzx9503-KFFeWDGAkaOJ7icuvQ-rBo-_ZSx8IY6RHBZtdav_pxGf_NnWXSIl0FbS_J3JHrOA_7U3xDX4CrVFlSjy4nw_A5RiDv-mqpZGtcPaRpNUa8VvmMpxsIZbmbnh3UBIUNjv5_1QnFucx6GgA1tq5RhRxI9KIaifMFnlVjFMWUg6Xl0ImXuFMWE86mGZfa2niSFf8Z'
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuD4bflcb2x_29ogysKf-LZhCD1mXwt0D5agvQhDL1AfXMLZjuCjtldMwvBLyaRVjkG9fXiD-olCMrppqizKhW5c8il4mT0mOAGp_cr1kGU9fLP7myJSh5LPgES1hiDNt9dZ60zHb3nCgkcPPARYfImsWNRU_kfYDwlt28_prFhT5aTg4aUW4In6m1t9U81EH20ynl54_XotdP206UhXCHMDqF8ifyHGPyfrl1P85dzCiNz6gLbf7lq1tuXVZtaN2OmhTmglwpK_VaVr'
     ],
-    rating: 4.6,
-    reviews: 73,
-    features: ['Cuero natural curtido ecológico', 'Suela de gamuza antideslizante', 'Elástico de ajuste suave', 'Hecho a mano'],
+    rating: 4.9,
+    reviews: 184,
+    features: ['Rugged Titanium Case', 'Up to 36 Hours Battery', 'Always-On Retina Display', 'Advanced Health Sensors'],
     inStock: true,
     createdAt: '2025-02-10',
-    colors: ['Beige', 'Gris', 'Café'],
-    sizes: ['0-3m', '3-6m', '6-12m']
+    colors: ['Plata', 'Negro'],
+    sizes: ['49mm']
   },
   {
     id: 6,
-    name: 'Set Marinerito Algodón',
-    category: 'conjuntos',
-    price: 42.90,
-    originalPrice: null,
-    description: 'Conjunto marinero de dos piezas. Incluye un body de manga corta de algodón de rayas azules y pantalón liso a juego con cordón decorativo.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBvYM_yi7YHwTgpjN5kHBM1cmlyhH82mxczNISgiiejHdSWB-j743wbEzCH0W-B4RP4LK0BQ33AeZXm9Qe594iJI1QssTXjag1UgFM2xbwGuyaYikzNp7oQHecJMUqTExERvf4nTGZIuii7VHIW38lJ-gxgEFMwYTQYOlmtAFPAEZO2fjY5YA2vePp8u00SvL293cCkUQs8lyj-883FoDLwckpPjlQlKrkw_xFYsj5cRTlYgCFky-8O93yJTeOtOHaiTJg4PCVthjNT',
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuBvYM_yi7YHwTgpjN5kHBM1cmlyhH82mxczNISgiiejHdSWB-j743wbEzCH0W-B4RP4LK0BQ33AeZXm9Qe594iJI1QssTXjag1UgFM2xbwGuyaYikzNp7oQHecJMUqTExERvf4nTGZIuii7VHIW38lJ-gxgEFMwYTQYOlmtAFPAEZO2fjY5YA2vePp8u00SvL293cCkUQs8lyj-883FoDLwckpPjlQlKrkw_xFYsj5cRTlYgCFky-8O93yJTeOtOHaiTJg4PCVthjNT'
-    ],
-    rating: 4.8,
-    reviews: 112,
-    features: ['100% Algodón Pima', 'Ajuste cómodo y elástico', 'Tinte libre de metales pesados', 'Estilo clásico náutico'],
-    inStock: true,
-    createdAt: '2025-03-05',
-    colors: ['Rayas Azules', 'Blanco', 'Gris'],
-    sizes: ['RN', '0-3m', '3-6m', '6-12m']
-  },
-  {
-    id: 7,
-    name: 'Pack x3 Baberos Silicona',
-    category: 'accesorios',
-    price: 29.00,
-    originalPrice: null,
-    description: 'Set de 3 baberos de silicona grado alimenticio impermeables en colores pasteles muy estéticos. Con amplio bolsillo receptor y cierre de cuello ajustable.',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCOJk5Jh0HhslAdrhi75n2wB2EwaiSPFUghLHNoMjBmzBUeLpj1gz5dk_DJ-S5ZrAl6uLs0R-DJ9fXaW3IrpI1DrIRE8INuYzbc87UanuPzKx2WKEm04dEuzmdPhTRrvywR9ESn-shIN7q6rXbrkxwB7-4BUQLZ7-1MDH9PP3NVYD6YjjKMdCaPDR5zfywoSL3CM0wvRizIr-dXn57vXgdI1qY7ssVCFX5OC8zzK9BZUVSwvh3U5RXCTsDDn_Mo-RXNNTyIMgge-CCw',
-    images: [
-      'https://lh3.googleusercontent.com/aida-public/AB6AXuCOJk5Jh0HhslAdrhi75n2wB2EwaiSPFUghLHNoMjBmzBUeLpj1gz5dk_DJ-S5ZrAl6uLs0R-DJ9fXaW3IrpI1DrIRE8INuYzbc87UanuPzKx2WKEm04dEuzmdPhTRrvywR9ESn-shIN7q6rXbrkxwB7-4BUQLZ7-1MDH9PP3NVYD6YjjKMdCaPDR5zfywoSL3CM0wvRizIr-dXn57vXgdI1qY7ssVCFX5OC8zzK9BZUVSwvh3U5RXCTsDDn_Mo-RXNNTyIMgge-CCw'
-    ],
-    rating: 4.7,
-    reviews: 182,
-    features: ['100% Silicona Grado Alimenticio', 'Libre de BPA, PVC y Ftalatos', 'Impermeable y fácil de limpiar', 'Cuello ajustable de 4 posiciones'],
-    inStock: true,
-    createdAt: '2025-04-01',
-    colors: ['Mix Pastel', 'Verde', 'Rosa', 'Gris'],
-    sizes: ['Ajustable']
-  },
-  {
-    id: 8,
-    name: 'Conjunto Lana Merino',
-    category: 'recien_nacidos',
-    price: 95.00,
-    originalPrice: null,
-    description: 'Conjunto de invierno tejido en lana Merino superfina de primera calidad. Máximo confort térmico para el recién nacido con total transpirabilidad y suavidad sin picazón.',
+    name: 'SNOO Smart Sleeper',
+    category: 'smart_tech',
+    subcategory: 'Smart Sleep',
+    brand: 'Nanit',
+    price: 1355.00,
+    originalPrice: 1595.00,
+    description: 'Responsive bassinet that automatically soothes babies with sound and motion. Promotes healthier sleep cycles.',
     image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC5r88sGeoasfN61uQYqXgRp-C7_WgUFh3Qg14Hlz7lUhXFFl9EFGCezRybU2qOi0Jkgo1W0GXpVjl8ZFguP_RLiuok8mBsdY726ir893DfWoSroZsvEZXf0CXN0RfnF5fYLZSTs-5WYC6uPD5ibx5zgdodaCNvXf-pghslAASj7HGVlsro0TE3RiMVMpOi5SXnxDDbU8itURPAqrgSk3aZ-fwKRZv1YrAHTnJphw36pL-jB77Z2OGhu9MPWTvrugdbveUI-vue29uF',
     images: [
       'https://lh3.googleusercontent.com/aida-public/AB6AXuC5r88sGeoasfN61uQYqXgRp-C7_WgUFh3Qg14Hlz7lUhXFFl9EFGCezRybU2qOi0Jkgo1W0GXpVjl8ZFguP_RLiuok8mBsdY726ir893DfWoSroZsvEZXf0CXN0RfnF5fYLZSTs-5WYC6uPD5ibx5zgdodaCNvXf-pghslAASj7HGVlsro0TE3RiMVMpOi5SXnxDDbU8itURPAqrgSk3aZ-fwKRZv1YrAHTnJphw36pL-jB77Z2OGhu9MPWTvrugdbveUI-vue29uF'
     ],
+    rating: 4.6,
+    reviews: 215,
+    features: ['Responsive Motion & Sound', 'Safe Swaddle Integration', 'Mobile App Insights', 'White Noise Machine'],
+    inStock: true,
+    createdAt: '2025-03-05',
+    colors: ['Marrón'],
+    sizes: ['Única']
+  },
+  {
+    id: 7,
+    name: 'Portabebé Ergónomico Cloud',
+    category: 'baby_gear',
+    subcategory: 'Cuidado y Amor',
+    brand: 'UPPAbaby',
+    price: 89.00,
+    originalPrice: null,
+    description: 'Portabebé ergonómico diseñado para mantener la postura natural del bebé mientras distribuye el peso equitativamente entre hombros y cadera.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuBqbh_zsZQxMx0fNfMgkI2y5ywarUsyuRMcflrJWqxjwoYPtGE5DiNR_yIwf29QzL1mJSyW48CbfMjq2m-d1NCyXMzJbbs4V2IC5zYvLG_w8nWfBx8VkHPYqdPzNqVdVUBmv-DbuAmpJwYBoqeMpyORPHKx_5L1eUP1cERnq1JYuTHg8nNCS9uFBGA45z48tUE328OpbwYKfZzKiS-LD-B7JK-D0SwK7t4Uwl9eGS9Edq9GZHTvqti7RVPjoYCV04L6YpnXdlf6SEpv'
+    ],
     rating: 4.9,
-    reviews: 43,
-    features: ['100% Lana Merino superfina', 'Regulador térmico natural', 'Hipoalergénico y antibacteriano', 'Diseño de punto clásico'],
+    reviews: 324,
+    features: ['Soporte lumbar ajustable', 'Múltiples posiciones de porteo', 'Tejido respirable', 'Recomendado por institutos de displasia'],
+    inStock: true,
+    createdAt: '2025-04-01',
+    colors: ['Gris Oscuro', 'Verde Menta'],
+    sizes: ['Ajustable']
+  },
+  {
+    id: 8,
+    name: 'Cuna Nórdica Madera Clara',
+    category: 'baby_gear',
+    subcategory: 'Nursery',
+    brand: 'Nanit',
+    price: 349.00,
+    originalPrice: null,
+    description: 'Cuna artesanal de madera clara sustentable. Combina líneas nórdicas modernas y se convierte fácilmente en cama de transición.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAvg0CpquvOUQe-vcuJ3url2KYmvVjyd9HeAe29b2mKXWBawN88LkELkuXGz5LK6PI1HmjrL31N4tGsjb_NAx9cJxyQco2EMcoczoMBnaM2kcTttOVYqe7tfiN3Ev7i0a4McmLsfsk40buzxyxWxnUlJNbwYRZYyhYUnB4CfVQJSxW46vkSMdKX9f89X9OTnofYcf5kFUTMHKWXTxlWJ4gl9j12wFTzFGeKRIX7Y8imV0GmTZQlG6trJbXZ5xuRf0OQY5TKrP2koIxP',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAvg0CpquvOUQe-vcuJ3url2KYmvVjyd9HeAe29b2mKXWBawN88LkELkuXGz5LK6PI1HmjrL31N4tGsjb_NAx9cJxyQco2EMcoczoMBnaM2kcTttOVYqe7tfiN3Ev7i0a4McmLsfsk40buzxyxWxnUlJNbwYRZYyhYUnB4CfVQJSxW46vkSMdKX9f89X9OTnofYcf5kFUTMHKWXTxlWJ4gl9j12wFTzFGeKRIX7Y8imV0GmTZQlG6trJbXZ5xuRf0OQY5TKrP2koIxP'
+    ],
+    rating: 5.0,
+    reviews: 156,
+    features: ['Madera de pino macizo', 'Pinturas atóxicas certificadas', 'Somier ajustable en altura', 'Kit de conversión incluido'],
     inStock: true,
     createdAt: '2025-01-05',
-    colors: ['Gris Oscuro', 'Beige', 'Azul'],
-    sizes: ['RN', '0-3m', '3-6m']
+    colors: ['Madera Natural'],
+    sizes: ['140x70 cm']
+  },
+  {
+    id: 9,
+    name: 'Vigila Bebés HD Smart',
+    category: 'smart_tech',
+    subcategory: 'Baby Tech',
+    brand: 'Nanit',
+    price: 120.00,
+    originalPrice: null,
+    description: 'Cámara inteligente de alta definición con visión nocturna infrarroja, audio bidireccional y alertas automáticas de llanto directas a tu celular.',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF',
+    images: [
+      'https://lh3.googleusercontent.com/aida-public/AB6AXuAXTsCtKrup_x_OnxDIA_LP7XECb7KrsxbHFBrYBX-blUJGPcn6GrE2mqxbMFhsYQw6GAHV-7fUVNaJ2dY7TJqNMAze1fmFusDTkRUE33dpv3nT8v0rrIrkWIB-QRrLBHn8hrOWeLvIHH8pVHcBl1b4taf9q20h1y05HE7GyeJO4ktZnTtak0ysdsvKzGxBmTcHpDSPmHJDZSSOVp5nrbkLuu1B-oXmqrMIgJZu9KRRRbKYUbGdB7hDqOw_aCwvloFpHJVd7idQT_uF'
+    ],
+    rating: 4.8,
+    reviews: 210,
+    features: ['Resolución HD 1080p', 'Visión nocturna automática', 'Sensor de temperatura', 'Comunicación de doble vía'],
+    inStock: true,
+    createdAt: '2025-02-05',
+    colors: ['Blanco'],
+    sizes: ['Única']
+  },
+  {
+    id: 10,
+    name: 'Netflix Premium',
+    category: 'streaming',
+    subcategory: 'Streaming Media',
+    brand: 'Netflix',
+    price: 4.99,
+    originalPrice: null,
+    description: '4K Ultra HD + HDR Profiles available. Watch up to 4 screens simultaneously without ads.',
+    image: 'netflix',
+    images: ['netflix'],
+    rating: 4.9,
+    reviews: 1260,
+    features: ['Ultra HD 4K Resolution', 'HDR / Dolby Vision', '4 Simultaneous Screens', 'No interruptions'],
+    inStock: true,
+    createdAt: '2025-01-01',
+    colors: ['Digital'],
+    sizes: ['1 Mes']
+  },
+  {
+    id: 11,
+    name: 'Disney+ Access',
+    category: 'streaming',
+    subcategory: 'Streaming Media',
+    brand: 'Disney',
+    price: 3.50,
+    originalPrice: null,
+    description: 'IMAX Enhanced & GroupWatch ready. Stream Marvel, Star Wars, Pixar and Disney favorites.',
+    image: 'disney',
+    images: ['disney'],
+    rating: 4.8,
+    reviews: 840,
+    features: ['IMAX Enhanced', '4K Streaming Support', 'GroupWatch feature', 'Unlimited Downloads'],
+    inStock: true,
+    createdAt: '2025-01-01',
+    colors: ['Digital'],
+    sizes: ['1 Mes']
+  },
+  {
+    id: 12,
+    name: 'HBO Max Gold',
+    category: 'streaming',
+    subcategory: 'Streaming Media',
+    brand: 'HBO',
+    price: 4.25,
+    originalPrice: null,
+    description: 'Access to all Warner Bros releases day-and-date. High definition streaming for movies and series.',
+    image: 'hbo',
+    images: ['hbo'],
+    rating: 4.8,
+    reviews: 950,
+    features: ['Warner Bros Releases', '4K UHD Support', 'Offline Downloads', 'Profiles for Kids'],
+    inStock: true,
+    createdAt: '2025-01-01',
+    colors: ['Digital'],
+    sizes: ['1 Mes']
+  },
+  {
+    id: 13,
+    name: 'Spotify Premium',
+    category: 'streaming',
+    subcategory: 'Streaming Media',
+    brand: 'Bose',
+    price: 2.99,
+    originalPrice: null,
+    description: 'Offline listening & zero ad interruptions. Stream high-fidelity audio worldwide.',
+    image: 'spotify',
+    images: ['spotify'],
+    rating: 4.9,
+    reviews: 1480,
+    features: ['No Ad Interruptions', 'Offline Listening', 'High-Fidelity Audio', 'Unlimited Skips'],
+    inStock: true,
+    createdAt: '2025-01-01',
+    colors: ['Digital'],
+    sizes: ['1 Mes']
+  },
+  {
+    id: 14,
+    name: 'Suscripción Baby Play+',
+    category: 'streaming',
+    subcategory: 'Streaming Media',
+    brand: 'Nanit',
+    price: 12.99,
+    originalPrice: null,
+    description: 'Premium subscription for interactive learning, educational baby entertainment, and nursery lullabies.',
+    image: 'babyplay',
+    images: ['babyplay'],
+    rating: 4.9,
+    reviews: 88,
+    features: ['Educational content', 'Ad-free baby songs', 'Cognitive development guides', '24/7 Lullaby Radio'],
+    inStock: true,
+    createdAt: '2025-02-01',
+    colors: ['Digital'],
+    sizes: ['1 Mes']
   }
 ];
 
@@ -163,7 +295,11 @@ export const getProductById = (id) => {
 };
 
 export const getFeaturedProducts = () => {
-  return Promise.resolve(products.slice(0, 4));
+  // Let's feature the baby carriers, crib, monitor, and subscriber cards
+  // Specifically: Portabebé (7), Cuna (8), Vigila bebés (9), and Baby Play (14)
+  const featuredIds = [7, 8, 9, 14];
+  const featured = products.filter(p => featuredIds.includes(p.id));
+  return Promise.resolve(featured);
 };
 
 export const getRelatedProducts = (category, currentId) => {
