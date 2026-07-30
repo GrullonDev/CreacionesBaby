@@ -21,27 +21,31 @@ export default function Pagination({ page, totalPages, onPageChange }) {
   }
 
   return (
-    <div className="pagination">
+    <div className="flex items-center justify-center gap-2 mt-8">
+      {/* Prev */}
       <button
-        className="pagination-btn"
         disabled={page === 1}
         onClick={() => onPageChange(page - 1)}
-        aria-label="Previous page"
+        className="flex items-center justify-center p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:border-primary hover:text-primary transition-colors disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600 cursor-pointer"
+        aria-label="Página anterior"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="15 18 9 12 15 6" />
-        </svg>
+        <span className="material-symbols-outlined text-base">chevron_left</span>
       </button>
 
+      {/* Pages */}
       {pages.map((p, i) =>
         p === '...' ? (
-          <span key={`ellipsis-${i}`} className="pagination-ellipsis">...</span>
+          <span key={`ellipsis-${i}`} className="text-slate-400 px-2">...</span>
         ) : (
           <button
             key={p}
-            className={`pagination-btn ${p === page ? 'active' : ''}`}
             onClick={() => onPageChange(p)}
-            aria-label={`Page ${p}`}
+            className={`flex items-center justify-center min-w-10 h-10 px-3 rounded-lg border font-bold text-sm transition-colors cursor-pointer ${
+              p === page
+                ? 'bg-primary border-primary text-white'
+                : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary'
+            }`}
+            aria-label={`Página ${p}`}
             aria-current={p === page ? 'page' : undefined}
           >
             {p}
@@ -49,15 +53,14 @@ export default function Pagination({ page, totalPages, onPageChange }) {
         )
       )}
 
+      {/* Next */}
       <button
-        className="pagination-btn"
         disabled={page === totalPages}
         onClick={() => onPageChange(page + 1)}
-        aria-label="Next page"
+        className="flex items-center justify-center p-2 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:border-primary hover:text-primary transition-colors disabled:opacity-40 disabled:hover:border-slate-200 disabled:hover:text-slate-600 cursor-pointer"
+        aria-label="Página siguiente"
       >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="9 18 15 12 9 6" />
-        </svg>
+        <span className="material-symbols-outlined text-base">chevron_right</span>
       </button>
     </div>
   )

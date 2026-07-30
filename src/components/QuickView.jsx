@@ -20,62 +20,121 @@ export default function QuickView({ product, onClose }) {
 
   if (!product) return null
 
+  const wishlisted = isWishlisted(product.id)
+  const discountPercent = product.originalPrice 
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+    : 0
+
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <button className="modal-close" onClick={onClose} aria-label="Close">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-fade-in"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-white dark:bg-slate-900 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl relative animate-slide-up border border-slate-100 dark:border-slate-800"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close Button */}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 transition-colors flex items-center justify-center cursor-pointer"
+          aria-label="Cerrar"
+        >
+          <span className="material-symbols-outlined text-xl">close</span>
         </button>
 
-        <div className="quickview-layout">
-          <div className="quickview-image">
-            <img src={product.image} alt={product.name} />
-            {product.originalPrice && <span className="sale-badge large">Sale</span>}
-            {!product.inStock && <span className="out-of-stock-badge">Out of Stock</span>}
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          {/* Product Image Column */}
+          <div className="relative aspect-[4/5] bg-slate-50 dark:bg-slate-950 flex items-center justify-center">
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              className="w-full h-full object-cover" 
+            />
+
+            {/* Badges */}
+            {discountPercent > 0 ? (
+              <span className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                -{discountPercent}% OFF
+              </span>
+            ) : product.createdAt && new Date(product.createdAt) > new Date('2025-01-01') ? (
+              <span className="absolute top-4 left-4 bg-primary text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                Nuevo
+              </span>
+            ) : null}
+
+            {!product.inStock && (
+              <span className="absolute top-4 left-4 bg-slate-700 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider">
+                Agotado
+              </span>
+            )}
           </div>
 
-          <div className="quickview-info">
-            <span className="product-category">{product.category}</span>
-            <h2>{product.name}</h2>
-            <Rating value={product.rating} reviews={product.reviews} />
+          {/* Product Details Column */}
+          <div className="p-8 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div>
+                <span className="text-xs text-primary font-extrabold uppercase tracking-widest block mb-1">
+                  {product.category}
+                </span>
+                <h2 className="text-2xl font-extrabold text-slate-950 dark:text-white leading-tight">
+                  {product.name}
+                </h2>
+              </div>
 
-            <div className="product-pricing">
-              {product.originalPrice ? (
-                <>
-                  <span className="current-price large">${product.price.toFixed(2)}</span>
-                  <span className="original-price large">${product.originalPrice.toFixed(2)}</span>
-                </>
-              ) : (
-                <span className="current-price large">${product.price.toFixed(2)}</span>
-              )}
+              <div className="flex items-center gap-2">
+                <Rating value={product.rating} reviews={product.reviews} />
+              </div>
+
+              {/* Price */}
+              <div className="flex items-baseline gap-3">
+                <span className="text-3xl font-extrabold text-primary">${product.price.toFixed(2)}</span>
+                {product.originalPrice && (
+                  <span className="text-sm text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                )}
+              </div>
+
+              <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-800 pt-4 h-32 overflow-y-auto">
+                {product.description}
+              </p>
             </div>
 
-            <p className="product-description">{product.description}</p>
+            <div className="mt-8 space-y-3">
+              <div className="flex gap-3">
+                {/* Add to Cart */}
+                <button
+                  onClick={() => addItem(product)}
+                  disabled={!product.inStock}
+                  className="flex-1 bg-primary text-white py-3 px-6 rounded-xl font-bold hover:bg-opacity-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer text-sm"
+                >
+                  <span className="material-symbols-outlined text-lg">shopping_cart</span>
+                  {product.inStock ? 'Añadir al carrito' : 'Sin stock'}
+                </button>
 
-            <div className="quickview-actions">
-              <button
-                className="btn btn-primary btn-lg"
-                onClick={() => addItem(product)}
-                disabled={!product.inStock}
+                {/* Favorite */}
+                <button
+                  onClick={() => toggleItem(product)}
+                  className={`p-3 rounded-xl border transition-all flex items-center justify-center cursor-pointer ${
+                    wishlisted
+                      ? 'bg-primary border-primary text-white'
+                      : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-primary hover:text-primary'
+                  }`}
+                  aria-label={wishlisted ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+                >
+                  <span className={`material-symbols-outlined text-xl ${wishlisted ? 'fill-current' : ''}`}>
+                    favorite
+                  </span>
+                </button>
+              </div>
+
+              <Link 
+                to={`/product/${product.id}`} 
+                onClick={onClose}
+                className="w-full border border-slate-200 dark:border-slate-800 hover:border-primary hover:text-primary py-3 rounded-xl font-semibold transition-colors flex items-center justify-center text-slate-700 dark:text-slate-300 text-xs cursor-pointer"
               >
-                {product.inStock ? 'Add to Cart' : 'Unavailable'}
-              </button>
-              <button
-                className={`btn btn-icon ${isWishlisted(product.id) ? 'wishlisted' : ''}`}
-                onClick={() => toggleItem(product)}
-                aria-label={isWishlisted(product.id) ? 'Remove from wishlist' : 'Add to wishlist'}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill={isWishlisted(product.id) ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                </svg>
-              </button>
+                Ver todos los detalles
+              </Link>
             </div>
-
-            <Link to={`/product/${product.id}`} className="btn btn-ghost btn-full" onClick={onClose}>
-              View Full Details
-            </Link>
           </div>
         </div>
       </div>

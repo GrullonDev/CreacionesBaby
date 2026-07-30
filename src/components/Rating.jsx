@@ -1,13 +1,25 @@
 export default function Rating({ value, reviews }) {
   return (
-    <div className="rating">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <svg key={star} width="14" height="14" viewBox="0 0 24 24" fill={star <= Math.round(value) ? '#f59e0b' : '#d1d5db'}>
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
-      <span className="rating-value">{value}</span>
-      {reviews && <span className="reviews-count">({reviews})</span>}
+    <div className="flex items-center gap-1">
+      <div className="flex items-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span 
+            key={star} 
+            className={`material-symbols-outlined text-sm ${
+              star <= Math.round(value) 
+                ? 'text-amber-400 fill-current' 
+                : 'text-slate-200 dark:text-slate-700'
+            }`}
+            style={{ fontVariationSettings: "'FILL' 1" }}
+          >
+            star
+          </span>
+        ))}
+      </div>
+      <span className="text-xs font-bold text-slate-700 dark:text-slate-300 ml-1">{value}</span>
+      {reviews && (
+        <span className="text-[10px] text-slate-400">({reviews} opiniones)</span>
+      )}
     </div>
   )
 }

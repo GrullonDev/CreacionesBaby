@@ -6,47 +6,57 @@ export default function ImageCarousel({ images, alt }) {
   if (!images || images.length === 0) return null
 
   return (
-    <div className="carousel">
-      <div className="carousel-main">
+    <div className="flex flex-col gap-4">
+      {/* Main Image Container */}
+      <div className="relative aspect-[4/5] bg-slate-50 dark:bg-slate-950 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800">
         <img
           src={images[selected]}
-          alt={`${alt} — view ${selected + 1}`}
-          className="carousel-image"
+          alt={`${alt} — vista ${selected + 1}`}
+          className="w-full h-full object-cover transition-all duration-300"
           draggable={false}
         />
         {images.length > 1 && (
           <>
+            {/* Prev Arrow */}
             <button
-              className="carousel-arrow left"
+              className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center justify-center p-2 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur shadow-md hover:bg-primary hover:text-white transition-colors cursor-pointer text-slate-700 dark:text-slate-300"
               onClick={() => setSelected((s) => (s === 0 ? images.length - 1 : s - 1))}
-              aria-label="Previous image"
+              aria-label="Imagen anterior"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="15 18 9 12 15 6" />
-              </svg>
+              <span className="material-symbols-outlined text-lg">chevron_left</span>
             </button>
+            {/* Next Arrow */}
             <button
-              className="carousel-arrow right"
+              className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center p-2 rounded-full bg-white/80 dark:bg-slate-900/80 backdrop-blur shadow-md hover:bg-primary hover:text-white transition-colors cursor-pointer text-slate-700 dark:text-slate-300"
               onClick={() => setSelected((s) => (s === images.length - 1 ? 0 : s + 1))}
-              aria-label="Next image"
+              aria-label="Imagen siguiente"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <polyline points="9 18 15 12 9 6" />
-              </svg>
+              <span className="material-symbols-outlined text-lg">chevron_right</span>
             </button>
           </>
         )}
       </div>
+
+      {/* Thumbnails Row */}
       {images.length > 1 && (
-        <div className="carousel-thumbnails">
+        <div className="flex gap-3 overflow-x-auto py-1">
           {images.map((src, i) => (
             <button
               key={i}
-              className={`carousel-thumb ${i === selected ? 'active' : ''}`}
+              className={`aspect-square w-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                i === selected 
+                  ? 'border-primary shadow-sm scale-95' 
+                  : 'border-slate-100 dark:border-slate-800 hover:border-primary/50'
+              }`}
               onClick={() => setSelected(i)}
-              aria-label={`View image ${i + 1}`}
+              aria-label={`Ver imagen ${i + 1}`}
             >
-              <img src={src} alt={`${alt} thumbnail ${i + 1}`} loading="lazy" />
+              <img 
+                src={src} 
+                alt={`${alt} miniatura ${i + 1}`} 
+                loading="lazy" 
+                className="w-full h-full object-cover"
+              />
             </button>
           ))}
         </div>
