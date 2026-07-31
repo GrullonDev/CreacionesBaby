@@ -1,3 +1,8 @@
+function brandIcon(letter, bg, fg = '#ffffff') {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500"><rect width="400" height="500" fill="${bg}"/><text x="50%" y="54%" text-anchor="middle" dominant-baseline="middle" font-family="Arial, sans-serif" font-size="160" font-weight="900" fill="${fg}">${letter}</text></svg>`
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`
+}
+
 const products = [
   {
     id: 1,
@@ -206,8 +211,8 @@ const products = [
     price: 4.99,
     originalPrice: null,
     description: '4K Ultra HD + HDR Profiles available. Watch up to 4 screens simultaneously without ads.',
-    image: 'netflix',
-    images: ['netflix'],
+    image: brandIcon('N', '#dc2626'),
+    images: [brandIcon('N', '#dc2626')],
     rating: 4.9,
     reviews: 1260,
     features: ['Ultra HD 4K Resolution', 'HDR / Dolby Vision', '4 Simultaneous Screens', 'No interruptions'],
@@ -226,8 +231,8 @@ const products = [
     price: 3.50,
     originalPrice: null,
     description: 'IMAX Enhanced & GroupWatch ready. Stream Marvel, Star Wars, Pixar and Disney favorites.',
-    image: 'disney',
-    images: ['disney'],
+    image: brandIcon('D', '#0284c7'),
+    images: [brandIcon('D', '#0284c7')],
     rating: 4.8,
     reviews: 840,
     features: ['IMAX Enhanced', '4K Streaming Support', 'GroupWatch feature', 'Unlimited Downloads'],
@@ -246,8 +251,8 @@ const products = [
     price: 4.25,
     originalPrice: null,
     description: 'Access to all Warner Bros releases day-and-date. High definition streaming for movies and series.',
-    image: 'hbo',
-    images: ['hbo'],
+    image: brandIcon('H', '#7c3aed'),
+    images: [brandIcon('H', '#7c3aed')],
     rating: 4.8,
     reviews: 950,
     features: ['Warner Bros Releases', '4K UHD Support', 'Offline Downloads', 'Profiles for Kids'],
@@ -262,12 +267,12 @@ const products = [
     name: 'Spotify Premium',
     category: 'streaming',
     subcategory: 'Streaming Media',
-    brand: 'Bose',
+    brand: 'Spotify',
     price: 2.99,
     originalPrice: null,
     description: 'Offline listening & zero ad interruptions. Stream high-fidelity audio worldwide.',
-    image: 'spotify',
-    images: ['spotify'],
+    image: brandIcon('S', '#10b981', '#052e16'),
+    images: [brandIcon('S', '#10b981', '#052e16')],
     rating: 4.9,
     reviews: 1480,
     features: ['No Ad Interruptions', 'Offline Listening', 'High-Fidelity Audio', 'Unlimited Skips'],
@@ -286,8 +291,8 @@ const products = [
     price: 12.99,
     originalPrice: null,
     description: 'Premium subscription for interactive learning, educational baby entertainment, and nursery lullabies.',
-    image: 'babyplay',
-    images: ['babyplay'],
+    image: brandIcon('B', '#5c4c3e'),
+    images: [brandIcon('B', '#5c4c3e')],
     rating: 4.9,
     reviews: 88,
     features: ['Educational content', 'Ad-free baby songs', 'Cognitive development guides', '24/7 Lullaby Radio'],
