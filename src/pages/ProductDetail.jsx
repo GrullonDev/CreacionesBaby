@@ -50,7 +50,7 @@ export default function ProductDetail() {
   const [reviews, setReviews] = useState([])
   const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, comment: '' })
 
-  usePageTitle(product ? product.name : 'Producto')
+  usePageTitle(product ? product.name : 'Producto', product?.description)
 
   useEffect(() => {
     setLoading(true)
