@@ -6,6 +6,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import ReferralWelcome from './components/ReferralWelcome'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import WhatsAppButton from './components/WhatsAppButton'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
@@ -36,6 +37,7 @@ export default function App() {
               </Routes>
             </ErrorBoundary>
             <Footer />
+            <WhatsAppButton />
           </WishlistProvider>
         </CartProvider>
       </ToastProvider>
