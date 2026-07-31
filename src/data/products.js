@@ -16,6 +16,7 @@ const products = [
     reviews: 124,
     features: ['HD 1080p Video', 'Sleep Tracking', 'Breathing Motion Monitoring', 'Hipoalergénico'],
     inStock: true,
+    stock: 3,
     createdAt: '2025-01-10',
     colors: ['Blanco'],
     sizes: ['Única']
@@ -37,6 +38,7 @@ const products = [
     reviews: 412,
     features: ['Titanium Case', 'Super Retina XDR Display', 'A17 Pro Chip', 'Triple Camera System'],
     inStock: true,
+    stock: 12,
     createdAt: '2025-02-15',
     colors: ['Titanio', 'Negro', 'Azul'],
     sizes: ['128GB', '256GB', '512GB']
@@ -58,6 +60,7 @@ const products = [
     reviews: 84,
     features: ['Convertible design', 'One-step fold', 'Includes bassinet', 'Reversible toddler seat'],
     inStock: true,
+    stock: 2,
     createdAt: '2025-03-01',
     colors: ['Gris', 'Negro', 'Verde'],
     sizes: ['Única']
@@ -79,6 +82,7 @@ const products = [
     reviews: 312,
     features: ['Active Noise Cancelling', 'Spatial Audio', 'Up to 24 Hours Battery', 'CustomTune Technology'],
     inStock: true,
+    stock: 8,
     createdAt: '2025-01-20',
     colors: ['Plata', 'Negro'],
     sizes: ['Única']
@@ -100,6 +104,7 @@ const products = [
     reviews: 184,
     features: ['Rugged Titanium Case', 'Up to 36 Hours Battery', 'Always-On Retina Display', 'Advanced Health Sensors'],
     inStock: true,
+    stock: 5,
     createdAt: '2025-02-10',
     colors: ['Plata', 'Negro'],
     sizes: ['49mm']
@@ -121,6 +126,7 @@ const products = [
     reviews: 215,
     features: ['Responsive Motion & Sound', 'Safe Swaddle Integration', 'Mobile App Insights', 'White Noise Machine'],
     inStock: true,
+    stock: 4,
     createdAt: '2025-03-05',
     colors: ['Marrón'],
     sizes: ['Única']
@@ -142,6 +148,7 @@ const products = [
     reviews: 324,
     features: ['Soporte lumbar ajustable', 'Múltiples posiciones de porteo', 'Tejido respirable', 'Recomendado por institutos de displasia'],
     inStock: true,
+    stock: 15,
     createdAt: '2025-04-01',
     colors: ['Gris Oscuro', 'Verde Menta'],
     sizes: ['Ajustable']
@@ -163,6 +170,7 @@ const products = [
     reviews: 156,
     features: ['Madera de pino macizo', 'Pinturas atóxicas certificadas', 'Somier ajustable en altura', 'Kit de conversión incluido'],
     inStock: true,
+    stock: 1,
     createdAt: '2025-01-05',
     colors: ['Madera Natural'],
     sizes: ['140x70 cm']
@@ -184,6 +192,7 @@ const products = [
     reviews: 210,
     features: ['Resolución HD 1080p', 'Visión nocturna automática', 'Sensor de temperatura', 'Comunicación de doble vía'],
     inStock: true,
+    stock: 7,
     createdAt: '2025-02-05',
     colors: ['Blanco'],
     sizes: ['Única']
@@ -203,6 +212,7 @@ const products = [
     reviews: 1260,
     features: ['Ultra HD 4K Resolution', 'HDR / Dolby Vision', '4 Simultaneous Screens', 'No interruptions'],
     inStock: true,
+    stock: 999,
     createdAt: '2025-01-01',
     colors: ['Digital'],
     sizes: ['1 Mes']
@@ -222,6 +232,7 @@ const products = [
     reviews: 840,
     features: ['IMAX Enhanced', '4K Streaming Support', 'GroupWatch feature', 'Unlimited Downloads'],
     inStock: true,
+    stock: 999,
     createdAt: '2025-01-01',
     colors: ['Digital'],
     sizes: ['1 Mes']
@@ -241,6 +252,7 @@ const products = [
     reviews: 950,
     features: ['Warner Bros Releases', '4K UHD Support', 'Offline Downloads', 'Profiles for Kids'],
     inStock: true,
+    stock: 999,
     createdAt: '2025-01-01',
     colors: ['Digital'],
     sizes: ['1 Mes']
@@ -260,6 +272,7 @@ const products = [
     reviews: 1480,
     features: ['No Ad Interruptions', 'Offline Listening', 'High-Fidelity Audio', 'Unlimited Skips'],
     inStock: true,
+    stock: 999,
     createdAt: '2025-01-01',
     colors: ['Digital'],
     sizes: ['1 Mes']
@@ -279,7 +292,8 @@ const products = [
     reviews: 88,
     features: ['Educational content', 'Ad-free baby songs', 'Cognitive development guides', '24/7 Lullaby Radio'],
     inStock: true,
-    createdAt: '2025-02-01',
+    stock: 999,
+    createdAt: '2025-01-01',
     colors: ['Digital'],
     sizes: ['1 Mes']
   }

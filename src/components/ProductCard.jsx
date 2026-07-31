@@ -81,6 +81,11 @@ export default function ProductCard({ product, onQuickView }) {
             Agotado
           </span>
         )}
+        {product.inStock && product.stock !== undefined && product.stock <= 5 && (
+          <span className="absolute top-3 right-12 bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+            ¡{product.stock} restantes!
+          </span>
+        )}
 
         {/* Wishlist Button */}
         <button 
