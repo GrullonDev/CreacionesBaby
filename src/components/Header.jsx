@@ -1,12 +1,30 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
+
+function getInitialTheme() {
+  try {
+    const stored = localStorage.getItem('creaciones_theme')
+    if (stored) return stored === 'dark'
+    return window.matchMedia('(prefers-color-scheme: dark)').matches
+  } catch {
+    return false
+  }
+}
 
 export default function Header() {
   const { itemCount } = useCart()
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
+  const [dark, setDark] = useState(getInitialTheme)
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', dark)
+    localStorage.setItem('creaciones_theme', dark ? 'dark' : 'light')
+  }, [dark])
+
+  const toggleDark = () => setDark((d) => !d)
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
@@ -94,6 +112,17 @@ export default function Header() {
                 className="bg-transparent border-none outline-none text-xs w-44 placeholder-slate-400 text-slate-800 dark:text-slate-200 p-0"
               />
             </form>
+
+            {/* Dark Mode Toggle */}
+            <button
+              onClick={toggleDark}
+              className="p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900 cursor-pointer"
+              aria-label={dark ? 'Modo claro' : 'Modo oscuro'}
+            >
+              <span className="material-symbols-outlined text-xl">
+                {dark ? 'light_mode' : 'dark_mode'}
+              </span>
+            </button>
 
             {/* Cart Icon */}
             <Link 
