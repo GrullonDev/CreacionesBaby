@@ -2,6 +2,12 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 
+const PROMO_CODES = {
+  BABY10: { discount: 0.1, label: '10% de descuento' },
+  FREESHIP: { discount: 0, freeShipping: true, label: 'Envío gratis' },
+  BABY20: { discount: 0.2, label: '20% de descuento' },
+}
+
 function saveOrder(order) {
   try {
     const existing = JSON.parse(localStorage.getItem('creaciones_orders') || '[]')
@@ -23,21 +29,49 @@ export default function Checkout() {
     zip: '',
   })
 
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('')
+  const [appliedPromo, setAppliedPromo] = useState(null)
+  const [couponError, setCouponError] = useState('')
+
   const handleChange = (e) => {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }))
+  }
+
+  const handleApplyCoupon = () => {
+    const code = couponCode.trim().toUpperCase()
+    if (!code) return
+    const promo = PROMO_CODES[code]
+    if (promo) {
+      setAppliedPromo({ ...promo, code })
+      setCouponError('')
+    } else {
+      setAppliedPromo(null)
+      setCouponError('Código inválido. Prueba con BABY10, BABY20 o FREESHIP.')
+    }
+  }
+
+  const handleRemoveCoupon = () => {
+    setAppliedPromo(null)
+    setCouponCode('')
+    setCouponError('')
   }
 
   const handleSubmit = (e) => {
     e.preventDefault()
     const id = 'ORD-' + Date.now().toString(36).toUpperCase()
-    const shippingCost = subtotal >= 50 ? 0 : 5.99
-    const total = subtotal + shippingCost
+    const baseShipping = subtotal >= 50 ? 0 : 5.99
+    const shippingCost = appliedPromo?.freeShipping ? 0 : baseShipping
+    const discountAmount = appliedPromo?.discount ? subtotal * appliedPromo.discount : 0
+    const total = subtotal - discountAmount + shippingCost
     
     saveOrder({
       id,
       date: new Date().toISOString(),
       items: [...items],
       subtotal,
+      discount: discountAmount,
+      promoCode: appliedPromo?.code || null,
       shipping: shippingCost,
       total,
       address: { name: form.name, email: form.email, address: form.address, city: form.city, zip: form.zip },
@@ -51,6 +85,11 @@ export default function Checkout() {
       navigate('/orders')
     }, 3000)
   }
+
+  const baseShipping = subtotal >= 50 ? 0 : 5.99
+  const shippingCost = appliedPromo?.freeShipping ? 0 : baseShipping
+  const discountAmount = appliedPromo?.discount ? subtotal * appliedPromo.discount : 0
+  const total = subtotal - discountAmount + shippingCost
 
   if (items.length === 0 && !submitted) {
     return (
@@ -98,9 +137,6 @@ export default function Checkout() {
       </main>
     )
   }
-
-  const shippingCost = subtotal >= 50 ? 0 : 5.99
-  const total = subtotal + shippingCost
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
@@ -227,11 +263,55 @@ export default function Checkout() {
             ))}
           </div>
 
+          {/* Coupon Code */}
+          <div className="border-t border-slate-100 dark:border-slate-800 pt-6 space-y-2">
+            <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">¿Tienes un cupón?</h4>
+            {appliedPromo ? (
+              <div className="flex items-center justify-between bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/50 rounded-xl p-3">
+                <div className="flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-500 text-sm">redeem</span>
+                  <div>
+                    <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">{appliedPromo.code}</span>
+                    <p className="text-[10px] text-emerald-600 dark:text-emerald-400">{appliedPromo.label}</p>
+                  </div>
+                </div>
+                <button onClick={handleRemoveCoupon} className="text-xs text-slate-400 hover:text-red-500 cursor-pointer">
+                  <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
+                  placeholder="Ingresa código"
+                  className="flex-grow bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleApplyCoupon}
+                  className="bg-primary hover:bg-opacity-95 text-white px-4 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                >
+                  Aplicar
+                </button>
+              </div>
+            )}
+            {couponError && <p className="text-[10px] text-red-500 font-semibold">{couponError}</p>}
+          </div>
+
           <div className="space-y-3 text-xs border-t border-slate-100 dark:border-slate-800 pt-6">
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>Subtotal</span>
               <span className="font-bold text-slate-950 dark:text-white">${subtotal.toFixed(2)}</span>
             </div>
+            {discountAmount > 0 && (
+              <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+                <span>Descuento ({appliedPromo?.code})</span>
+                <span className="font-bold">-${discountAmount.toFixed(2)}</span>
+              </div>
+            )}
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>Envío</span>
               {shippingCost === 0 ? (
