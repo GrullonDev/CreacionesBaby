@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
+import { fetchProducts } from '../services/productService'
+import { getRecentSearches, addRecentSearch } from '../utils/recentSearches'
 
 function getInitialTheme() {
   try {
@@ -21,6 +23,13 @@ export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [dark, setDark] = useState(getInitialTheme)
   const [cartBump, setCartBump] = useState(false)
+  const [allProducts, setAllProducts] = useState([])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [recentSearches, setRecentSearches] = useState(getRecentSearches)
+
+  useEffect(() => {
+    fetchProducts().then(setAllProducts)
+  }, [])
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
@@ -36,12 +45,26 @@ export default function Header() {
 
   const toggleDark = () => setDark((d) => !d)
 
+  const runSearch = (term) => {
+    const value = term.trim()
+    if (!value) return
+    addRecentSearch(value)
+    setRecentSearches(getRecentSearches())
+    setSearchQuery('')
+    setShowSuggestions(false)
+    navigate(`/products?search=${encodeURIComponent(value)}`)
+  }
+
   const handleSearchSubmit = (e) => {
     e.preventDefault()
-    if (searchQuery.trim()) {
-      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`)
-    }
+    runSearch(searchQuery)
   }
+
+  const productSuggestions = searchQuery.trim()
+    ? allProducts
+        .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
+        .slice(0, 5)
+    : []
 
   const isHome = pathname === '/'
   const isBaby = search.includes('category=baby_gear')
@@ -112,16 +135,63 @@ export default function Header() {
           {/* Search Bar & Icons */}
           <div className="flex items-center gap-4">
             {/* Search Input */}
-            <form onSubmit={handleSearchSubmit} className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-900 rounded-lg px-3 py-1.5 border border-transparent focus-within:border-slate-200 dark:focus-within:border-slate-800 transition-all">
-              <span className="material-symbols-outlined text-slate-400 text-sm mr-2 select-none">search</span>
-              <input 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar para tu bebé..." 
-                className="bg-transparent border-none outline-none text-xs w-44 placeholder-slate-400 text-slate-800 dark:text-slate-200 p-0"
-              />
-            </form>
+            <div className="relative hidden sm:block">
+              <form onSubmit={handleSearchSubmit} className="flex items-center bg-slate-100 dark:bg-slate-900 rounded-lg px-3 py-1.5 border border-transparent focus-within:border-slate-200 dark:focus-within:border-slate-800 transition-all">
+                <span className="material-symbols-outlined text-slate-400 text-sm mr-2 select-none">search</span>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => setShowSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
+                  placeholder="Buscar para tu bebé..."
+                  className="bg-transparent border-none outline-none text-xs w-44 placeholder-slate-400 text-slate-800 dark:text-slate-200 p-0"
+                />
+              </form>
+
+              {showSuggestions && (productSuggestions.length > 0 || (!searchQuery.trim() && recentSearches.length > 0)) && (
+                <div className="absolute top-full mt-2 left-0 w-72 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-xl shadow-lg overflow-hidden text-left z-50">
+                  {searchQuery.trim() ? (
+                    <ul>
+                      {productSuggestions.map((p) => (
+                        <li key={p.id}>
+                          <Link
+                            to={`/product/${p.id}`}
+                            onMouseDown={() => {
+                              addRecentSearch(p.name)
+                              setRecentSearches(getRecentSearches())
+                              setSearchQuery('')
+                            }}
+                            className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+                          >
+                            <img src={p.image} alt="" className="size-8 rounded-md object-cover flex-shrink-0" />
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 line-clamp-1">{p.name}</span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <ul>
+                      <li className="px-4 pt-3 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                        Búsquedas recientes
+                      </li>
+                      {recentSearches.map((term) => (
+                        <li key={term}>
+                          <button
+                            type="button"
+                            onMouseDown={() => runSearch(term)}
+                            className="w-full flex items-center gap-3 px-4 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors text-left cursor-pointer"
+                          >
+                            <span className="material-symbols-outlined text-sm text-slate-400">history</span>
+                            <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">{term}</span>
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Dark Mode Toggle */}
             <button
