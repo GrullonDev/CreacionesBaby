@@ -2,11 +2,14 @@ import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
+import { useToast } from '../context/useToast'
 import Rating from './Rating'
+import { formatCurrency } from '../utils/currency'
 
 export default function QuickView({ product, onClose }) {
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
+  const { addToast } = useToast()
 
   useEffect(() => {
     document.body.style.overflow = 'hidden'
@@ -24,6 +27,22 @@ export default function QuickView({ product, onClose }) {
   const discountPercent = product.originalPrice 
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
     : 0
+
+  const handleAdd = () => {
+    if (!product.inStock) return
+    addItem(product)
+    addToast(`${product.name} añadido al carrito`)
+  }
+
+  const handleWishlist = () => {
+    toggleItem(product)
+    addToast(
+      wishlisted
+        ? `${product.name} eliminado de favoritos`
+        : `${product.name} añadido a favoritos`,
+      wishlisted ? 'info' : 'success'
+    )
+  }
 
   return (
     <div 
@@ -88,9 +107,9 @@ export default function QuickView({ product, onClose }) {
 
               {/* Price */}
               <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-extrabold text-primary">${product.price.toFixed(2)}</span>
+                <span className="text-3xl font-extrabold text-primary">{formatCurrency(product.price)}</span>
                 {product.originalPrice && (
-                  <span className="text-sm text-slate-400 line-through">${product.originalPrice.toFixed(2)}</span>
+                  <span className="text-sm text-slate-400 line-through">{formatCurrency(product.originalPrice)}</span>
                 )}
               </div>
 
@@ -103,7 +122,7 @@ export default function QuickView({ product, onClose }) {
               <div className="flex gap-3">
                 {/* Add to Cart */}
                 <button
-                  onClick={() => addItem(product)}
+                  onClick={handleAdd}
                   disabled={!product.inStock}
                   className="flex-1 bg-primary text-white py-3 px-6 rounded-xl font-bold hover:bg-opacity-95 transition-all shadow-lg shadow-primary/20 disabled:opacity-50 disabled:shadow-none flex items-center justify-center gap-2 cursor-pointer text-sm"
                 >
@@ -113,7 +132,7 @@ export default function QuickView({ product, onClose }) {
 
                 {/* Favorite */}
                 <button
-                  onClick={() => toggleItem(product)}
+                  onClick={handleWishlist}
                   className={`p-3 rounded-xl border transition-all flex items-center justify-center cursor-pointer ${
                     wishlisted
                       ? 'bg-primary border-primary text-white'

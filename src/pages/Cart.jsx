@@ -1,11 +1,32 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
+import { useToast } from '../context/useToast'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { formatCurrency } from '../utils/currency'
+
+const AVAILABLE_PROMOS = [
+  { code: 'BABY10', label: '10% de descuento' },
+  { code: 'BABY20', label: '20% de descuento' },
+  { code: 'FREESHIP', label: 'Envío gratis' },
+]
 
 export default function Cart() {
+  usePageTitle('Carrito de compras')
   const { items, removeItem, updateQuantity, clearCart, itemCount, subtotal } = useCart()
+  const { addToast } = useToast()
 
   const shippingCost = subtotal >= 50 ? 0 : 5.99
   const total = subtotal + shippingCost
+
+  const handleClearCart = () => {
+    clearCart()
+    addToast('Carrito vaciado', 'info')
+  }
+
+  const handleRemoveItem = (item) => {
+    removeItem(item.id)
+    addToast(`${item.name} eliminado del carrito`, 'info')
+  }
 
   if (items.length === 0) {
     return (
@@ -40,7 +61,7 @@ export default function Cart() {
           <p className="text-xs text-slate-400 mt-1">Tienes {itemCount} prenda{itemCount !== 1 ? 's' : ''} en tu bolsa</p>
         </div>
         <button 
-          onClick={clearCart}
+          onClick={handleClearCart}
           className="text-xs text-slate-500 hover:text-red-500 font-bold transition-colors cursor-pointer flex items-center gap-1"
         >
           <span className="material-symbols-outlined text-sm">delete</span>
@@ -114,7 +135,7 @@ export default function Cart() {
 
                   {/* Remove Button */}
                   <button 
-                    onClick={() => removeItem(item.id)}
+                    onClick={() => handleRemoveItem(item)}
                     className="p-1 text-slate-400 hover:text-red-500 transition-colors flex items-center justify-center cursor-pointer"
                     title="Eliminar artículo"
                   >
@@ -126,10 +147,10 @@ export default function Cart() {
               {/* Item Total Price */}
               <div className="text-right flex-shrink-0 self-start pt-1 hidden sm:block">
                 <span className="font-extrabold text-slate-900 dark:text-white text-base block">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {formatCurrency(item.price * item.quantity)}
                 </span>
                 <span className="text-[10px] text-slate-400">
-                  ${item.price.toFixed(2)} c/u
+                  {formatCurrency(item.price)} c/u
                 </span>
               </div>
             </div>
@@ -145,7 +166,7 @@ export default function Cart() {
           <div className="space-y-3 text-sm">
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>Subtotal</span>
-              <span className="font-bold text-slate-900 dark:text-white">${subtotal.toFixed(2)}</span>
+              <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(subtotal)}</span>
             </div>
 
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
@@ -153,19 +174,19 @@ export default function Cart() {
               {shippingCost === 0 ? (
                 <span className="font-bold text-primary uppercase text-xs">Gratis</span>
               ) : (
-                <span className="font-bold text-slate-900 dark:text-white">${shippingCost.toFixed(2)}</span>
+                <span className="font-bold text-slate-900 dark:text-white">{formatCurrency(shippingCost)}</span>
               )}
             </div>
 
             {shippingCost > 0 && (
               <div className="bg-primary/5 p-3 rounded-lg text-[10px] text-primary leading-normal">
-                Agrega <strong>${(50 - subtotal).toFixed(2)}</strong> más en productos para obtener <strong>Envío Gratis</strong>.
+                Agrega <strong>{formatCurrency(50 - subtotal)}</strong> más en productos para obtener <strong>Envío Gratis</strong>.
               </div>
             )}
 
             <div className="flex justify-between items-baseline pt-4 border-t border-slate-100 dark:border-slate-800 text-base">
               <span className="font-bold text-slate-900 dark:text-white">Total</span>
-              <span className="font-black text-2xl text-primary">${total.toFixed(2)}</span>
+              <span className="font-black text-2xl text-primary">{formatCurrency(total)}</span>
             </div>
           </div>
 
@@ -183,6 +204,28 @@ export default function Cart() {
             >
               Continuar Comprando
             </Link>
+          </div>
+
+          {/* Available Promo Codes */}
+          <div className="border-t border-slate-100 dark:border-slate-800 pt-5">
+            <h4 className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-sm text-primary">redeem</span>
+              Códigos activos
+            </h4>
+            <div className="grid grid-cols-3 gap-2">
+              {AVAILABLE_PROMOS.map((promo) => (
+                <div
+                  key={promo.code}
+                  className="border border-dashed border-primary/40 bg-primary/5 rounded-lg p-2 text-center"
+                >
+                  <span className="block text-[11px] font-black text-primary tracking-wider">{promo.code}</span>
+                  <span className="block text-[9px] text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">{promo.label}</span>
+                </div>
+              ))}
+            </div>
+            <p className="text-[10px] text-slate-400 mt-2.5 leading-relaxed">
+              Aplica tu código en el checkout para obtener tu descuento.
+            </p>
           </div>
         </div>
       </div>

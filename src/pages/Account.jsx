@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom'
 import { useWishlist } from '../context/useWishlist'
+import ReferralBanner from '../components/ReferralBanner'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { formatCurrency } from '../utils/currency'
 
 export default function Account() {
+  usePageTitle('Mi cuenta')
   const { items: wishlist, clearWishlist } = useWishlist()
 
   return (
@@ -58,7 +62,7 @@ export default function Account() {
                       {item.name}
                     </Link>
                     <span className="font-extrabold text-primary text-xs mt-1 block">
-                      ${item.price.toFixed(2)}
+                      {formatCurrency(item.price)}
                     </span>
                   </div>
                 </div>
@@ -90,6 +94,11 @@ export default function Account() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Referral Program */}
+      <div className="mt-10">
+        <ReferralBanner customerName="" />
       </div>
     </main>
   )

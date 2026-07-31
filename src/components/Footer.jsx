@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import NewsletterForm from './NewsletterForm'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -57,19 +58,7 @@ export default function Footer() {
             <p className="text-xs text-slate-500">
               Inscríbete para recibir ofertas exclusivas y novedades sobre el cuidado de tu bebé.
             </p>
-            <form onSubmit={(e) => e.preventDefault()} className="flex gap-2">
-              <input 
-                type="email" 
-                placeholder="Tu correo electrónico" 
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs p-2.5 flex-grow focus:outline-none focus:ring-1 focus:ring-primary text-slate-800 dark:text-slate-200"
-              />
-              <button 
-                type="submit" 
-                className="bg-primary hover:bg-opacity-95 text-white text-xs font-bold px-4 rounded-lg transition-all cursor-pointer"
-              >
-                Join
-              </button>
-            </form>
+            <NewsletterForm compact />
           </div>
         </div>
 

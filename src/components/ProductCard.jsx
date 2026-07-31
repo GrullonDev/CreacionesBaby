@@ -1,12 +1,35 @@
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
+import { useToast } from '../context/useToast'
+import { formatCurrency } from '../utils/currency'
 
 export default function ProductCard({ product, onQuickView }) {
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
+  const { addToast } = useToast()
 
   const wishlisted = isWishlisted(product.id)
+
+  const handleAdd = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!product.inStock) return
+    addItem(product)
+    addToast(`${product.name} añadido al carrito`)
+  }
+
+  const handleWishlist = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    toggleItem(product)
+    addToast(
+      wishlisted
+        ? `${product.name} eliminado de favoritos`
+        : `${product.name} añadido a favoritos`,
+      wishlisted ? 'info' : 'success'
+    )
+  }
   
   // Calculate discount percentage if original price exists
   const discountPercent = product.originalPrice 
@@ -89,7 +112,7 @@ export default function ProductCard({ product, onQuickView }) {
 
         {/* Wishlist Button */}
         <button 
-          onClick={() => toggleItem(product)}
+          onClick={handleWishlist}
           className={`absolute top-3 right-3 rounded-full size-8 transition-colors flex items-center justify-center border ${
             wishlisted 
               ? 'bg-red-500 border-red-500 text-white' 
@@ -143,17 +166,17 @@ export default function ProductCard({ product, onQuickView }) {
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 dark:border-slate-800">
           <div className="flex flex-col">
             <span className="text-slate-800 dark:text-slate-100 font-extrabold text-sm sm:text-base">
-              ${product.price.toFixed(2)}
+              {formatCurrency(product.price)}
             </span>
             {product.originalPrice && (
               <span className="text-[10px] text-slate-400 line-through">
-                ${product.originalPrice.toFixed(2)}
+                {formatCurrency(product.originalPrice)}
               </span>
             )}
           </div>
 
           <button 
-            onClick={() => addItem(product)}
+            onClick={handleAdd}
             disabled={!product.inStock}
             className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 ${theme.btnBg}`}
           >

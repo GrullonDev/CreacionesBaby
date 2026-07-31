@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { formatCurrency } from '../utils/currency'
 
 function loadOrders() {
   try {
@@ -10,6 +12,7 @@ function loadOrders() {
 }
 
 export default function Orders() {
+  usePageTitle('Mis pedidos')
   const [orders, setOrders] = useState([])
 
   useEffect(() => {
@@ -24,7 +27,7 @@ export default function Orders() {
           <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white">Mis Pedidos</h1>
           <p className="text-xs text-slate-400 mt-1">Historial de compras y seguimiento de envíos</p>
         </div>
-        <Link 
+        <Link
           to="/products"
           className="text-xs text-primary font-bold hover:underline flex items-center gap-1"
         >
@@ -44,8 +47,8 @@ export default function Orders() {
               Cuando realices tu primera compra en nuestra tienda, podrás realizar el seguimiento aquí.
             </p>
           </div>
-          <Link 
-            to="/products" 
+          <Link
+            to="/products"
             className="inline-block bg-primary hover:bg-opacity-95 text-white font-bold py-3 px-8 rounded-xl text-xs transition-all shadow-md shadow-primary/20"
           >
             Ver Productos
@@ -54,8 +57,8 @@ export default function Orders() {
       ) : (
         <div className="space-y-6 max-w-4xl mx-auto">
           {orders.toReversed().map((order, i) => (
-            <div 
-              key={order.id || i} 
+            <div
+              key={order.id || i}
               className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
               {/* Order Card Header */}
@@ -65,19 +68,19 @@ export default function Orders() {
                     Pedido #{order.id}
                   </span>
                   <span className="text-[10px] text-slate-400 mt-0.5 block">
-                    {new Date(order.date).toLocaleDateString('es-ES', { 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric', 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
+                    {new Date(order.date).toLocaleDateString('es-ES', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit'
                     })}
                   </span>
                 </div>
                 <div className="text-right">
                   <span className="text-[10px] text-slate-400 block uppercase tracking-wider font-bold">Total Pagado</span>
                   <span className="font-black text-primary text-lg sm:text-xl block">
-                    ${order.total.toFixed(2)}
+                    {formatCurrency(order.total)}
                   </span>
                 </div>
               </div>
@@ -104,7 +107,7 @@ export default function Orders() {
                       </div>
                     </div>
                     <span className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white self-center whitespace-nowrap">
-                      ${(item.price * item.quantity).toFixed(2)}
+                      {formatCurrency(item.price * item.quantity)}
                     </span>
                   </div>
                 ))}

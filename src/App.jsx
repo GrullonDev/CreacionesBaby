@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
+import { ToastProvider } from './context/ToastContext'
+import ReferralWelcome from './components/ReferralWelcome'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -15,22 +17,25 @@ import Streaming from './pages/Streaming'
 export default function App() {
   return (
     <BrowserRouter>
-      <CartProvider>
-        <WishlistProvider>
-          <Header />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/product/:id" element={<ProductDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/streaming" element={<Streaming />} />
-          </Routes>
-          <Footer />
-        </WishlistProvider>
-      </CartProvider>
+      <ToastProvider>
+        <CartProvider>
+          <WishlistProvider>
+            <ReferralWelcome />
+            <Header />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/streaming" element={<Streaming />} />
+            </Routes>
+            <Footer />
+          </WishlistProvider>
+        </CartProvider>
+      </ToastProvider>
     </BrowserRouter>
   )
 }

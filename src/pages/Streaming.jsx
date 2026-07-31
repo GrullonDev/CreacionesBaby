@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
+import { useToast } from '../context/useToast'
 import { fetchProducts } from '../services/productService'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { formatCurrency } from '../utils/currency'
 
 export default function Streaming() {
+  usePageTitle('Streaming Premium')
   const { addItem } = useCart()
+  const { addToast } = useToast()
   const [streamingItems, setStreamingItems] = useState([])
 
   useEffect(() => {
@@ -15,6 +20,11 @@ export default function Streaming() {
   }, [])
 
   // Dynamic branding colors for subscription cards
+  const handleAdd = (item) => {
+    addItem(item)
+    addToast(`${item.name} añadido al carrito`)
+  }
+
   const getSubTheme = (brand) => {
     switch (brand.toLowerCase()) {
       case 'netflix':
@@ -171,12 +181,12 @@ export default function Streaming() {
 
                     <div className="flex items-center justify-between mt-4">
                       <div className="flex items-baseline">
-                        <span className="text-white font-black text-lg">${item.price.toFixed(2)}</span>
+                        <span className="text-white font-black text-lg">{formatCurrency(item.price)}</span>
                         <span className="text-slate-500 text-[10px] ml-0.5">/month</span>
                       </div>
 
                       <button
-                        onClick={() => addItem(item)}
+                        onClick={() => handleAdd(item)}
                         className={`size-9 rounded-full flex items-center justify-center cursor-pointer transition-transform group-hover:scale-105 ${subTheme.cartBg}`}
                         title="Add to cart"
                       >

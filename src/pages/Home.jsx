@@ -2,9 +2,13 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
+import NewsletterForm from '../components/NewsletterForm'
 import { fetchFeaturedProducts } from '../services/productService'
+import { testimonials, storeStats } from '../data/testimonials'
+import { usePageTitle } from '../hooks/usePageTitle'
 
 export default function Home() {
+  usePageTitle(null)
   const [featured, setFeatured] = useState([])
   const [quickViewProduct, setQuickViewProduct] = useState(null)
 
@@ -152,6 +156,69 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Trust Stats Bar */}
+      <section className="py-14 bg-[#5c4c3e] dark:bg-slate-950">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+            {storeStats.map((stat) => (
+              <div key={stat.label} className="space-y-1">
+                <p className="text-3xl sm:text-4xl font-black text-white">{stat.value}</p>
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-rose-100/80">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <span className="inline-block px-3 py-1 text-[10px] font-bold tracking-widest text-[#5c4c3e] dark:text-rose-200 uppercase bg-[#5c4c3e]/10 rounded-full mb-4">
+              Testimonios reales
+            </span>
+            <h2 className="text-3xl font-extrabold text-[#5c4c3e] dark:text-white">Familias que confían en nosotros</h2>
+            <p className="text-xs text-slate-400 mt-2 uppercase tracking-widest font-bold">Miles de bebés felices, miles de historias</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {testimonials.map((t) => (
+              <figure
+                key={t.id}
+                className="bg-[#fdf6f5] dark:bg-slate-950 border border-rose-100/60 dark:border-slate-800 rounded-2xl p-6 text-left flex flex-col gap-4 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex gap-0.5">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span
+                      key={star}
+                      className="material-symbols-outlined text-amber-400 text-sm"
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      star
+                    </span>
+                  ))}
+                </div>
+                <blockquote className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed flex-grow">
+                  “{t.text}”
+                </blockquote>
+                <figcaption className="flex items-center gap-3 pt-3 border-t border-rose-100/60 dark:border-slate-800">
+                  <div className="size-9 rounded-full bg-[#5c4c3e] text-white flex items-center justify-center font-extrabold text-xs flex-shrink-0">
+                    {t.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-bold text-xs text-[#5c4c3e] dark:text-white">{t.name}</p>
+                    <p className="text-[10px] text-slate-400 truncate">{t.role}</p>
+                  </div>
+                  <span className="ml-auto text-[9px] font-bold text-primary uppercase tracking-wider bg-primary/5 px-2 py-1 rounded-full whitespace-nowrap">
+                    {t.product}
+                  </span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Newsletter & Comunidad Section */}
       <section className="py-20 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,19 +233,7 @@ export default function Home() {
                 <p className="text-xs sm:text-sm text-stone-600 dark:text-slate-300 leading-relaxed max-w-md">
                   Únete a nuestra newsletter para recibir consejos de crianza, guías de estilo y promociones exclusivas para tu familia.
                 </p>
-                <form onSubmit={(e) => e.preventDefault()} className="flex flex-col sm:flex-row gap-3 max-w-md">
-                  <input 
-                    type="email" 
-                    placeholder="Tu correo electrónico" 
-                    className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-full px-5 py-3 text-xs w-full focus:outline-none focus:ring-2 focus:ring-[#5c4c3e] text-slate-800 dark:text-slate-200"
-                  />
-                  <button 
-                    type="submit" 
-                    className="bg-[#5c4c3e] hover:bg-[#4a3e35] text-white text-xs font-bold px-8 py-3 rounded-full transition-all shrink-0 cursor-pointer"
-                  >
-                    Suscribirse
-                  </button>
-                </form>
+                <NewsletterForm className="max-w-md" />
               </div>
 
               {/* Badges Info Side */}

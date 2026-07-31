@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
+import { useToast } from '../context/useToast'
+import ReferralBanner from '../components/ReferralBanner'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { getFriendDiscount, consumeFriendDiscount } from '../utils/referral'
+import { formatCurrency } from '../utils/currency'
 
 const PROMO_CODES = {
   BABY10: { discount: 0.1, label: '10% de descuento' },
@@ -17,7 +22,9 @@ function saveOrder(order) {
 }
 
 export default function Checkout() {
+  usePageTitle('Pago seguro')
   const { items, subtotal, clearCart } = useCart()
+  const { addToast } = useToast()
   const navigate = useNavigate()
   const [submitted, setSubmitted] = useState(false)
   const [orderId, setOrderId] = useState('')
@@ -45,9 +52,11 @@ export default function Checkout() {
     if (promo) {
       setAppliedPromo({ ...promo, code })
       setCouponError('')
+      addToast(`Cupón ${code} aplicado: ${promo.label}`)
     } else {
       setAppliedPromo(null)
       setCouponError('Código inválido. Prueba con BABY10, BABY20 o FREESHIP.')
+      addToast('Cupón no válido', 'error')
     }
   }
 
@@ -63,33 +72,37 @@ export default function Checkout() {
     const baseShipping = subtotal >= 50 ? 0 : 5.99
     const shippingCost = appliedPromo?.freeShipping ? 0 : baseShipping
     const discountAmount = appliedPromo?.discount ? subtotal * appliedPromo.discount : 0
-    const total = subtotal - discountAmount + shippingCost
-    
+    const friendDiscount = getFriendDiscount()
+    const total = Math.max(0, subtotal - discountAmount - friendDiscount + shippingCost)
+
     saveOrder({
       id,
       date: new Date().toISOString(),
       items: [...items],
       subtotal,
-      discount: discountAmount,
+      discount: discountAmount + friendDiscount,
       promoCode: appliedPromo?.code || null,
       shipping: shippingCost,
       total,
       address: { name: form.name, email: form.email, address: form.address, city: form.city, zip: form.zip },
     })
-    
+
+    if (friendDiscount > 0) consumeFriendDiscount()
+
     setOrderId(id)
     setSubmitted(true)
-    
+
     setTimeout(() => {
       clearCart()
       navigate('/orders')
-    }, 3000)
+    }, 4000)
   }
 
   const baseShipping = subtotal >= 50 ? 0 : 5.99
   const shippingCost = appliedPromo?.freeShipping ? 0 : baseShipping
   const discountAmount = appliedPromo?.discount ? subtotal * appliedPromo.discount : 0
-  const total = subtotal - discountAmount + shippingCost
+  const friendDiscount = getFriendDiscount()
+  const total = Math.max(0, subtotal - discountAmount - friendDiscount + shippingCost)
 
   if (items.length === 0 && !submitted) {
     return (
@@ -130,7 +143,13 @@ export default function Checkout() {
             <p>¡Muchas gracias, <strong>{form.name}</strong>! Tu pedido se está procesando.</p>
             <p>Hemos enviado un correo de confirmación con los detalles a: <strong className="text-slate-900 dark:text-slate-100">{form.email}</strong>.</p>
           </div>
-          <div className="text-[10px] text-slate-400 animate-pulse pt-4">
+
+          {/* Referral */}
+          <div className="pt-2 text-left">
+            <ReferralBanner customerName={form.name} />
+          </div>
+
+          <div className="text-[10px] text-slate-400 animate-pulse pt-2">
             Redireccionando a tu lista de pedidos...
           </div>
         </div>
@@ -233,7 +252,7 @@ export default function Checkout() {
                 className="w-full bg-primary hover:bg-opacity-95 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer text-sm"
               >
                 <span className="material-symbols-outlined text-lg">local_mall</span>
-                Finalizar Compra — ${total.toFixed(2)}
+                Finalizar Compra — {formatCurrency(total)}
               </button>
             </div>
           </form>
@@ -257,7 +276,7 @@ export default function Checkout() {
                   <p className="text-[10px] text-slate-400 mt-0.5">Cant: {item.quantity}</p>
                 </div>
                 <span className="font-bold text-xs text-slate-900 dark:text-white whitespace-nowrap">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  {formatCurrency(item.price * item.quantity)}
                 </span>
               </div>
             ))}
@@ -280,23 +299,37 @@ export default function Checkout() {
                 </button>
               </div>
             ) : (
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
-                  placeholder="Ingresa código"
-                  className="flex-grow bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={handleApplyCoupon}
-                  className="bg-primary hover:bg-opacity-95 text-white px-4 rounded-xl text-xs font-bold transition-all cursor-pointer"
-                >
-                  Aplicar
-                </button>
-              </div>
+              <>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
+                    placeholder="Ingresa código"
+                    className="flex-grow bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleApplyCoupon}
+                    className="bg-primary hover:bg-opacity-95 text-white px-4 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Aplicar
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                  {Object.keys(PROMO_CODES).map((code) => (
+                    <button
+                      key={code}
+                      type="button"
+                      onClick={() => setCouponCode(code)}
+                      className="px-2 py-0.5 rounded-md border border-dashed border-primary/40 bg-primary/5 text-[9px] font-black text-primary tracking-wider hover:bg-primary/10 transition-colors cursor-pointer"
+                    >
+                      {code}
+                    </button>
+                  ))}
+                </div>
+              </>
             )}
             {couponError && <p className="text-[10px] text-red-500 font-semibold">{couponError}</p>}
           </div>
@@ -304,12 +337,18 @@ export default function Checkout() {
           <div className="space-y-3 text-xs border-t border-slate-100 dark:border-slate-800 pt-6">
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
               <span>Subtotal</span>
-              <span className="font-bold text-slate-950 dark:text-white">${subtotal.toFixed(2)}</span>
+              <span className="font-bold text-slate-950 dark:text-white">{formatCurrency(subtotal)}</span>
             </div>
             {discountAmount > 0 && (
               <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
                 <span>Descuento ({appliedPromo?.code})</span>
-                <span className="font-bold">-${discountAmount.toFixed(2)}</span>
+                <span className="font-bold">-{formatCurrency(discountAmount)}</span>
+              </div>
+            )}
+            {friendDiscount > 0 && (
+              <div className="flex justify-between text-emerald-600 dark:text-emerald-400">
+                <span>Bono de invitación</span>
+                <span className="font-bold">-{formatCurrency(friendDiscount)}</span>
               </div>
             )}
             <div className="flex justify-between text-slate-600 dark:text-slate-400">
@@ -317,12 +356,12 @@ export default function Checkout() {
               {shippingCost === 0 ? (
                 <span className="font-bold text-primary uppercase text-[10px]">Gratis</span>
               ) : (
-                <span className="font-bold text-slate-950 dark:text-white">${shippingCost.toFixed(2)}</span>
+                <span className="font-bold text-slate-950 dark:text-white">{formatCurrency(shippingCost)}</span>
               )}
             </div>
             <div className="flex justify-between items-baseline pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
               <span className="font-bold text-slate-900 dark:text-white">Total</span>
-              <span className="font-black text-xl text-primary">${total.toFixed(2)}</span>
+              <span className="font-black text-xl text-primary">{formatCurrency(total)}</span>
             </div>
           </div>
         </div>

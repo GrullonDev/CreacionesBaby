@@ -2,10 +2,13 @@ import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
+import { useToast } from '../context/useToast'
+import { usePageTitle } from '../hooks/usePageTitle'
 import { fetchProductById, fetchRelatedProducts } from '../services/productService'
 import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
+import { formatCurrency } from '../utils/currency'
 
 function loadReviews(productId) {
   try {
@@ -31,6 +34,7 @@ export default function ProductDetail() {
   const { id } = useParams()
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
+  const { addToast } = useToast()
   
   const [product, setProduct] = useState(null)
   const [related, setRelated] = useState([])
@@ -45,6 +49,8 @@ export default function ProductDetail() {
   // Reviews
   const [reviews, setReviews] = useState([])
   const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, comment: '' })
+
+  usePageTitle(product ? product.name : 'Producto')
 
   useEffect(() => {
     setLoading(true)
@@ -82,7 +88,22 @@ export default function ProductDetail() {
       })
     }
     setAdded(true)
+    addToast(
+      quantity > 1
+        ? `${quantity} × ${product.name} añadidos al carrito`
+        : `${product.name} añadido al carrito`
+    )
     setTimeout(() => setAdded(false), 2000)
+  }
+
+  const handleWishlistToggle = () => {
+    toggleItem(product)
+    addToast(
+      wishlisted
+        ? `${product.name} eliminado de favoritos`
+        : `${product.name} añadido a favoritos`,
+      wishlisted ? 'info' : 'success'
+    )
   }
 
   if (loading) {
@@ -157,10 +178,10 @@ export default function ProductDetail() {
 
           {/* Pricing */}
           <div className="flex items-baseline gap-4 border-t border-b border-slate-100 dark:border-slate-800 py-4">
-            <span className="text-3xl font-black text-primary">${product.price.toFixed(2)}</span>
+            <span className="text-3xl font-black text-primary">{formatCurrency(product.price)}</span>
             {product.originalPrice && (
               <>
-                <span className="text-slate-400 line-through text-base">${product.originalPrice.toFixed(2)}</span>
+                <span className="text-slate-400 line-through text-base">{formatCurrency(product.originalPrice)}</span>
                 <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-950/20 px-2 py-0.5 rounded">
                   AHORRA {discountPercent}%
                 </span>
@@ -285,7 +306,7 @@ export default function ProductDetail() {
 
               {/* Favorite Button */}
               <button
-                onClick={() => toggleItem(product)}
+                onClick={handleWishlistToggle}
                 className={`h-12 w-12 rounded-xl border transition-all flex items-center justify-center cursor-pointer ${
                   wishlisted
                     ? 'bg-primary border-primary text-white'

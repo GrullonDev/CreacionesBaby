@@ -4,12 +4,14 @@ import ProductCard from '../components/ProductCard'
 import QuickView from '../components/QuickView'
 import Pagination from '../components/Pagination'
 import { fetchProducts } from '../services/productService'
+import { usePageTitle } from '../hooks/usePageTitle'
+import { formatCurrency } from '../utils/currency'
 
 const SORT_OPTIONS = [
-  { value: 'recommended', label: 'Recommended' },
-  { value: 'price-asc', label: 'Price: Low to High' },
-  { value: 'price-desc', label: 'Price: High to Low' },
-  { value: 'rating', label: 'Highest Rated' },
+  { value: 'recommended', label: 'Recomendados' },
+  { value: 'price-asc', label: 'Precio: Menor a Mayor' },
+  { value: 'price-desc', label: 'Precio: Mayor a Menor' },
+  { value: 'rating', label: 'Mejor Valorados' },
 ]
 
 const CATEGORY_MAPPING = [
@@ -39,6 +41,17 @@ export default function Products() {
   const categoryQuery = searchParams.get('category')
   const searchQuery = searchParams.get('search')
   const dealsQuery = searchParams.get('deals')
+
+  const pageTitle = searchQuery
+    ? `Búsqueda: ${searchQuery}`
+    : dealsQuery
+      ? 'Ofertas y Deals'
+      : categoryQuery === 'baby_gear'
+        ? 'Colección Baby'
+        : categoryQuery === 'smart_tech'
+          ? 'Smart Technology'
+          : 'Catálogo Completo'
+  usePageTitle(pageTitle)
 
   useEffect(() => {
     fetchProducts().then(setAllProducts)
@@ -146,18 +159,18 @@ export default function Products() {
         {/* Sidebar Filters */}
         <aside className="w-full lg:w-60 flex-shrink-0 space-y-8 text-left bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 rounded-2xl">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <h3 className="font-extrabold text-base tracking-tight">Filters</h3>
+            <h3 className="font-extrabold text-base tracking-tight">Filtros</h3>
             <button 
               onClick={handleClearFilters}
               className="text-xs text-slate-400 hover:text-primary transition-colors font-semibold"
             >
-              Clear all
+              Limpiar todo
             </button>
           </div>
 
           {/* Categories */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Categories</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Categorías</h4>
             <div className="space-y-2">
               {CATEGORY_MAPPING.map((cat) => (
                 <label key={cat.id} className="flex items-center gap-3 text-xs font-medium cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-800">
@@ -175,7 +188,7 @@ export default function Products() {
 
           {/* Price Range */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Price Range</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Rango de Precio</h4>
             <div className="space-y-1">
               <input 
                 type="range" 
@@ -187,15 +200,15 @@ export default function Products() {
                 className="w-full h-1 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#5c4c3e]"
               />
               <div className="flex justify-between text-[11px] text-slate-500 font-semibold pt-1">
-                <span>$0</span>
-                <span className="font-extrabold text-slate-700 dark:text-slate-300">${maxPrice === 2000 ? '2,000+' : maxPrice}</span>
+                <span>{formatCurrency(0)}</span>
+                <span className="font-extrabold text-slate-700 dark:text-slate-300">{maxPrice === 2000 ? `${formatCurrency(2000)}+` : formatCurrency(maxPrice)}</span>
               </div>
             </div>
           </div>
 
           {/* Top Brands */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Top Brands</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Marcas Destacadas</h4>
             <div className="space-y-2">
               {BRANDS.map((brand) => (
                 <label key={brand} className="flex items-center gap-3 text-xs font-medium cursor-pointer text-slate-600 dark:text-slate-300 hover:text-slate-800">
@@ -213,7 +226,7 @@ export default function Products() {
 
           {/* Min. Rating */}
           <div className="space-y-3">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Min. Rating</h4>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400">Puntuación Mínima</h4>
             <div className="flex gap-2">
               {[4, 3, 2].map((rating) => (
                 <button
@@ -238,16 +251,16 @@ export default function Products() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 dark:border-slate-800 pb-5 mb-8 gap-4">
             <div className="text-left">
               <h2 className="text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                {searchQuery ? 'Search Results' : 'Baby & Tech'}
+                {searchQuery ? 'Resultados de Búsqueda' : dealsQuery ? 'Ofertas y Deals' : 'Baby & Tech'}
               </h2>
               <p className="text-xs text-slate-400 mt-1 font-medium">
-                Showing {filtered.length > 0 ? startIdx + 1 : 0}-{Math.min(startIdx + pageSize, filtered.length)} of {filtered.length} products
+                Mostrando {filtered.length > 0 ? startIdx + 1 : 0}-{Math.min(startIdx + pageSize, filtered.length)} de {filtered.length} productos
               </p>
             </div>
 
             {/* Sort options */}
             <div className="flex items-center gap-2 self-end sm:self-center">
-              <span className="text-xs text-slate-400 font-semibold whitespace-nowrap">Sort by:</span>
+              <span className="text-xs text-slate-400 font-semibold whitespace-nowrap">Ordenar por:</span>
               <select
                 value={sort}
                 onChange={(e) => setSort(e.target.value)}
@@ -265,14 +278,14 @@ export default function Products() {
             <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-4">
               <span className="material-symbols-outlined text-4xl text-slate-300">search_off</span>
               <div>
-                <h3 className="font-bold text-slate-800 dark:text-white">No products found</h3>
-                <p className="text-xs text-slate-400 mt-1">Try resetting the filters or modifying your search query.</p>
+                <h3 className="font-bold text-slate-800 dark:text-white">No se encontraron productos</h3>
+                <p className="text-xs text-slate-400 mt-1">Intenta restablecer los filtros o modificar tu búsqueda.</p>
               </div>
               <button 
                 onClick={handleClearFilters}
                 className="bg-primary hover:bg-opacity-95 text-white py-2 px-6 rounded-lg text-xs font-bold transition-all shadow-sm cursor-pointer"
               >
-                Reset Filters
+                Restablecer Filtros
               </button>
             </div>
           ) : (

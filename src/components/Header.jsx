@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
+import { useWishlist } from '../context/useWishlist'
 
 function getInitialTheme() {
   try {
@@ -14,6 +15,7 @@ function getInitialTheme() {
 
 export default function Header() {
   const { itemCount } = useCart()
+  const { count: wishlistCount } = useWishlist()
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
@@ -123,6 +125,20 @@ export default function Header() {
                 {dark ? 'light_mode' : 'dark_mode'}
               </span>
             </button>
+
+            {/* Wishlist Icon */}
+            <Link 
+              to="/account" 
+              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900"
+              aria-label="Lista de deseos"
+            >
+              <span className="material-symbols-outlined text-xl">favorite</span>
+              {wishlistCount > 0 && (
+                <span className="absolute top-1 right-1 bg-red-500 text-white text-[9px] font-bold h-4 w-4 rounded-full flex items-center justify-center border border-white">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
 
             {/* Cart Icon */}
             <Link 
