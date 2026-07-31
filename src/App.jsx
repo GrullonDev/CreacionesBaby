@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
 import { ToastProvider } from './context/ToastContext'
+import ErrorBoundary from './components/ErrorBoundary'
 import ReferralWelcome from './components/ReferralWelcome'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -22,16 +23,18 @@ export default function App() {
           <WishlistProvider>
             <ReferralWelcome />
             <Header />
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/product/:id" element={<ProductDetail />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout" element={<Checkout />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/streaming" element={<Streaming />} />
-            </Routes>
+            <ErrorBoundary>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/product/:id" element={<ProductDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/account" element={<Account />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/streaming" element={<Streaming />} />
+              </Routes>
+            </ErrorBoundary>
             <Footer />
           </WishlistProvider>
         </CartProvider>
