@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useToast } from '../context/useToast'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { formatCurrency } from '../utils/currency'
+import { fetchProducts } from '../services/productService'
+import ProductCard from '../components/ProductCard'
 
 const AVAILABLE_PROMOS = [
   { code: 'BABY10', label: '10% de descuento' },
@@ -14,9 +17,22 @@ export default function Cart() {
   usePageTitle('Carrito de compras')
   const { items, removeItem, updateQuantity, clearCart, itemCount, subtotal } = useCart()
   const { addToast } = useToast()
+  const [suggestions, setSuggestions] = useState([])
 
   const shippingCost = subtotal >= 50 ? 0 : 5.99
   const total = subtotal + shippingCost
+
+  useEffect(() => {
+    if (items.length === 0) return
+    const cartIds = new Set(items.map((i) => i.id))
+    fetchProducts().then((all) => {
+      const picks = all
+        .filter((p) => !cartIds.has(p.id) && p.inStock)
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 4)
+      setSuggestions(picks)
+    })
+  }, [items])
 
   const handleClearCart = () => {
     clearCart()
@@ -229,6 +245,18 @@ export default function Cart() {
           </div>
         </div>
       </div>
+
+      {/* Cross-sell */}
+      {suggestions.length > 0 && (
+        <section className="mt-16 pt-10 border-t border-slate-100 dark:border-slate-800">
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-6">Completa tu compra</h3>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {suggestions.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   )
 }
