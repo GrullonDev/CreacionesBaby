@@ -20,11 +20,19 @@ export default function Header() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [dark, setDark] = useState(getInitialTheme)
+  const [cartBump, setCartBump] = useState(false)
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
     localStorage.setItem('creaciones_theme', dark ? 'dark' : 'light')
   }, [dark])
+
+  useEffect(() => {
+    if (itemCount === 0) return
+    setCartBump(true)
+    const timer = setTimeout(() => setCartBump(false), 350)
+    return () => clearTimeout(timer)
+  }, [itemCount])
 
   const toggleDark = () => setDark((d) => !d)
 
@@ -143,7 +151,7 @@ export default function Header() {
             {/* Cart Icon */}
             <Link 
               to="/cart" 
-              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900"
+              className={`relative p-2 text-slate-600 dark:text-slate-400 hover:text-primary transition-colors flex items-center justify-center rounded-full hover:bg-slate-50 dark:hover:bg-slate-900 ${cartBump ? 'animate-bump' : ''}`}
               aria-label="Carrito"
             >
               <span className="material-symbols-outlined text-xl">shopping_cart</span>

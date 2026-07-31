@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
@@ -8,6 +9,7 @@ export default function ProductCard({ product, onQuickView }) {
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
   const { addToast } = useToast()
+  const [added, setAdded] = useState(false)
 
   const wishlisted = isWishlisted(product.id)
 
@@ -17,6 +19,8 @@ export default function ProductCard({ product, onQuickView }) {
     if (!product.inStock) return
     addItem(product)
     addToast(`${product.name} añadido al carrito`)
+    setAdded(true)
+    setTimeout(() => setAdded(false), 1500)
   }
 
   const handleWishlist = (e) => {
@@ -175,13 +179,17 @@ export default function ProductCard({ product, onQuickView }) {
             )}
           </div>
 
-          <button 
+          <button
             onClick={handleAdd}
             disabled={!product.inStock}
-            className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 ${theme.btnBg}`}
+            className={`py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer disabled:opacity-50 ${
+              added ? 'bg-emerald-500 text-white' : theme.btnBg
+            }`}
           >
-            <span className="material-symbols-outlined text-xs">add_shopping_cart</span>
-            Add
+            <span className={`material-symbols-outlined text-xs ${added ? 'animate-bump' : ''}`}>
+              {added ? 'check' : 'add_shopping_cart'}
+            </span>
+            {added ? 'Añadido' : 'Add'}
           </button>
         </div>
       </div>
