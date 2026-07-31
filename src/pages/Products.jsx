@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
+import ProductCardSkeleton from '../components/ProductCardSkeleton'
 import QuickView from '../components/QuickView'
 import Pagination from '../components/Pagination'
 import { fetchProducts } from '../services/productService'
@@ -26,6 +27,7 @@ const BRANDS = ['Nanit', 'Apple', 'Bose', 'UPPAbaby']
 export default function Products() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [allProducts, setAllProducts] = useState([])
+  const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const pageSize = 12
   const [sort, setSort] = useState('recommended')
@@ -54,7 +56,10 @@ export default function Products() {
   usePageTitle(pageTitle)
 
   useEffect(() => {
-    fetchProducts().then(setAllProducts)
+    fetchProducts().then((data) => {
+      setAllProducts(data)
+      setLoading(false)
+    })
   }, [])
 
   // Initialize from search URL parameters
@@ -274,7 +279,13 @@ export default function Products() {
           </div>
 
           {/* Grid */}
-          {filtered.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 xl:grid-cols-3 gap-6">
+              {Array.from({ length: pageSize }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </div>
+          ) : filtered.length === 0 ? (
             <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/10 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center gap-4">
               <span className="material-symbols-outlined text-4xl text-slate-300">search_off</span>
               <div>

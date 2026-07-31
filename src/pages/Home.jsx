@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
+import ProductCardSkeleton from '../components/ProductCardSkeleton'
 import QuickView from '../components/QuickView'
 import NewsletterForm from '../components/NewsletterForm'
 import { fetchFeaturedProducts } from '../services/productService'
@@ -10,10 +11,14 @@ import { usePageTitle } from '../hooks/usePageTitle'
 export default function Home() {
   usePageTitle(null)
   const [featured, setFeatured] = useState([])
+  const [loadingFeatured, setLoadingFeatured] = useState(true)
   const [quickViewProduct, setQuickViewProduct] = useState(null)
 
   useEffect(() => {
-    fetchFeaturedProducts().then(setFeatured)
+    fetchFeaturedProducts().then((data) => {
+      setFeatured(data)
+      setLoadingFeatured(false)
+    })
   }, [])
 
   return (
@@ -145,13 +150,15 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {featured.map((p) => (
-              <ProductCard 
-                key={p.id} 
-                product={p} 
-                onQuickView={setQuickViewProduct}
-              />
-            ))}
+            {loadingFeatured
+              ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
+              : featured.map((p) => (
+                  <ProductCard
+                    key={p.id}
+                    product={p}
+                    onQuickView={setQuickViewProduct}
+                  />
+                ))}
           </div>
         </div>
       </section>
