@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { track } from '../utils/analytics'
 
 const BRAND = 'Creaciones Baby'
 const DEFAULT_TITLE = 'Creaciones Baby | Modern Heritage Babywear'
@@ -12,5 +13,7 @@ export function usePageTitle(title, description) {
     if (metaDescription) {
       metaDescription.setAttribute('content', description || DEFAULT_DESCRIPTION)
     }
+
+    track('page_view', { title: title || 'Home', path: window.location.pathname })
   }, [title, description])
 }

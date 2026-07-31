@@ -12,6 +12,7 @@ import {
   getNextReferralMilestone,
 } from '../utils/referral'
 import { formatCurrency } from '../utils/currency'
+import { track } from '../utils/analytics'
 
 export default function ReferralBanner({ customerName = '' }) {
   const { addToast } = useToast()
@@ -24,7 +25,10 @@ export default function ReferralBanner({ customerName = '' }) {
   const progressTarget = nextMilestone ? nextMilestone.count : REFERRAL_MILESTONES.at(-1).count
   const progressPct = Math.min(100, Math.round((shareCount / progressTarget) * 100))
 
-  const trackShare = () => setShareCount(recordReferralShare())
+  const trackShare = () => {
+    setShareCount(recordReferralShare())
+    track('referral_share', { code })
+  }
 
   const handleCopy = async () => {
     try {

@@ -1,4 +1,5 @@
 import { createContext, useReducer, useEffect } from 'react'
+import { track } from '../utils/analytics'
 
 const CartContext = createContext()
 
@@ -42,7 +43,10 @@ export function CartProvider({ children }) {
     localStorage.setItem('creaciones_cart', JSON.stringify(items))
   }, [items])
 
-  const addItem = (product) => dispatch({ type: 'ADD_ITEM', product })
+  const addItem = (product) => {
+    dispatch({ type: 'ADD_ITEM', product })
+    track('add_to_cart', { productId: product.id, name: product.name, price: product.price })
+  }
   const removeItem = (id) => dispatch({ type: 'REMOVE_ITEM', id })
   const updateQuantity = (id, quantity) => dispatch({ type: 'UPDATE_QUANTITY', id, quantity })
   const clearCart = () => dispatch({ type: 'CLEAR_CART' })

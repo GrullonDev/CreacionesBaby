@@ -7,6 +7,7 @@ import TrustBadges from '../components/TrustBadges'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { getFriendDiscount, consumeFriendDiscount } from '../utils/referral'
 import { formatCurrency } from '../utils/currency'
+import { track } from '../utils/analytics'
 
 const PROMO_CODES = {
   BABY10: { discount: 0.1, label: '10% de descuento' },
@@ -89,6 +90,8 @@ export default function Checkout() {
     })
 
     if (friendDiscount > 0) consumeFriendDiscount()
+
+    track('purchase', { orderId: id, total, itemCount: items.length, promoCode: appliedPromo?.code || null })
 
     setOrderId(id)
     setSubmitted(true)
