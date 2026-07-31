@@ -4,6 +4,7 @@ import ProductCard from '../components/ProductCard'
 import ProductCardSkeleton from '../components/ProductCardSkeleton'
 import QuickView from '../components/QuickView'
 import NewsletterForm from '../components/NewsletterForm'
+import RecentlyViewed from '../components/RecentlyViewed'
 import { fetchFeaturedProducts } from '../services/productService'
 import { testimonials, storeStats } from '../data/testimonials'
 import { usePageTitle } from '../hooks/usePageTitle'
@@ -160,6 +161,8 @@ export default function Home() {
                   />
                 ))}
           </div>
+
+          <RecentlyViewed excludeId={null} />
         </div>
       </section>
 

@@ -9,7 +9,9 @@ import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
 import NotifyStockForm from '../components/NotifyStockForm'
+import RecentlyViewed from '../components/RecentlyViewed'
 import { formatCurrency } from '../utils/currency'
+import { recordProductView } from '../utils/recentlyViewed'
 
 function loadReviews(productId) {
   try {
@@ -61,6 +63,7 @@ export default function ProductDetail() {
         if (p.colors && p.colors.length > 0) setSelectedColor(p.colors[0])
         if (p.sizes && p.sizes.length > 0) setSelectedSize(p.sizes[0])
         fetchRelatedProducts(p.category, p.id).then(setRelated)
+        recordProductView(p.id)
       }
       setLoading(false)
       setQuantity(1)
@@ -466,6 +469,8 @@ export default function ProductDetail() {
           </div>
         </section>
       )}
+
+      <RecentlyViewed excludeId={product.id} />
     </main>
   )
 }
