@@ -10,6 +10,8 @@ import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
 import NotifyStockForm from '../components/NotifyStockForm'
 import RecentlyViewed from '../components/RecentlyViewed'
+import ViewerBadge from '../components/ViewerBadge'
+import SaleCountdown from '../components/SaleCountdown'
 import { formatCurrency } from '../utils/currency'
 import { recordProductView } from '../utils/recentlyViewed'
 
@@ -181,17 +183,23 @@ export default function ProductDetail() {
           </div>
 
           {/* Pricing */}
-          <div className="flex items-baseline gap-4 border-t border-b border-slate-100 dark:border-slate-800 py-4">
-            <span className="text-3xl font-black text-primary">{formatCurrency(product.price)}</span>
-            {product.originalPrice && (
-              <>
-                <span className="text-slate-400 line-through text-base">{formatCurrency(product.originalPrice)}</span>
-                <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-950/20 px-2 py-0.5 rounded">
-                  AHORRA {discountPercent}%
-                </span>
-              </>
-            )}
+          <div className="border-t border-b border-slate-100 dark:border-slate-800 py-4 space-y-3">
+            <div className="flex items-baseline gap-4">
+              <span className="text-3xl font-black text-primary">{formatCurrency(product.price)}</span>
+              {product.originalPrice && (
+                <>
+                  <span className="text-slate-400 line-through text-base">{formatCurrency(product.originalPrice)}</span>
+                  <span className="text-xs font-bold text-red-500 bg-red-50 dark:bg-red-950/20 px-2 py-0.5 rounded">
+                    AHORRA {discountPercent}%
+                  </span>
+                </>
+              )}
+            </div>
+            {product.originalPrice && <SaleCountdown />}
           </div>
+
+          {/* Social proof */}
+          <ViewerBadge productId={product.id} />
 
           {/* Stock Level */}
           {product.inStock && product.stock !== undefined && product.stock <= 5 && (
