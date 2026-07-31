@@ -6,6 +6,7 @@ import { usePageTitle } from '../hooks/usePageTitle'
 import { formatCurrency } from '../utils/currency'
 import { fetchProducts } from '../services/productService'
 import ProductCard from '../components/ProductCard'
+import TrustBadges from '../components/TrustBadges'
 
 const AVAILABLE_PROMOS = [
   { code: 'BABY10', label: '10% de descuento' },
@@ -214,12 +215,13 @@ export default function Cart() {
               <span className="material-symbols-outlined text-lg">credit_card</span>
               Proceder al Pago
             </Link>
-            <Link 
-              to="/products" 
+            <Link
+              to="/products"
               className="w-full border border-slate-200 dark:border-slate-800 hover:border-primary hover:text-primary py-3.5 rounded-xl font-semibold transition-colors flex items-center justify-center text-slate-700 dark:text-slate-300 text-xs cursor-pointer"
             >
               Continuar Comprando
             </Link>
+            <TrustBadges className="justify-center pt-1" />
           </div>
 
           {/* Available Promo Codes */}

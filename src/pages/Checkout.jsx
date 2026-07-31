@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useToast } from '../context/useToast'
 import ReferralBanner from '../components/ReferralBanner'
+import TrustBadges from '../components/TrustBadges'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { getFriendDiscount, consumeFriendDiscount } from '../utils/referral'
 import { formatCurrency } from '../utils/currency'
@@ -254,6 +255,7 @@ export default function Checkout() {
                 <span className="material-symbols-outlined text-lg">local_mall</span>
                 Finalizar Compra — {formatCurrency(total)}
               </button>
+              <TrustBadges className="justify-center mt-4" />
             </div>
           </form>
         </div>
