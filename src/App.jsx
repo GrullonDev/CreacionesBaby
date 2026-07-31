@@ -7,6 +7,7 @@ import ReferralWelcome from './components/ReferralWelcome'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
+import NewsletterPopup from './components/NewsletterPopup'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
@@ -38,6 +39,7 @@ export default function App() {
             </ErrorBoundary>
             <Footer />
             <WhatsAppButton />
+            <NewsletterPopup />
           </WishlistProvider>
         </CartProvider>
       </ToastProvider>

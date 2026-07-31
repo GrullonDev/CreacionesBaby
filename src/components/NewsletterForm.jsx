@@ -11,7 +11,7 @@ function saveSubscriber(email) {
   } catch {}
 }
 
-export default function NewsletterForm({ compact = false, className = '' }) {
+export default function NewsletterForm({ compact = false, className = '', onSubscribed }) {
   const { addToast } = useToast()
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
@@ -31,6 +31,7 @@ export default function NewsletterForm({ compact = false, className = '' }) {
     setEmail('')
     setError('')
     addToast('¡Te has suscrito a la Comunidad CreacionesBaby!')
+    onSubscribed?.()
   }
 
   return (
