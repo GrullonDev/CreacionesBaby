@@ -8,6 +8,7 @@ import { fetchProductById, fetchRelatedProducts } from '../services/productServi
 import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
+import NotifyStockForm from '../components/NotifyStockForm'
 import { formatCurrency } from '../utils/currency'
 
 function loadReviews(productId) {
@@ -197,9 +198,12 @@ export default function ProductDetail() {
             </div>
           )}
           {!product.inStock && (
-            <div className="flex items-center gap-2 text-xs font-bold">
-              <span className="inline-block size-2 rounded-full bg-slate-400"></span>
-              <span className="text-slate-500">Agotado</span>
+            <div className="space-y-3">
+              <div className="flex items-center gap-2 text-xs font-bold">
+                <span className="inline-block size-2 rounded-full bg-slate-400"></span>
+                <span className="text-slate-500">Agotado</span>
+              </div>
+              <NotifyStockForm productId={product.id} />
             </div>
           )}
 
