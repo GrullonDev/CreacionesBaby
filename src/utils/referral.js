@@ -2,8 +2,16 @@ import { formatCurrency } from './currency'
 
 const REFERRAL_KEY = 'creaciones_referral'
 const REFERRAL_CREDIT_KEY = 'creaciones_referral_credit'
+const SHARE_COUNT_KEY = 'creaciones_referral_shares'
 export const FRIEND_DISCOUNT = 10
 const OWNER_REWARD = 5
+
+export const REFERRAL_MILESTONES = [
+  { count: 1, label: 'Primer Paso', icon: 'front_hand' },
+  { count: 3, label: 'Embajador Bronce', icon: 'workspace_premium' },
+  { count: 5, label: 'Embajador Plata', icon: 'military_tech' },
+  { count: 10, label: 'Embajador Oro', icon: 'emoji_events' },
+]
 
 export function getReferralCode(name = '') {
   try {
@@ -74,4 +82,26 @@ export function consumeFriendDiscount() {
   try {
     localStorage.setItem(REFERRAL_CREDIT_KEY, JSON.stringify({ discount: FRIEND_DISCOUNT, applied: true }))
   } catch {}
+}
+
+export function getReferralShareCount() {
+  try {
+    return Number(localStorage.getItem(SHARE_COUNT_KEY) || '0')
+  } catch {
+    return 0
+  }
+}
+
+export function recordReferralShare() {
+  try {
+    const next = getReferralShareCount() + 1
+    localStorage.setItem(SHARE_COUNT_KEY, String(next))
+    return next
+  } catch {
+    return 0
+  }
+}
+
+export function getNextReferralMilestone(count) {
+  return REFERRAL_MILESTONES.find((m) => m.count > count) || null
 }

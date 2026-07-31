@@ -6,19 +6,31 @@ import {
   buildShareMessages,
   getOwnerRewardMessage,
   FRIEND_DISCOUNT,
+  REFERRAL_MILESTONES,
+  getReferralShareCount,
+  recordReferralShare,
+  getNextReferralMilestone,
 } from '../utils/referral'
 import { formatCurrency } from '../utils/currency'
 
 export default function ReferralBanner({ customerName = '' }) {
   const { addToast } = useToast()
   const [code] = useState(() => getReferralCode(customerName))
+  const [shareCount, setShareCount] = useState(() => getReferralShareCount())
   const share = buildShareMessages(code)
   const shareLink = getReferralLink(code)
+  const nextMilestone = getNextReferralMilestone(shareCount)
+  const lastMilestone = [...REFERRAL_MILESTONES].reverse().find((m) => m.count <= shareCount)
+  const progressTarget = nextMilestone ? nextMilestone.count : REFERRAL_MILESTONES.at(-1).count
+  const progressPct = Math.min(100, Math.round((shareCount / progressTarget) * 100))
+
+  const trackShare = () => setShareCount(recordReferralShare())
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(shareLink)
       addToast('Enlace de invitación copiado')
+      trackShare()
     } catch {
       addToast('No se pudo copiar el enlace', 'error')
     }
@@ -28,6 +40,7 @@ export default function ReferralBanner({ customerName = '' }) {
     try {
       await navigator.clipboard.writeText(code)
       addToast(`Código ${code} copiado`)
+      trackShare()
     } catch {
       addToast('No se pudo copiar el código', 'error')
     }
@@ -68,6 +81,7 @@ export default function ReferralBanner({ customerName = '' }) {
             href={share.whatsapp}
             target="_blank"
             rel="noreferrer"
+            onClick={trackShare}
             className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-3 rounded-xl transition-all shadow-sm cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">chat</span>
@@ -75,6 +89,7 @@ export default function ReferralBanner({ customerName = '' }) {
           </a>
           <a
             href={share.email}
+            onClick={trackShare}
             className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-primary hover:text-primary text-slate-700 dark:text-slate-300 text-xs font-bold px-4 py-3 rounded-xl transition-all cursor-pointer"
           >
             <span className="material-symbols-outlined text-base">mail</span>
@@ -87,6 +102,41 @@ export default function ReferralBanner({ customerName = '' }) {
             <span className="material-symbols-outlined text-base">link</span>
             Copiar
           </button>
+        </div>
+      </div>
+
+      {/* Share progress / milestones */}
+      <div className="mt-5 pt-5 border-t border-rose-100/60 dark:border-slate-800">
+        <div className="flex items-center justify-between text-[10px] font-bold text-slate-500 dark:text-slate-400 mb-2">
+          <span className="flex items-center gap-1.5">
+            {lastMilestone && (
+              <span className="material-symbols-outlined text-sm text-primary dark:text-rose-300">{lastMilestone.icon}</span>
+            )}
+            {lastMilestone ? lastMilestone.label : 'Comparte para empezar'}
+          </span>
+          <span>
+            {shareCount} {shareCount === 1 ? 'veces compartido' : 'veces compartidas'}
+            {nextMilestone && ` · faltan ${nextMilestone.count - shareCount} para "${nextMilestone.label}"`}
+          </span>
+        </div>
+        <div className="h-1.5 w-full bg-rose-100/60 dark:bg-slate-800 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-primary dark:bg-rose-300 rounded-full transition-all duration-500"
+            style={{ width: `${progressPct}%` }}
+          />
+        </div>
+        <div className="flex justify-between mt-2">
+          {REFERRAL_MILESTONES.map((m) => (
+            <span
+              key={m.count}
+              title={m.label}
+              className={`material-symbols-outlined text-sm ${
+                shareCount >= m.count ? 'text-primary dark:text-rose-300' : 'text-slate-300 dark:text-slate-700'
+              }`}
+            >
+              {m.icon}
+            </span>
+          ))}
         </div>
       </div>
     </div>
