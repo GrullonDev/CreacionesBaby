@@ -7,6 +7,26 @@ import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
 
+function loadReviews(productId) {
+  try {
+    const data = localStorage.getItem('creaciones_reviews')
+    const all = data ? JSON.parse(data) : {}
+    return all[productId] || []
+  } catch {
+    return []
+  }
+}
+
+function saveReview(productId, review) {
+  try {
+    const data = localStorage.getItem('creaciones_reviews')
+    const all = data ? JSON.parse(data) : {}
+    if (!all[productId]) all[productId] = []
+    all[productId].unshift(review)
+    localStorage.setItem('creaciones_reviews', JSON.stringify(all))
+  } catch {}
+}
+
 export default function ProductDetail() {
   const { id } = useParams()
   const { addItem } = useCart()
@@ -22,22 +42,34 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1)
   const [added, setAdded] = useState(false)
 
+  // Reviews
+  const [reviews, setReviews] = useState([])
+  const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, comment: '' })
+
   useEffect(() => {
     setLoading(true)
     fetchProductById(id).then((p) => {
       setProduct(p)
       if (p) {
-        // Set default selects
         if (p.colors && p.colors.length > 0) setSelectedColor(p.colors[0])
         if (p.sizes && p.sizes.length > 0) setSelectedSize(p.sizes[0])
-        
         fetchRelatedProducts(p.category, p.id).then(setRelated)
       }
       setLoading(false)
       setQuantity(1)
       setAdded(false)
     })
+    setReviews(loadReviews(id))
   }, [id])
+
+  const handleReviewSubmit = (e) => {
+    e.preventDefault()
+    if (!reviewForm.author.trim() || !reviewForm.comment.trim()) return
+    const newReview = { ...reviewForm, id: Date.now(), date: new Date().toISOString() }
+    saveReview(id, newReview)
+    setReviews((prev) => [newReview, ...prev])
+    setReviewForm({ author: '', rating: 5, comment: '' })
+  }
 
   const handleAdd = () => {
     // Add product to cart multiple times if quantity > 1
@@ -135,6 +167,20 @@ export default function ProductDetail() {
               </>
             )}
           </div>
+
+          {/* Stock Level */}
+          {product.inStock && product.stock !== undefined && product.stock <= 5 && (
+            <div className="flex items-center gap-2 text-xs font-bold">
+              <span className="inline-block size-2 rounded-full bg-red-500 animate-pulse"></span>
+              <span className="text-red-600 dark:text-red-400">Solo {product.stock} unidad{product.stock !== 1 ? 'es' : ''} restante{product.stock !== 1 ? 's' : ''}</span>
+            </div>
+          )}
+          {!product.inStock && (
+            <div className="flex items-center gap-2 text-xs font-bold">
+              <span className="inline-block size-2 rounded-full bg-slate-400"></span>
+              <span className="text-slate-500">Agotado</span>
+            </div>
+          )}
 
           {/* Description */}
           <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
@@ -282,11 +328,113 @@ export default function ProductDetail() {
         </div>
       </div>
 
+      {/* Reviews Section */}
+      <section className="mt-24 pt-12 border-t border-slate-100 dark:border-slate-800">
+        <div className="max-w-3xl">
+          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-2">Reseñas de Clientes</h3>
+          <p className="text-xs text-slate-400 mb-8">{reviews.length} opinión{reviews.length !== 1 ? 'es' : ''}</p>
+
+          {/* Review Form */}
+          <form onSubmit={handleReviewSubmit} className="bg-slate-50 dark:bg-slate-900/50 rounded-2xl p-6 mb-10 space-y-4 border border-slate-100 dark:border-slate-800">
+            <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">Escribe tu opinión</h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Tu nombre"
+                value={reviewForm.author}
+                onChange={(e) => setReviewForm((f) => ({ ...f, author: e.target.value }))}
+                className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none"
+              />
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-slate-600 dark:text-slate-400">Puntuación:</span>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewForm((f) => ({ ...f, rating: star }))}
+                      className={`material-symbols-outlined text-lg cursor-pointer ${
+                        star <= reviewForm.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'
+                      }`}
+                      style={{ fontVariationSettings: "'FILL' 1" }}
+                    >
+                      star
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <textarea
+              placeholder="Comparte tu experiencia con este producto..."
+              value={reviewForm.comment}
+              onChange={(e) => setReviewForm((f) => ({ ...f, comment: e.target.value }))}
+              rows={3}
+              className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none resize-none"
+            />
+            <button
+              type="submit"
+              className="bg-primary hover:bg-opacity-95 text-white py-2.5 px-6 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
+            >
+              Publicar Reseña
+            </button>
+          </form>
+
+          {/* Reviews List */}
+          {reviews.length === 0 ? (
+            <div className="text-center py-12 bg-slate-50 dark:bg-slate-900/30 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+              <span className="material-symbols-outlined text-3xl text-slate-300">rate_review</span>
+              <p className="text-xs text-slate-400 mt-3">No hay reseñas todavía. ¡Sé el primero en opinar!</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((r) => (
+                <div key={r.id} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-5 text-left">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-3">
+                      <div className="size-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-extrabold text-xs">
+                        {r.author.charAt(0).toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="font-bold text-xs text-slate-800 dark:text-slate-200">{r.author}</p>
+                        <p className="text-[10px] text-slate-400">{new Date(r.date).toLocaleDateString('es-ES')}</p>
+                      </div>
+                    </div>
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`material-symbols-outlined text-xs ${
+                            star <= r.rating ? 'text-amber-400' : 'text-slate-200 dark:text-slate-700'
+                          }`}
+                          style={{ fontVariationSettings: "'FILL' 1" }}
+                        >
+                          star
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{r.comment}</p>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
       {/* Related Products Grid */}
       {related.length > 0 && (
-        <section className="mt-24 pt-12 border-t border-slate-100 dark:border-slate-800">
-          <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mb-8">Productos Relacionados</h3>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+        <section className="mt-16 pt-12 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">También te puede gustar</h3>
+              <p className="text-xs text-slate-400 mt-1">Productos similares que podrían interesarte</p>
+            </div>
+            <Link to="/products" className="text-xs font-bold text-primary hover:underline flex items-center gap-1">
+              Ver catálogo
+              <span className="material-symbols-outlined text-xs">arrow_forward</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {related.map((p) => (
               <ProductCard key={p.id} product={p} />
             ))}
