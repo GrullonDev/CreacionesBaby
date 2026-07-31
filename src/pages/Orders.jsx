@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { formatCurrency } from '../utils/currency'
+import OrderStatusStepper from '../components/OrderStatusStepper'
 
 function loadOrders() {
   try {
@@ -114,17 +115,9 @@ export default function Orders() {
               </div>
 
               {/* Order Card Footer */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-5 py-4 border-t border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 gap-3">
-                <div className="flex items-center gap-2">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                    <span className="size-1.5 rounded-full bg-emerald-500 animate-ping"></span>
-                    Entregado
-                  </span>
-                  <span className="text-[10px] text-slate-400">
-                    Por Starken / Chilexpress
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center px-5 py-5 border-t border-slate-50 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/20 gap-4">
+                <OrderStatusStepper orderDate={order.date} />
+                <span className="text-[10px] text-slate-500 dark:text-slate-400 sm:text-right">
                   Despachado a: <strong>{order.address?.name || 'Cliente'}</strong>, {order.address?.address}, {order.address?.city}
                 </span>
               </div>
