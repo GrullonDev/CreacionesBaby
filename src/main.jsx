@@ -10,6 +10,13 @@ if (typeof window !== 'undefined') {
   window.__creacionesAnalytics = getAnalyticsSummary
 }
 
+// Registered only in production builds to avoid caching issues with Vite's dev server/HMR.
+if ('serviceWorker' in navigator && import.meta.env.PROD) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {})
+  })
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
