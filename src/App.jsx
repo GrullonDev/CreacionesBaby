@@ -1,3 +1,4 @@
+import { Suspense, lazy } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
 import { WishlistProvider } from './context/WishlistContext'
@@ -9,13 +10,22 @@ import Footer from './components/Footer'
 import WhatsAppButton from './components/WhatsAppButton'
 import NewsletterPopup from './components/NewsletterPopup'
 import Home from './pages/Home'
-import Products from './pages/Products'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
-import Checkout from './pages/Checkout'
-import Account from './pages/Account'
-import Orders from './pages/Orders'
-import Streaming from './pages/Streaming'
+
+const Products = lazy(() => import('./pages/Products'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail'))
+const Cart = lazy(() => import('./pages/Cart'))
+const Checkout = lazy(() => import('./pages/Checkout'))
+const Account = lazy(() => import('./pages/Account'))
+const Orders = lazy(() => import('./pages/Orders'))
+const Streaming = lazy(() => import('./pages/Streaming'))
+
+function RouteFallback() {
+  return (
+    <div className="flex-grow flex items-center justify-center py-20">
+      <span className="material-symbols-outlined text-4xl animate-spin text-primary">sync</span>
+    </div>
+  )
+}
 
 export default function App() {
   return (
@@ -26,16 +36,18 @@ export default function App() {
             <ReferralWelcome />
             <Header />
             <ErrorBoundary>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/cart" element={<Cart />} />
-                <Route path="/checkout" element={<Checkout />} />
-                <Route path="/account" element={<Account />} />
-                <Route path="/orders" element={<Orders />} />
-                <Route path="/streaming" element={<Streaming />} />
-              </Routes>
+              <Suspense fallback={<RouteFallback />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/cart" element={<Cart />} />
+                  <Route path="/checkout" element={<Checkout />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/streaming" element={<Streaming />} />
+                </Routes>
+              </Suspense>
             </ErrorBoundary>
             <Footer />
             <WhatsAppButton />
