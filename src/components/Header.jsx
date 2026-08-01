@@ -1,76 +1,28 @@
-import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
-import { fetchProducts } from '../services/productService'
-import { getRecentSearches, addRecentSearch } from '../utils/recentSearches'
-
-function getInitialTheme() {
-  try {
-    const stored = localStorage.getItem('creaciones_theme')
-    if (stored) return stored === 'dark'
-    return window.matchMedia('(prefers-color-scheme: dark)').matches
-  } catch {
-    return false
-  }
-}
+import { useHeaderLogic } from '../hooks/useHeaderLogic'
 
 export default function Header() {
   const { itemCount } = useCart()
   const { count: wishlistCount } = useWishlist()
-  const { pathname, search } = useLocation()
-  const navigate = useNavigate()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [dark, setDark] = useState(getInitialTheme)
-  const [cartBump, setCartBump] = useState(false)
-  const [allProducts, setAllProducts] = useState([])
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [recentSearches, setRecentSearches] = useState(getRecentSearches)
+  const {
+    searchQuery,
+    setSearchQuery,
+    dark,
+    toggleDark,
+    cartBump,
+    showSuggestions,
+    setShowSuggestions,
+    recentSearches,
+    productSuggestions,
+    handleSearchSubmit,
+    runSearch,
+    recordSearchSelection,
+    navState,
+  } = useHeaderLogic({ itemCount })
 
-  useEffect(() => {
-    fetchProducts().then(setAllProducts)
-  }, [])
-
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', dark)
-    localStorage.setItem('creaciones_theme', dark ? 'dark' : 'light')
-  }, [dark])
-
-  useEffect(() => {
-    if (itemCount === 0) return
-    setCartBump(true)
-    const timer = setTimeout(() => setCartBump(false), 350)
-    return () => clearTimeout(timer)
-  }, [itemCount])
-
-  const toggleDark = () => setDark((d) => !d)
-
-  const runSearch = (term) => {
-    const value = term.trim()
-    if (!value) return
-    addRecentSearch(value)
-    setRecentSearches(getRecentSearches())
-    setSearchQuery('')
-    setShowSuggestions(false)
-    navigate(`/products?search=${encodeURIComponent(value)}`)
-  }
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault()
-    runSearch(searchQuery)
-  }
-
-  const productSuggestions = searchQuery.trim()
-    ? allProducts
-        .filter((p) => p.name.toLowerCase().includes(searchQuery.trim().toLowerCase()))
-        .slice(0, 5)
-    : []
-
-  const isHome = pathname === '/'
-  const isBaby = search.includes('category=baby_gear')
-  const isTech = search.includes('category=smart_tech')
-  const isStreaming = pathname === '/streaming'
-  const isDeals = search.includes('deals=true')
+  const { isHome, isBaby, isTech, isStreaming, isDeals } = navState
 
   return (
     <header className="sticky top-0 z-50 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
@@ -157,11 +109,7 @@ export default function Header() {
                         <li key={p.id}>
                           <Link
                             to={`/product/${p.id}`}
-                            onMouseDown={() => {
-                              addRecentSearch(p.name)
-                              setRecentSearches(getRecentSearches())
-                              setSearchQuery('')
-                            }}
+                            onMouseDown={() => recordSearchSelection(p.name)}
                             className="flex items-center gap-3 px-4 py-2.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
                           >
                             <img src={p.image} alt="" className="size-8 rounded-md object-cover flex-shrink-0" />

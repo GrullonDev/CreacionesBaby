@@ -1,48 +1,27 @@
-import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
 import { useToast } from '../context/useToast'
 import Rating from './Rating'
 import { formatCurrency } from '../utils/currency'
+import { useQuickView } from '../hooks/useQuickView'
 
 export default function QuickView({ product, onClose }) {
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
   const { addToast } = useToast()
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden'
-    const handler = (e) => { if (e.key === 'Escape') onClose() }
-    window.addEventListener('keydown', handler)
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', handler)
-    }
-  }, [onClose])
+  const { handleAdd: onAdd, handleWishlist: onWishlist } = useQuickView({ onClose })
 
   if (!product) return null
 
   const wishlisted = isWishlisted(product.id)
-  const discountPercent = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
+  const discountPercent = product.originalPrice
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0
 
-  const handleAdd = () => {
-    if (!product.inStock) return
-    addItem(product)
-    addToast(`${product.name} añadido al carrito`)
-  }
+  const handleAdd = () => onAdd(product, addItem, addToast)
 
-  const handleWishlist = () => {
-    toggleItem(product)
-    addToast(
-      wishlisted
-        ? `${product.name} eliminado de favoritos`
-        : `${product.name} añadido a favoritos`,
-      wishlisted ? 'info' : 'success'
-    )
-  }
+  const handleWishlist = () => onWishlist(product, toggleItem, wishlisted, addToast)
 
   return (
     <div 
