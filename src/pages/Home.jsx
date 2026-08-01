@@ -1,26 +1,24 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import ProductCard from '../components/ProductCard'
 import ProductCardSkeleton from '../components/ProductCardSkeleton'
 import QuickView from '../components/QuickView'
 import NewsletterForm from '../components/NewsletterForm'
 import RecentlyViewed from '../components/RecentlyViewed'
-import { fetchFeaturedProducts } from '../services/productService'
-import { testimonials, storeStats } from '../data/testimonials'
 import { usePageTitle } from '../hooks/usePageTitle'
+import { useHomeLogic } from '../hooks/useHomeLogic'
 
 export default function Home() {
-  usePageTitle(null)
-  const [featured, setFeatured] = useState([])
-  const [loadingFeatured, setLoadingFeatured] = useState(true)
-  const [quickViewProduct, setQuickViewProduct] = useState(null)
+  const {
+    featured,
+    loadingFeatured,
+    quickViewProduct,
+    handleQuickView,
+    closeQuickView,
+    testimonials,
+    storeStats,
+  } = useHomeLogic()
 
-  useEffect(() => {
-    fetchFeaturedProducts().then((data) => {
-      setFeatured(data)
-      setLoadingFeatured(false)
-    })
-  }, [])
+  usePageTitle(null)
 
   return (
     <main className="flex-grow bg-white dark:bg-slate-900">
@@ -157,7 +155,7 @@ export default function Home() {
                   <ProductCard
                     key={p.id}
                     product={p}
-                    onQuickView={setQuickViewProduct}
+                    onQuickView={handleQuickView}
                   />
                 ))}
           </div>
@@ -298,7 +296,7 @@ export default function Home() {
       {quickViewProduct && (
         <QuickView 
           product={quickViewProduct} 
-          onClose={() => setQuickViewProduct(null)} 
+          onClose={closeQuickView} 
         />
       )}
     </main>

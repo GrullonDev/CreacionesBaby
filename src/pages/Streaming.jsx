@@ -1,69 +1,17 @@
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useToast } from '../context/useToast'
-import { fetchProducts } from '../services/productService'
 import { usePageTitle } from '../hooks/usePageTitle'
+import { useStreamingLogic } from '../hooks/useStreamingLogic'
 import { formatCurrency } from '../utils/currency'
 
 export default function Streaming() {
   usePageTitle('Streaming Premium')
   const { addItem } = useCart()
   const { addToast } = useToast()
-  const [streamingItems, setStreamingItems] = useState([])
+  const { featuredItems, handleAdd: addToCart, getSubTheme } = useStreamingLogic()
 
-  useEffect(() => {
-    fetchProducts().then((all) => {
-      const items = all.filter(p => p.category === 'streaming')
-      setStreamingItems(items)
-    })
-  }, [])
-
-  // Dynamic branding colors for subscription cards
-  const handleAdd = (item) => {
-    addItem(item)
-    addToast(`${item.name} añadido al carrito`)
-  }
-
-  const getSubTheme = (brand) => {
-    switch (brand.toLowerCase()) {
-      case 'netflix':
-        return {
-          bgGrad: 'from-red-950/90 to-black',
-          badgeBg: 'bg-red-600 text-white',
-          cartBg: 'bg-red-600 hover:bg-red-700 text-white',
-          accentBorder: 'border-red-500/20'
-        }
-      case 'disney':
-        return {
-          bgGrad: 'from-blue-950/90 to-black',
-          badgeBg: 'bg-sky-600 text-white',
-          cartBg: 'bg-sky-600 hover:bg-sky-700 text-white',
-          accentBorder: 'border-sky-500/20'
-        }
-      case 'hbo':
-        return {
-          bgGrad: 'from-violet-950/90 to-black',
-          badgeBg: 'bg-purple-600 text-white',
-          cartBg: 'bg-purple-600 hover:bg-purple-700 text-white',
-          accentBorder: 'border-purple-500/20'
-        }
-      case 'spotify':
-        return {
-          bgGrad: 'from-emerald-950/90 to-black',
-          badgeBg: 'bg-emerald-500 text-black',
-          cartBg: 'bg-emerald-500 hover:bg-emerald-600 text-black',
-          accentBorder: 'border-emerald-500/20'
-        }
-      default:
-        return {
-          bgGrad: 'from-[#5c4c3e]/90 to-black',
-          badgeBg: 'bg-[#5c4c3e] text-white',
-          cartBg: 'bg-[#5c4c3e] hover:bg-stone-700 text-white',
-          accentBorder: 'border-stone-500/20'
-        }
-    }
-  }
+  const handleAdd = (item) => addToCart(item, addItem, addToast)
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow text-slate-800 dark:text-slate-100">
@@ -159,7 +107,7 @@ export default function Streaming() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-              {streamingItems.slice(0, 4).map((item) => {
+              {featuredItems.map((item) => {
                 const subTheme = getSubTheme(item.brand);
                 return (
                   <div 
