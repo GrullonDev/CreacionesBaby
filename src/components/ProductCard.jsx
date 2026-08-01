@@ -4,6 +4,7 @@ import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
 import { useToast } from '../context/useToast'
 import { formatCurrency } from '../utils/currency'
+import { useProductBadge, useCategoryTheme, useStockStatus } from '../hooks/useProductHelpers'
 
 export default function ProductCard({ product, onQuickView }) {
   const { addItem } = useCart()
@@ -12,6 +13,9 @@ export default function ProductCard({ product, onQuickView }) {
   const [added, setAdded] = useState(false)
 
   const wishlisted = isWishlisted(product.id)
+  const badge = useProductBadge(product)
+  const theme = useCategoryTheme(product.category)
+  const stockStatus = useStockStatus(product)
 
   const handleAdd = (e) => {
     e.preventDefault()
@@ -34,53 +38,6 @@ export default function ProductCard({ product, onQuickView }) {
       wishlisted ? 'info' : 'success'
     )
   }
-  
-  // Calculate discount percentage if original price exists
-  const discountPercent = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-    : 0
-
-  // Category labels and color accents
-  const getCategoryTheme = (cat) => {
-    switch (cat) {
-      case 'smart_tech':
-      case 'audio_gear':
-      case 'wearables':
-        return {
-          label: cat.replace('_', ' ').toUpperCase(),
-          btnBg: 'bg-tech-blue hover:bg-sky-700 text-white',
-          textClass: 'text-tech-blue'
-        }
-      case 'streaming':
-        return {
-          label: 'STREAMING',
-          btnBg: 'bg-stream-purple hover:bg-violet-700 text-white',
-          textClass: 'text-stream-purple'
-        }
-      default:
-        return {
-          label: 'BABY GEAR',
-          btnBg: 'bg-[#5c4c3e] hover:bg-[#4a3e35] text-white',
-          textClass: 'text-[#5c4c3e]'
-        }
-    }
-  }
-
-  const theme = getCategoryTheme(product.category)
-
-  // Badge text
-  let badgeText = ''
-  let badgeClass = ''
-  if (discountPercent > 0) {
-    badgeText = `Sale -${discountPercent}%`
-    badgeClass = 'bg-red-50 text-red-600 border border-red-200'
-  } else if (product.createdAt && new Date(product.createdAt) > new Date('2025-01-01')) {
-    badgeText = 'New'
-    badgeClass = 'bg-slate-50 text-slate-700 border border-slate-200'
-  } else if (product.rating >= 4.9) {
-    badgeText = 'Popular'
-    badgeClass = 'bg-sky-50 text-sky-600 border border-sky-200'
-  }
 
   return (
     <div className="bg-white dark:bg-slate-900 rounded-2xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col justify-between h-full hover:shadow-lg transition-all duration-300">
@@ -97,20 +54,20 @@ export default function ProductCard({ product, onQuickView }) {
         </Link>
 
         {/* Badges */}
-        {badgeText && (
-          <span className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badgeClass}`}>
-            {badgeText}
+        {badge && (
+          <span className={`absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider ${badge.className}`}>
+            {badge.text}
           </span>
         )}
 
-        {!product.inStock && (
+        {stockStatus.status === 'out' && (
           <span className="absolute top-3 left-3 bg-slate-800 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-            Agotado
+            {stockStatus.text}
           </span>
         )}
-        {product.inStock && product.stock !== undefined && product.stock <= 5 && (
-          <span className="absolute top-3 right-12 bg-red-50 text-red-600 border border-red-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
-            ¡{product.stock} restantes!
+        {stockStatus.status === 'low' && (
+          <span className={`absolute top-3 right-12 ${stockStatus.className} text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider`}>
+            {stockStatus.text}
           </span>
         )}
 

@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useWishlist } from '../context/useWishlist'
 import { useToast } from '../context/useToast'
 import { usePageTitle } from '../hooks/usePageTitle'
-import { fetchProductById, fetchRelatedProducts } from '../services/productService'
+import { useProductDetail } from '../hooks/useProductDetail'
 import Rating from '../components/Rating'
 import ImageCarousel from '../components/ImageCarousel'
 import ProductCard from '../components/ProductCard'
@@ -13,104 +12,37 @@ import RecentlyViewed from '../components/RecentlyViewed'
 import ViewerBadge from '../components/ViewerBadge'
 import SaleCountdown from '../components/SaleCountdown'
 import { formatCurrency } from '../utils/currency'
-import { recordProductView } from '../utils/recentlyViewed'
-
-function loadReviews(productId) {
-  try {
-    const data = localStorage.getItem('creaciones_reviews')
-    const all = data ? JSON.parse(data) : {}
-    return all[productId] || []
-  } catch {
-    return []
-  }
-}
-
-function saveReview(productId, review) {
-  try {
-    const data = localStorage.getItem('creaciones_reviews')
-    const all = data ? JSON.parse(data) : {}
-    if (!all[productId]) all[productId] = []
-    all[productId].unshift(review)
-    localStorage.setItem('creaciones_reviews', JSON.stringify(all))
-  } catch {}
-}
 
 export default function ProductDetail() {
   const { id } = useParams()
   const { addItem } = useCart()
   const { toggleItem, isWishlisted } = useWishlist()
   const { addToast } = useToast()
-  
-  const [product, setProduct] = useState(null)
-  const [related, setRelated] = useState([])
-  const [loading, setLoading] = useState(true)
-  
-  // Selection states
-  const [selectedColor, setSelectedColor] = useState('')
-  const [selectedSize, setSelectedSize] = useState('')
-  const [quantity, setQuantity] = useState(1)
-  const [added, setAdded] = useState(false)
 
-  // Reviews
-  const [reviews, setReviews] = useState([])
-  const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, comment: '' })
+  const {
+    product,
+    related,
+    loading,
+    selectedColor,
+    setSelectedColor,
+    selectedSize,
+    setSelectedSize,
+    quantity,
+    setQuantity,
+    added,
+    reviews,
+    reviewForm,
+    setReviewForm,
+    discountPercent,
+    handleReviewSubmit,
+    handleAdd: addToCart,
+    handleWishlistToggle: toggleWishlist,
+  } = useProductDetail({ id })
 
   usePageTitle(product ? product.name : 'Producto', product?.description)
 
-  useEffect(() => {
-    setLoading(true)
-    fetchProductById(id).then((p) => {
-      setProduct(p)
-      if (p) {
-        if (p.colors && p.colors.length > 0) setSelectedColor(p.colors[0])
-        if (p.sizes && p.sizes.length > 0) setSelectedSize(p.sizes[0])
-        fetchRelatedProducts(p.category, p.id).then(setRelated)
-        recordProductView(p.id)
-      }
-      setLoading(false)
-      setQuantity(1)
-      setAdded(false)
-    })
-    setReviews(loadReviews(id))
-  }, [id])
-
-  const handleReviewSubmit = (e) => {
-    e.preventDefault()
-    if (!reviewForm.author.trim() || !reviewForm.comment.trim()) return
-    const newReview = { ...reviewForm, id: Date.now(), date: new Date().toISOString() }
-    saveReview(id, newReview)
-    setReviews((prev) => [newReview, ...prev])
-    setReviewForm({ author: '', rating: 5, comment: '' })
-  }
-
-  const handleAdd = () => {
-    // Add product to cart multiple times if quantity > 1
-    for (let i = 0; i < quantity; i++) {
-      addItem({
-        ...product,
-        // Override with selected attributes if they exist
-        selectedColor,
-        selectedSize
-      })
-    }
-    setAdded(true)
-    addToast(
-      quantity > 1
-        ? `${quantity} × ${product.name} añadidos al carrito`
-        : `${product.name} añadido al carrito`
-    )
-    setTimeout(() => setAdded(false), 2000)
-  }
-
-  const handleWishlistToggle = () => {
-    toggleItem(product)
-    addToast(
-      wishlisted
-        ? `${product.name} eliminado de favoritos`
-        : `${product.name} añadido a favoritos`,
-      wishlisted ? 'info' : 'success'
-    )
-  }
+  const handleAdd = () => addToCart(addItem, addToast)
+  const handleWishlistToggle = () => toggleWishlist(toggleItem, addToast, wishlisted)
 
   if (loading) {
     return (
@@ -141,9 +73,6 @@ export default function ProductDetail() {
   }
 
   const wishlisted = isWishlisted(product.id)
-  const discountPercent = product.originalPrice 
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) 
-    : 0
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">

@@ -1,161 +1,44 @@
-import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 import ProductCard from '../components/ProductCard'
 import ProductCardSkeleton from '../components/ProductCardSkeleton'
 import QuickView from '../components/QuickView'
 import Pagination from '../components/Pagination'
-import { fetchProducts } from '../services/productService'
 import { usePageTitle } from '../hooks/usePageTitle'
+import { useProductFilters } from '../hooks/useProductFilters'
 import { formatCurrency } from '../utils/currency'
 
-const SORT_OPTIONS = [
-  { value: 'recommended', label: 'Recomendados' },
-  { value: 'price-asc', label: 'Precio: Menor a Mayor' },
-  { value: 'price-desc', label: 'Precio: Mayor a Menor' },
-  { value: 'rating', label: 'Mejor Valorados' },
-]
-
-const CATEGORY_MAPPING = [
-  { id: 'baby_gear', label: 'Baby Essentials' },
-  { id: 'smart_tech', label: 'Smart Technology' },
-  { id: 'audio_gear', label: 'Audio Gear' },
-  { id: 'wearables', label: 'Nursery Tech' }
-]
-
-const BRANDS = ['Nanit', 'Apple', 'Bose', 'UPPAbaby']
-
 export default function Products() {
-  const [searchParams, setSearchParams] = useSearchParams()
-  const [allProducts, setAllProducts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(1)
-  const pageSize = 12
-  const [sort, setSort] = useState('recommended')
-  
-  // Filters state
-  const [selectedCats, setSelectedCats] = useState([])
-  const [maxPrice, setMaxPrice] = useState(2000)
-  const [selectedBrands, setSelectedBrands] = useState([])
-  const [minRating, setMinRating] = useState(null)
-  
+  const {
+    loading,
+    filtered,
+    paginatedProducts,
+    page,
+    setPage,
+    totalPages,
+    startIdx,
+    pageSize,
+    sort,
+    setSort,
+    selectedCats,
+    maxPrice,
+    setMaxPrice,
+    selectedBrands,
+    minRating,
+    setMinRating,
+    searchQuery,
+    dealsQuery,
+    pageTitle,
+    handleCatCheckboxChange,
+    handleBrandCheckboxChange,
+    handleClearFilters,
+    SORT_OPTIONS,
+    CATEGORY_MAPPING,
+    BRANDS,
+  } = useProductFilters()
+
   const [quickViewProduct, setQuickViewProduct] = useState(null)
 
-  const categoryQuery = searchParams.get('category')
-  const searchQuery = searchParams.get('search')
-  const dealsQuery = searchParams.get('deals')
-
-  const pageTitle = searchQuery
-    ? `Búsqueda: ${searchQuery}`
-    : dealsQuery
-      ? 'Ofertas y Deals'
-      : categoryQuery === 'baby_gear'
-        ? 'Colección Baby'
-        : categoryQuery === 'smart_tech'
-          ? 'Smart Technology'
-          : 'Catálogo Completo'
   usePageTitle(pageTitle)
-
-  useEffect(() => {
-    fetchProducts().then((data) => {
-      setAllProducts(data)
-      setLoading(false)
-    })
-  }, [])
-
-  // Initialize from search URL parameters
-  useEffect(() => {
-    if (categoryQuery) {
-      setSelectedCats([categoryQuery])
-    } else {
-      setSelectedCats([])
-    }
-  }, [categoryQuery])
-
-  // Reset page when filter changes
-  useEffect(() => {
-    setPage(1)
-  }, [selectedCats, maxPrice, selectedBrands, minRating, sort, searchQuery, dealsQuery])
-
-  const handleCatCheckboxChange = (catId) => {
-    if (selectedCats.includes(catId)) {
-      setSelectedCats(selectedCats.filter(c => c !== catId))
-    } else {
-      setSelectedCats([...selectedCats, catId])
-    }
-  }
-
-  const handleBrandCheckboxChange = (brand) => {
-    if (selectedBrands.includes(brand)) {
-      setSelectedBrands(selectedBrands.filter(b => b !== brand))
-    } else {
-      setSelectedBrands([...selectedBrands, brand])
-    }
-  }
-
-  const handleClearFilters = () => {
-    setSelectedCats([])
-    setMaxPrice(2000)
-    setSelectedBrands([])
-    setMinRating(null)
-    setSort('recommended')
-    setSearchParams({})
-  }
-
-  // Filter products logic
-  let filtered = allProducts.filter(p => p.category !== 'streaming') // exclude streaming subs in normal catalog
-
-  // 1. Search Query
-  if (searchQuery) {
-    filtered = filtered.filter(p => 
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-      p.description.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-  }
-
-  // 2. Deals / Sale Query
-  if (dealsQuery) {
-    filtered = filtered.filter(p => p.originalPrice !== null)
-  }
-
-  // 3. Category Filter
-  if (selectedCats.length > 0) {
-    filtered = filtered.filter(p => selectedCats.includes(p.category))
-  }
-
-  // 4. Price Filter
-  filtered = filtered.filter(p => p.price <= maxPrice)
-
-  // 5. Brand Filter
-  if (selectedBrands.length > 0) {
-    filtered = filtered.filter(p => selectedBrands.includes(p.brand))
-  }
-
-  // 6. Rating Filter
-  if (minRating) {
-    filtered = filtered.filter(p => p.rating >= minRating)
-  }
-
-  // Sorting
-  switch (sort) {
-    case 'price-asc':
-      filtered.sort((a, b) => a.price - b.price)
-      break
-    case 'price-desc':
-      filtered.sort((a, b) => b.price - a.price)
-      break
-    case 'rating':
-      filtered.sort((a, b) => b.rating - a.rating)
-      break
-    default:
-      // recommended: sort popular first or by ID
-      filtered.sort((a, b) => b.rating - a.rating)
-      break
-  }
-
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const startIdx = (page - 1) * pageSize
-  const paginatedProducts = filtered.slice(startIdx, startIdx + pageSize)
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-grow text-slate-800 dark:text-slate-100">
