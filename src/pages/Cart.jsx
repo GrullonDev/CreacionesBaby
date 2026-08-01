@@ -1,51 +1,30 @@
-import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/useCart'
 import { useToast } from '../context/useToast'
 import { usePageTitle } from '../hooks/usePageTitle'
+import { useCartLogic } from '../hooks/useCartLogic'
 import { formatCurrency } from '../utils/currency'
-import { fetchProducts } from '../services/productService'
 import ProductCard from '../components/ProductCard'
 import TrustBadges from '../components/TrustBadges'
-
-const AVAILABLE_PROMOS = [
-  { code: 'BABY10', label: '10% de descuento' },
-  { code: 'BABY20', label: '20% de descuento' },
-  { code: 'FREESHIP', label: 'Envío gratis' },
-]
 
 export default function Cart() {
   usePageTitle('Carrito de compras')
   const { items, removeItem, updateQuantity, clearCart, itemCount, subtotal } = useCart()
   const { addToast } = useToast()
-  const [suggestions, setSuggestions] = useState([])
+  const {
+    suggestions,
+    shippingCost,
+    total,
+    AVAILABLE_PROMOS,
+    handleClearCart: clearCartWithToast,
+    handleRemoveItem: removeItemWithToast,
+    isEmpty,
+  } = useCartLogic({ items, removeItem, clearCart, subtotal })
 
-  const shippingCost = subtotal >= 50 ? 0 : 5.99
-  const total = subtotal + shippingCost
+  const handleClearCart = () => clearCartWithToast(addToast)
+  const handleRemoveItem = (item) => removeItemWithToast(item, addToast)
 
-  useEffect(() => {
-    if (items.length === 0) return
-    const cartIds = new Set(items.map((i) => i.id))
-    fetchProducts().then((all) => {
-      const picks = all
-        .filter((p) => !cartIds.has(p.id) && p.inStock)
-        .sort((a, b) => b.rating - a.rating)
-        .slice(0, 4)
-      setSuggestions(picks)
-    })
-  }, [items])
-
-  const handleClearCart = () => {
-    clearCart()
-    addToast('Carrito vaciado', 'info')
-  }
-
-  const handleRemoveItem = (item) => {
-    removeItem(item.id)
-    addToast(`${item.name} eliminado del carrito`, 'info')
-  }
-
-  if (items.length === 0) {
+  if (isEmpty) {
     return (
       <main className="flex-grow flex items-center justify-center py-20 px-4">
         <div className="text-center space-y-6 max-w-md">
