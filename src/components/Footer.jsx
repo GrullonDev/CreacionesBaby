@@ -1,5 +1,9 @@
 import { Link } from 'react-router-dom'
 import NewsletterForm from './NewsletterForm'
+const SOCIAL_LINKS = [
+  { name: 'Facebook', href: 'https://www.facebook.com/', label: 'f' },
+  { name: 'Instagram', href: 'https://www.instagram.com/', label: 'ig' },
+]
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -8,7 +12,7 @@ export default function Footer() {
     <footer className="bg-[#f5f3f0] dark:bg-slate-950 text-slate-600 dark:text-slate-400 py-16 mt-auto border-t border-slate-200/60 dark:border-slate-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          
+
           {/* Col 1: Brand Info */}
           <div className="space-y-4">
             <span className="text-slate-800 dark:text-white text-lg font-bold tracking-tight block">
@@ -19,7 +23,19 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3 pt-2 text-slate-500">
               <span className="material-symbols-outlined text-lg cursor-pointer hover:text-primary transition-colors">share</span>
-              <span className="material-symbols-outlined text-lg cursor-pointer hover:text-primary transition-colors">language</span>
+              {SOCIAL_LINKS.map((social) => (
+                <a
+                  key={social.name}
+                  href={social.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={`Abrir ${social.name}`}
+                  title={social.name}
+                  className="size-8 rounded-full border border-slate-200/80 dark:border-slate-800 flex items-center justify-center text-[13px] font-black uppercase hover:text-primary hover:border-primary/40 transition-colors"
+                >
+                  {social.label}
+                </a>
+              ))}
             </div>
           </div>
 
@@ -29,11 +45,11 @@ export default function Footer() {
               Atención al Cliente
             </h4>
             <ul className="space-y-2.5 text-xs">
-              <li><Link to="/products" className="hover:text-primary transition-colors">Guía de Tallas</Link></li>
-              <li><Link to="/orders" className="hover:text-primary transition-colors">Envíos y Devoluciones</Link></li>
-              <li><Link to="/products" className="hover:text-primary transition-colors">Cuidado de Productos</Link></li>
-              <li><Link to="/account" className="hover:text-primary transition-colors">Preguntas Frecuentes</Link></li>
-              <li><Link to="/account" className="hover:text-primary transition-colors">Contacto</Link></li>
+              <li><Link to="/atencion-al-cliente/guia-de-tallas" className="hover:text-primary transition-colors">Guía de Tallas</Link></li>
+              <li><Link to="/atencion-al-cliente/envios-y-devoluciones" className="hover:text-primary transition-colors">Envíos y Devoluciones</Link></li>
+              <li><Link to="/atencion-al-cliente/cuidado-de-productos" className="hover:text-primary transition-colors">Cuidado de Productos</Link></li>
+              <li><Link to="/atencion-al-cliente/preguntas-frecuentes" className="hover:text-primary transition-colors">Preguntas Frecuentes</Link></li>
+              <li><Link to="/atencion-al-cliente/contacto" className="hover:text-primary transition-colors">Contacto</Link></li>
             </ul>
           </div>
 
@@ -66,11 +82,12 @@ export default function Footer() {
         <div className="border-t border-slate-200/80 dark:border-slate-900 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
           <p>&copy; {currentYear} CreacionesBaby. Con amor para tu familia.</p>
           <div className="flex gap-6">
-            <Link to="/products" className="hover:text-primary transition-colors">Términos</Link>
-            <Link to="/products" className="hover:text-primary transition-colors">Privacidad</Link>
+            <Link to="/legal/terminos" className="hover:text-primary transition-colors">Términos</Link>
+            <Link to="/legal/privacidad" className="hover:text-primary transition-colors">Privacidad</Link>
           </div>
         </div>
       </div>
     </footer>
   )
 }
+
