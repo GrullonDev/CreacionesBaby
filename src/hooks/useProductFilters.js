@@ -132,9 +132,15 @@ export function useProductFilters() {
     sort,
   ])
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
-  const startIdx = (page - 1) * pageSize
-  const paginatedProducts = filtered.slice(startIdx, startIdx + pageSize)
+  const totalPages = useMemo(
+    () => Math.max(1, Math.ceil(filtered.length / pageSize)),
+    [filtered, pageSize]
+  )
+  const startIdx = useMemo(() => (page - 1) * pageSize, [page, pageSize])
+  const paginatedProducts = useMemo(
+    () => filtered.slice(startIdx, startIdx + pageSize),
+    [filtered, startIdx, pageSize]
+  )
 
   const pageTitle = useMemo(() => {
     if (searchQuery) return `Búsqueda: ${searchQuery}`
