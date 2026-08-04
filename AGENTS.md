@@ -46,6 +46,14 @@ A self-serve flow letting anyone add/edit/delete product listings client-side (n
 - Global/shared state goes through Context providers in `src/context/`, synced to `localStorage`/IndexedDB inside the provider or a dedicated `src/utils/` or `src/data/` module — never scattered `localStorage` calls in components.
 - New pages must be registered in `src/App.jsx` (lazy-loaded) and in `src/hooks/usePageTitle.js` usage for the document title.
 
+## 🖥️ Backend (`backend/`)
+A Fastify + Prisma + PostgreSQL API is being built in [backend/](backend/) (branch `feature/backend-api-setup`), matching the REST shape `src/services/api.js` already expects — once it's running, pointing the frontend's `VITE_API_URL` at it is the only frontend change needed.
+- **Stack**: Fastify 5, Prisma 6, PostgreSQL, `@fastify/jwt` + `bcryptjs` for auth, `zod` for request validation.
+- **Setup**: `cd backend`, `npm install`, copy `.env.example` → `.env` (needs `DATABASE_URL`, `JWT_SECRET`, `PORT`, `CORS_ORIGIN`), `npm run prisma:migrate` to create the schema, `npm run seed` to load the mock catalog (`src/data/products.js`) into the DB, `npm run dev` to start the API (default `http://localhost:4000`).
+- **Schema** ([backend/prisma/schema.prisma](backend/prisma/schema.prisma)): `User` (with `Role`: USER/SELLER/ADMIN), `Product` + `ProductImage`, `Order` + `OrderItem`. `Product.sellerId` nullable — null means official catalog item, set means a seller listing (replaces the client-only `sellerProducts.js`/IndexedDB approach once wired up).
+- **Routes** (`backend/src/routes/`): `GET/POST/PUT/DELETE /products`, `GET /categories`, `POST /auth/register`, `POST /auth/login`, `GET /auth/me`. Product responses are serialized to the same shape the frontend already consumes (`image`/`images`, `inStock`, `isSellerProduct`, etc.).
+- **Not yet done**: cart/checkout/orders endpoints (frontend still handles these client-side only), wiring the frontend's seller module (`src/data/sellerProducts.js`, `src/hooks/useSellerProducts.js`, `src/hooks/useSellerProductForm.js`) to call this API instead of localStorage/IndexedDB, and real image upload (currently seed data reuses the mock catalog's external image URLs).
+
 ## 📁 Key Directories
 - `src/components/`: Reusable, mostly presentational UI components (Header, Footer, ProductCard, QuickView, SellerProductCard, ImageDropzone, TrustBadges, etc.).
 - `src/context/`: Global state providers + hooks (`CartContext`/`useCart`, `WishlistContext`/`useWishlist`, `ToastContext`/`useToast`).
