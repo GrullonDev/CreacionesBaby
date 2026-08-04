@@ -99,9 +99,20 @@ export default function ProductDetail() {
         {/* Right Column: Product Information */}
         <div className="lg:col-span-5 space-y-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-extrabold uppercase tracking-wider mb-4">
-              <span className="material-symbols-outlined text-xs">verified</span>
-              100% Algodón Orgánico
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+                <span className="material-symbols-outlined text-xs">verified</span>
+                100% Algodón Orgánico
+              </div>
+              {product.isSellerProduct && (
+                <Link
+                  to={`/vendedor/${product.id}/editar`}
+                  className="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 hover:text-primary transition-colors"
+                >
+                  <span className="material-symbols-outlined text-xs">edit</span>
+                  Editar producto
+                </Link>
+              )}
             </div>
             <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">
               {product.name}

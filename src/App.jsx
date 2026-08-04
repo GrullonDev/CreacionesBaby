@@ -20,6 +20,8 @@ const Orders = lazy(() => import('./pages/Orders'))
 const Streaming = lazy(() => import('./pages/Streaming'))
 const CustomerService = lazy(() => import('./pages/CustomerService'))
 const Legal = lazy(() => import('./pages/Legal'))
+const SellerDashboard = lazy(() => import('./pages/SellerDashboard'))
+const SellerProductForm = lazy(() => import('./pages/SellerProductForm'))
 
 function RouteFallback() {
   return (
@@ -52,6 +54,9 @@ export default function App() {
                   <Route path="/atencion-al-cliente/:slug" element={<CustomerService />} />
                   <Route path="/legal" element={<Legal />} />
                   <Route path="/legal/:slug" element={<Legal />} />
+                  <Route path="/vendedor" element={<SellerDashboard />} />
+                  <Route path="/vendedor/nuevo" element={<SellerProductForm />} />
+                  <Route path="/vendedor/:id/editar" element={<SellerProductForm />} />
                 </Routes>
               </Suspense>
             </ErrorBoundary>

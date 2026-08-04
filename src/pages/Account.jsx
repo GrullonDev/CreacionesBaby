@@ -96,6 +96,25 @@ export default function Account() {
         </div>
       </div>
 
+      {/* Seller Panel */}
+      <div className="mt-10 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-6 sm:p-8 rounded-2xl shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <span className="material-symbols-outlined text-primary text-3xl">storefront</span>
+          <div>
+            <h3 className="font-extrabold text-slate-900 dark:text-white text-base">Panel de Vendedor</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+              Añade fotos, títulos y descripciones de tus productos para publicarlos en la tienda.
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/vendedor"
+          className="bg-primary hover:bg-opacity-95 text-white font-bold py-2.5 px-6 rounded-xl text-[10px] uppercase tracking-wider transition-all whitespace-nowrap"
+        >
+          Administrar productos
+        </Link>
+      </div>
+
       {/* Referral Program */}
       <div className="mt-10">
         <ReferralBanner customerName="" />
