@@ -45,11 +45,26 @@ function toStorefrontProduct(product) {
 export default async function productRoutes(app) {
   const { prisma } = app
 
-  app.get('/products', async (request) => {
-    const { category, featured, exclude } = request.query
+  app.get('/products', async (request, reply) => {
+    const { category, featured, exclude, mine } = request.query
+
+    // `?mine=true` scopes the list to the caller's own listings (used by the
+    // seller portal's product dashboard) instead of the public storefront
+    // catalog, so it requires auth on top of the normal public access.
+    let sellerId
+    if (mine === 'true' || mine === '1') {
+      try {
+        await request.jwtVerify()
+      } catch {
+        return reply.code(401).send({ error: 'Unauthorized' })
+      }
+      sellerId = request.user.sub
+    }
+
     const where = {
       ...(category ? { category } : {}),
       ...(exclude ? { id: { not: exclude } } : {}),
+      ...(sellerId ? { sellerId } : {}),
     }
     const products = await prisma.product.findMany({
       where,
