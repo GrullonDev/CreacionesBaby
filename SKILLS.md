@@ -72,3 +72,13 @@ rules:
   - **Serialización explícita**: cada recurso tiene una función `toStorefrontX`/`toPublicX` que transforma el modelo de Prisma a la forma que el frontend ya consume (convierte `Decimal` a `Number`, aplana relaciones como `images`), en vez de devolver el objeto de Prisma crudo.
   - **Transacciones para escrituras multi-tabla**: cuando una operación toca más de una tabla con invariantes entre ellas (crear `Order` + `OrderItem` + descontar `Product.stock`), usa `prisma.$transaction(async (tx) => { ... })` y opera sobre `tx`, no sobre `prisma`, dentro del callback.
   - **Migraciones**: cualquier cambio a `prisma/schema.prisma` requiere una migración correspondiente en `prisma/migrations/` antes de dar el cambio por terminado; si no hay acceso a una base de datos real para correr `prisma migrate dev` interactivamente, se escribe el SQL a mano siguiendo el estilo de las migraciones existentes y se deja documentado en AGENTS.md que falta aplicarla/verificarla contra Postgres real.
+
+---
+
+name: multi-app-frontend-consistency
+description: Reglas para mantener `seller-portal/` (y cualquier futura app hermana) visual y arquitectónicamente alineada con el storefront (`src/`), aunque sean proyectos Vite independientes.
+rules:
+  - **Mismos tokens de diseño, sin compartir build**: cada app duplica su propio `tailwind.config` inline en `index.html` (colores, fuente Manrope, radios) en vez de depender de un paquete compartido — si cambias la paleta o tipografía en una app, replica el cambio en el `index.html` de la(s) otra(s) app(s) a mano.
+  - **Mismos patrones de Context/hooks que el storefront**: `ToastContext`/`useToast` y el estilo de `useX` hooks para lógica de negocio (ver `react-clean-code-and-architecture` arriba) se replican tal cual en cada app nueva, no se reinventan.
+  - **No fabricar persistencia falsa**: si una sección de la UI no tiene todavía soporte real en el backend (sin modelo, sin ruta), no la respaldes con `localStorage` como si fuera datos reales — usa un componente de tipo "Próximamente" (`ComingSoon.jsx` en `seller-portal/`) que sea honesto sobre el estado, en vez de aparentar que algo se guardó cuando no es así. Si una vista placeholder sí puede mostrar datos reales ya disponibles de otra fuente (ej. Inventario/Reportes derivados de `GET /products?mine=true`), hazlo — placeholder no significa "sin datos", significa "sin la funcionalidad completa todavía".
+  - **Manejo de errores de API consistente**: los errores de Zod (`error.flatten()`) y errores planos (`{ error: 'mensaje' }`) que devuelve `backend/` se normalizan con un solo helper (`extractApiError` en `src/utils/apiError.js`) en vez de repetir la lógica de extracción en cada página/hook.
