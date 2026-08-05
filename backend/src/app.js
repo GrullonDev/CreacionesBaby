@@ -5,6 +5,7 @@ import { registerAuth } from './plugins/auth.js'
 import productRoutes from './routes/products.js'
 import categoryRoutes from './routes/categories.js'
 import authRoutes from './routes/auth.js'
+import orderRoutes from './routes/orders.js'
 
 export async function buildApp() {
   const app = Fastify({ logger: true })
@@ -20,6 +21,7 @@ export async function buildApp() {
   await app.register(productRoutes)
   await app.register(categoryRoutes)
   await app.register(authRoutes)
+  await app.register(orderRoutes)
 
   return app
 }
