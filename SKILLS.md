@@ -59,3 +59,16 @@ rules:
   - **Sincronización MCP (Model Context Protocol)**: Antes de crear nuevos componentes UI desde cero, verifica la estructura y parámetros exportados por Stitch para reutilizar la sintaxis de clases y marcado JSX sugerido.
   - **Diseño Componentizado y Modular**: Traduce los bloques visuales de Stitch directamente a componentes reutilizables en `src/components/` (ej. `ProductCard`, `QuickView`, `Header`), garantizando que sean independientes de la capa de datos.
   - **Consistencia de Layouts y Responsive**: Garantiza que las maquetas importadas o referenciadas desde Stitch mantengan la adaptación fluida (mobile-first) utilizando los breakpoints estándar de Tailwind CSS (`sm:`, `md:`, `lg:`, `xl:`).
+
+---
+
+name: backend-api-design-and-security
+description: Convenciones establecidas en `backend/` (Fastify + Prisma + Zod) para mantener consistencia al agregar o modificar rutas de la API.
+rules:
+  - **Un archivo de ruta por recurso**: cada recurso vive en `backend/src/routes/<recurso>.js`, exporta un `default async function xRoutes(app)` que desestructura `const { prisma } = app`, y se registra una sola vez en `backend/src/app.js`.
+  - **Validación con Zod en el borde**: todo `request.body` se valida con un schema Zod local al archivo (`safeParse`, nunca `parse`), devolviendo `reply.code(400).send({ error: parsed.error.flatten() })` en caso de fallo — nunca confíes en datos del cliente sin validar primero.
+  - **Nunca confíes en valores calculados del cliente**: precios, totales y stock siempre se recalculan/verifican server-side contra la base de datos (ver `POST /orders`, que ignora cualquier `price` que mande el cliente y solo acepta `productId`/`quantity`).
+  - **Autenticación y autorización vía decorators**: rutas protegidas usan `{ preHandler: [app.authenticate] }` (definido en `plugins/auth.js`); rutas con rol fijo agregan `app.requireRole('SELLER', 'ADMIN')`. Para recursos con dueño (productos, pedidos), compara `existing.sellerId`/`existing.userId` contra `request.user.sub`, permitiendo `request.user.role === 'ADMIN'` como bypass — responde `403` si no aplica, `404` si el recurso no existe (verifica existencia antes que permisos).
+  - **Serialización explícita**: cada recurso tiene una función `toStorefrontX`/`toPublicX` que transforma el modelo de Prisma a la forma que el frontend ya consume (convierte `Decimal` a `Number`, aplana relaciones como `images`), en vez de devolver el objeto de Prisma crudo.
+  - **Transacciones para escrituras multi-tabla**: cuando una operación toca más de una tabla con invariantes entre ellas (crear `Order` + `OrderItem` + descontar `Product.stock`), usa `prisma.$transaction(async (tx) => { ... })` y opera sobre `tx`, no sobre `prisma`, dentro del callback.
+  - **Migraciones**: cualquier cambio a `prisma/schema.prisma` requiere una migración correspondiente en `prisma/migrations/` antes de dar el cambio por terminado; si no hay acceso a una base de datos real para correr `prisma migrate dev` interactivamente, se escribe el SQL a mano siguiendo el estilo de las migraciones existentes y se deja documentado en AGENTS.md que falta aplicarla/verificarla contra Postgres real.
