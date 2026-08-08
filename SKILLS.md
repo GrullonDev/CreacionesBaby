@@ -72,6 +72,7 @@ rules:
   - **Serialización explícita**: cada recurso tiene una función `toStorefrontX`/`toPublicX` que transforma el modelo de Prisma a la forma que el frontend ya consume (convierte `Decimal` a `Number`, aplana relaciones como `images`), en vez de devolver el objeto de Prisma crudo.
   - **Transacciones para escrituras multi-tabla**: cuando una operación toca más de una tabla con invariantes entre ellas (crear `Order` + `OrderItem` + descontar `Product.stock`), usa `prisma.$transaction(async (tx) => { ... })` y opera sobre `tx`, no sobre `prisma`, dentro del callback.
   - **Migraciones**: cualquier cambio a `prisma/schema.prisma` requiere una migración correspondiente en `prisma/migrations/` antes de dar el cambio por terminado; si no hay acceso a una base de datos real para correr `prisma migrate dev` interactivamente, se escribe el SQL a mano siguiendo el estilo de las migraciones existentes y se deja documentado en AGENTS.md que falta aplicarla/verificarla contra Postgres real.
+  - **Auth opcional cuando la ruta debe servir tanto a invitados como a usuarios logueados**: no uses `{ preHandler: [app.authenticate] }` (que responde 401 si no hay token) — llama `await request.jwtVerify()` dentro de un `try/catch` vacío al inicio del handler, y usa `request.user?.sub || null` para lo que sigue. Así la ruta nunca rechaza al invitado, pero sigue asociando el registro al usuario si mandó un token válido (ver `POST /orders`, guest checkout).
 
 ---
 
