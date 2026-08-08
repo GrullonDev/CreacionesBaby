@@ -14,6 +14,8 @@ export default function Checkout() {
   const navigate = useNavigate()
   const {
     submitted,
+    submitting,
+    submitError,
     orderId,
     form,
     couponCode,
@@ -178,12 +180,20 @@ export default function Checkout() {
             </div>
 
             <div className="pt-6">
-              <button 
-                type="submit" 
-                className="w-full bg-primary hover:bg-opacity-95 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer text-sm"
+              {submitError && (
+                <p className="text-xs font-semibold text-red-500 bg-red-50 dark:bg-red-500/10 rounded-lg px-4 py-3 mb-4">
+                  {submitError}
+                </p>
+              )}
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full bg-primary hover:bg-opacity-95 text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-primary/25 flex items-center justify-center gap-2 cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <span className="material-symbols-outlined text-lg">local_mall</span>
-                Finalizar Compra — {formatCurrency(total)}
+                <span className={`material-symbols-outlined text-lg ${submitting ? 'animate-spin' : ''}`}>
+                  {submitting ? 'sync' : 'local_mall'}
+                </span>
+                {submitting ? 'Procesando pedido…' : `Finalizar Compra — ${formatCurrency(total)}`}
               </button>
               <TrustBadges className="justify-center mt-4" />
             </div>
