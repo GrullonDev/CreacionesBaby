@@ -70,8 +70,10 @@ enum OrderStatus {
 
 model Order {
   id        String      @id @default(cuid())
-  userId    String
-  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Nullable: orders can be placed as a guest (no customer account exists yet
+  // on the storefront). Set only if a valid JWT was presented at checkout.
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   status    OrderStatus @default(PENDING)
   total     Decimal     @db.Decimal(10, 2)
   discount  Decimal     @default(0) @db.Decimal(10, 2)
