@@ -6,10 +6,7 @@
  * serialisation and the same date-range handling.
  *
  * There is deliberately no visibility/scoping helper here any more. This is a
- * single-operator system: everything authenticated sees everything. The old
- * `saleScopeWhere` existed only because the project used to be a multi-seller
- * marketplace — if a second operator is ever added, the rule goes back in this
- * file rather than being spread across the routes.
+ * single-operator system: everything authenticated sees everything.
  */
 
 /** Prisma `Decimal` (or null) -> plain JS number (or null). */
@@ -63,10 +60,8 @@ export function lineCost(item) {
 }
 
 /**
- * Serialise a sale for the back office. A superset of the storefront order
- * shape (`toStorefrontOrder` in routes/orders.js) — it keeps every field
- * `Orders.jsx` already renders and adds the back-office ones (channel, cost,
- * margin, who recorded it), so both frontends can read the same payload.
+ * Serialise a sale for the back office. Includes sale details (channel, cost,
+ * margin, who recorded it).
  */
 export function toSale(order) {
   const items = (order.items || []).map((item) => ({

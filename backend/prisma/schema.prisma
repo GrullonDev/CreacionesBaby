@@ -37,8 +37,7 @@ model Product {
   price         Decimal        @db.Decimal(10, 2)
   originalPrice Decimal?       @db.Decimal(10, 2)
   // Unit cost of goods. Optional because the catalog predates it and imported
-  // products may not have it. Never exposed on the public storefront payload —
-  // see `toSellerProduct` vs `toStorefrontProduct` in routes/products.js.
+  // products may not have it.
   cost          Decimal?       @db.Decimal(10, 2)
   description   String
   rating        Float          @default(0)
