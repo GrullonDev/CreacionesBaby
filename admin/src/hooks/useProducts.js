@@ -10,6 +10,7 @@ export const SELLER_CATEGORIES = [
   { id: 'wearables', label: 'Nursery Tech' },
 ]
 
+/** The whole internal catalog. There is no public/private split any more. */
 export function useProducts() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -20,7 +21,7 @@ export function useProducts() {
     setLoading(true)
     setError(null)
     return api
-      .get('/products', { params: { mine: true } })
+      .get('/products')
       .then((res) => setProducts(res.data))
       .catch((err) => setError(extractApiError(err, 'No se pudieron cargar tus productos.')))
       .finally(() => setLoading(false))
