@@ -26,8 +26,11 @@ const orderInput = z.object({
 function toStorefrontOrder(order) {
   return {
     id: order.id,
-    date: order.createdAt,
+    // `soldAt` is the business date of the sale; for a web checkout it's set to
+    // now, so this stays what it always was for storefront callers.
+    date: order.soldAt || order.createdAt,
     status: order.status,
+    channel: order.channel,
     items: order.items.map((item) => ({
       id: item.id,
       productId: item.productId,
@@ -44,11 +47,14 @@ function toStorefrontOrder(order) {
     shipping: Number(order.shipping),
     total: Number(order.total),
     address: {
-      name: order.addressName,
-      email: order.addressEmail,
-      address: order.addressLine,
-      city: order.addressCity,
-      zip: order.addressZip,
+      // These columns became nullable when hand-entered sales were added (a cash
+      // sale at a fair has no shipping address), but web checkout always fills
+      // them, so coalesce rather than emit nulls into the existing UI.
+      name: order.addressName || '',
+      email: order.addressEmail || '',
+      address: order.addressLine || '',
+      city: order.addressCity || '',
+      zip: order.addressZip || '',
     },
   }
 }
@@ -80,9 +86,16 @@ export default async function orderRoutes(app) {
     if (missing.length > 0) {
       return reply.code(400).send({ error: `Unknown product(s): ${missing.join(', ')}` })
     }
+    // Sum per product before checking, so a cart holding the same product on two
+    // lines (different colour/size) is checked against the combined quantity
+    // rather than each line passing separately and jointly overselling.
+    const perProduct = new Map()
     for (const item of items) {
-      const product = productMap.get(item.productId)
-      if (product.stock < item.quantity) {
+      perProduct.set(item.productId, (perProduct.get(item.productId) || 0) + item.quantity)
+    }
+    for (const [productId, quantity] of perProduct) {
+      const product = productMap.get(productId)
+      if (product.stock < quantity) {
         return reply.code(409).send({ error: `Insufficient stock for "${product.name}"` })
       }
     }
@@ -94,6 +107,10 @@ export default async function orderRoutes(app) {
       const created = await tx.order.create({
         data: {
           userId: request.user?.sub || null,
+          // Marks this row as a storefront checkout, so the back office can tell
+          // web sales apart from the ones entered by hand.
+          channel: 'WEB',
+          soldAt: new Date(),
           total,
           discount,
           shipping,
@@ -108,6 +125,9 @@ export default async function orderRoutes(app) {
               productId: item.productId,
               quantity: item.quantity,
               price: productMap.get(item.productId).price,
+              // Snapshot the cost of goods at sale time so margin reports stay
+              // accurate after the product's cost is later changed.
+              cost: productMap.get(item.productId).cost ?? null,
               selectedColor: item.selectedColor || null,
               selectedSize: item.selectedSize || null,
             })),
@@ -116,12 +136,29 @@ export default async function orderRoutes(app) {
         include: { items: { include: { product: { include: { images: true } } } } },
       })
 
-      for (const item of items) {
-        const product = productMap.get(item.productId)
-        const newStock = product.stock - item.quantity
+      // `perProduct` (computed above, alongside the stock check) is netted per
+      // product so two cart lines of the same product aren't each subtracted
+      // from the same starting `product.stock`, which would under-decrement.
+      for (const [productId, quantity] of perProduct) {
+        const product = productMap.get(productId)
+        const newStock = product.stock - quantity
         await tx.product.update({
-          where: { id: item.productId },
+          where: { id: productId },
           data: { stock: newStock, inStock: newStock > 0 },
+        })
+        // Same audit trail as a hand-entered sale, so /stock-movements is a
+        // complete history rather than "everything except web orders".
+        await tx.stockMovement.create({
+          data: {
+            productId,
+            type: 'VENTA',
+            quantity: -quantity,
+            stockAfter: newStock,
+            reason: 'Venta web',
+            unitCost: product.cost ?? null,
+            orderId: created.id,
+            createdById: request.user?.sub || null,
+          },
         })
       }
 

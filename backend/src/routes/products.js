@@ -7,6 +7,9 @@ const productInput = z.object({
   brand: z.string().optional(),
   price: z.number().positive(),
   originalPrice: z.number().positive().nullable().optional(),
+  // Unit cost of goods, used for margin reporting. Optional — plenty of catalog
+  // items predate it.
+  cost: z.number().min(0).nullable().optional(),
   description: z.string().min(1),
   stock: z.number().int().min(0).default(0),
   features: z.array(z.string()).default([]),
@@ -15,7 +18,7 @@ const productInput = z.object({
   images: z.array(z.string().url()).default([]),
 })
 
-function toStorefrontProduct(product) {
+function toProduct(product) {
   const images = product.images
     .sort((a, b) => a.position - b.position)
     .map((img) => img.url)
@@ -38,70 +41,74 @@ function toStorefrontProduct(product) {
     createdAt: product.createdAt,
     colors: product.colors,
     sizes: product.sizes,
-    isSellerProduct: Boolean(product.sellerId),
+    cost: product.cost === null || product.cost === undefined ? null : Number(product.cost),
   }
 }
 
 export default async function productRoutes(app) {
   const { prisma } = app
 
-  app.get('/products', async (request, reply) => {
-    const { category, featured, exclude, mine } = request.query
+  app.get('/products', { preHandler: [app.authenticate] }, async (request) => {
+    const { category } = request.query
 
-    // `?mine=true` scopes the list to the caller's own listings (used by the
-    // seller portal's product dashboard) instead of the public storefront
-    // catalog, so it requires auth on top of the normal public access.
-    let sellerId
-    if (mine === 'true' || mine === '1') {
-      try {
-        await request.jwtVerify()
-      } catch {
-        return reply.code(401).send({ error: 'Unauthorized' })
-      }
-      sellerId = request.user.sub
-    }
-
-    const where = {
-      ...(category ? { category } : {}),
-      ...(exclude ? { id: { not: exclude } } : {}),
-      ...(sellerId ? { sellerId } : {}),
-    }
     const products = await prisma.product.findMany({
-      where,
+      where: category ? { category } : {},
       include: { images: true },
       orderBy: { createdAt: 'desc' },
-      ...(featured ? { take: 4 } : {}),
     })
-    return products.map(toStorefrontProduct)
+    return products.map(toProduct)
   })
 
-  app.get('/products/:id', async (request, reply) => {
+  app.get('/products/:id', { preHandler: [app.authenticate] }, async (request, reply) => {
     const product = await prisma.product.findUnique({
       where: { id: request.params.id },
       include: { images: true },
     })
     if (!product) return reply.code(404).send({ error: 'Product not found' })
-    return toStorefrontProduct(product)
+    return toProduct(product)
   })
 
   app.post(
     '/products',
-    { preHandler: [app.authenticate, app.requireRole('SELLER', 'ADMIN')] },
+    { preHandler: [app.authenticate] },
     async (request, reply) => {
       const parsed = productInput.safeParse(request.body)
       if (!parsed.success) return reply.code(400).send({ error: parsed.error.flatten() })
       const { images, ...data } = parsed.data
 
-      const product = await prisma.product.create({
-        data: {
-          ...data,
-          inStock: data.stock > 0,
-          sellerId: request.user.sub,
-          images: { create: images.map((url, position) => ({ url, position })) },
-        },
-        include: { images: true },
+      const product = await prisma.$transaction(async (tx) => {
+        const created = await tx.product.create({
+          data: {
+            ...data,
+            inStock: data.stock > 0,
+            // Kept populated even though nothing filters on it: single-operator
+            // system today, but recording who created a product costs nothing and
+            // means adding a second person later is a code change, not a migration.
+            sellerId: request.user.sub,
+            images: { create: images.map((url, position) => ({ url, position })) },
+          },
+          include: { images: true },
+        })
+
+        // Opening balance, so the movement history explains where the initial
+        // units came from instead of starting mid-story.
+        if (created.stock > 0) {
+          await tx.stockMovement.create({
+            data: {
+              productId: created.id,
+              type: 'ENTRADA',
+              quantity: created.stock,
+              stockAfter: created.stock,
+              reason: 'Stock inicial',
+              unitCost: created.cost ?? null,
+              createdById: request.user.sub,
+            },
+          })
+        }
+
+        return created
       })
-      return reply.code(201).send(toStorefrontProduct(product))
+      return reply.code(201).send(toProduct(product))
     }
   )
 
@@ -111,26 +118,43 @@ export default async function productRoutes(app) {
     async (request, reply) => {
       const existing = await prisma.product.findUnique({ where: { id: request.params.id } })
       if (!existing) return reply.code(404).send({ error: 'Product not found' })
-      if (existing.sellerId !== request.user.sub && request.user.role !== 'ADMIN') {
-        return reply.code(403).send({ error: 'Forbidden' })
-      }
 
       const parsed = productInput.partial().safeParse(request.body)
       if (!parsed.success) return reply.code(400).send({ error: parsed.error.flatten() })
       const { images, ...data } = parsed.data
 
-      const product = await prisma.product.update({
-        where: { id: request.params.id },
-        data: {
-          ...data,
-          ...(data.stock !== undefined ? { inStock: data.stock > 0 } : {}),
-          ...(images
-            ? { images: { deleteMany: {}, create: images.map((url, position) => ({ url, position })) } }
-            : {}),
-        },
-        include: { images: true },
+      const product = await prisma.$transaction(async (tx) => {
+        const updated = await tx.product.update({
+          where: { id: request.params.id },
+          data: {
+            ...data,
+            ...(data.stock !== undefined ? { inStock: data.stock > 0 } : {}),
+            ...(images
+              ? { images: { deleteMany: {}, create: images.map((url, position) => ({ url, position })) } }
+              : {}),
+          },
+          include: { images: true },
+        })
+
+        // Editing the stock field on the product form is still a stock change,
+        // so it gets a movement too — otherwise the inventory history has holes
+        // exactly where someone corrected a number by hand.
+        if (data.stock !== undefined && data.stock !== existing.stock) {
+          await tx.stockMovement.create({
+            data: {
+              productId: updated.id,
+              type: 'AJUSTE',
+              quantity: data.stock - existing.stock,
+              stockAfter: data.stock,
+              reason: 'Editado desde la ficha del producto',
+              createdById: request.user.sub,
+            },
+          })
+        }
+
+        return updated
       })
-      return toStorefrontProduct(product)
+      return toProduct(product)
     }
   )
 
@@ -140,9 +164,6 @@ export default async function productRoutes(app) {
     async (request, reply) => {
       const existing = await prisma.product.findUnique({ where: { id: request.params.id } })
       if (!existing) return reply.code(404).send({ error: 'Product not found' })
-      if (existing.sellerId !== request.user.sub && request.user.role !== 'ADMIN') {
-        return reply.code(403).send({ error: 'Forbidden' })
-      }
       await prisma.product.delete({ where: { id: request.params.id } })
       return reply.code(204).send()
     }
