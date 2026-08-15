@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "node --watch src/server.js",
     "start": "node src/server.js",
+    "test": "node --test test/*.test.js",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "seed": "node prisma/seed.js"
+    "seed:admin": "node prisma/seedAdmin.js",
+    "users:list": "node prisma/listUsers.js"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
@@ -22,8 +24,5 @@
   },
   "devDependencies": {
     "prisma": "^6.1.0"
-  },
-  "prisma": {
-    "seed": "node prisma/seed.js"
   }
 }
