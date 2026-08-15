@@ -1,103 +1,252 @@
-# Dev Environment Tips
+# AGENTS.md — development reference
 
-This repo has **three apps**: the customer-facing storefront (root, this section), the seller-only [seller-portal/](seller-portal/) app (its own Vite project, see its section below), and the shared [backend/](backend/) API both talk to. Run each with its own `npm install`/`npm run dev` in its own terminal.
+> **New here?** Read [CLAUDE.md](CLAUDE.md) first — the short map, how to run everything, and
+> the invariants you must not break. This file is the detail you come to afterwards;
+> [SKILLS.md](SKILLS.md) has the rules.
 
-## 🚀 Getting Started
-- Use `npm install` to install all required dependencies.
-- Use `npm run dev` to launch the Vite local development server with Hot Module Replacement (HMR).
-- Use `npm run build` to produce a production build, `npm run preview` to serve it locally.
-- Copy `.env.example` to `.env` and fill in real values (Vite only exposes vars prefixed `VITE_`):
-  - `VITE_WHATSAPP_NUMBER` — number for the floating WhatsApp button (international format, no `+`).
-  - `VITE_API_URL` — real product API base URL. **If unset, the app runs entirely on local mock/localStorage data** (`src/data/products.js` + `src/data/sellerProducts.js`) via `src/services/productService.js`. This is the default dev setup.
+**Creaciones Baby** is the internal back office for a small Guatemalan baby-clothing
+business: inventory control, sales tracking, reporting. Currency **GTQ**, UI in **Spanish**,
+one operator. There is no storefront — selling happens on an external platform, and those
+sales are recorded here like any other channel.
 
-## 🛠️ Tech Stack Overview
-- **Framework & Build**: React 19 + Vite 8 (`@vitejs/plugin-react`).
-- **Routing**: `react-router-dom` v7, all secondary routes lazy-loaded (`React.lazy` + `Suspense`) in [src/App.jsx](src/App.jsx).
-- **Styling**: Tailwind CSS v4 loaded via **CDN script** in [index.html](index.html) (not an npm dependency) — theme tokens (colors, font, radius) are configured inline there via `tailwind.config`, not in a `tailwind.config.js` file. Dark mode uses the `class` strategy (`dark:` prefix).
-- **Fonts/Icons**: Manrope (Google Fonts) + Material Symbols Outlined, both loaded via `<link>` tags in `index.html`.
-- **HTTP**: `axios` (`src/services/api.js`), only actually used when `VITE_API_URL` is set.
-- **State Management**: React Context + `useReducer`, each with a matching `use*` hook that reads via `useContext`:
-  - `CartContext` / `useCart` — cart items, quantities, subtotal; persisted to `localStorage` (`creaciones_cart`).
-  - `WishlistContext` / `useWishlist` — persisted to `localStorage`.
-  - `ToastContext` / `useToast` — global toast notifications (used across the seller flow, checkout, etc.).
-- **Design System**: Google Stitch (MCP) synchronization — see `stitch-ui-design-integration` rules in [SKILLS.md](SKILLS.md).
+Two parts, run separately:
 
-## 🧩 Business Logic: Custom Hooks Layer
-UI components/pages stay presentational; business logic lives in `src/hooks/`. See [ANALISIS.md](ANALISIS.md) for the full rationale/table. Current hooks:
-- `useHeaderLogic`, `useHomeLogic`, `useProductFilters`, `useProductDetail`, `useProductHelpers`, `useQuickView`, `useCartLogic`, `useCheckoutLogic`, `useStreamingLogic`, `usePageTitle`
-- `useSellerProducts` — loads/deletes seller-listed products (used by `SellerDashboard`).
-- `useSellerProductForm` — create/edit form state + validation for seller products (used by `SellerProductForm`).
+| Part | Path | Port |
+|---|---|---|
+| Admin app — React 19, Vite 8, react-router-dom v7 | `admin/` | 5173 |
+| API — Fastify 5, Prisma 6, PostgreSQL 16 | `backend/` | 4000 |
 
-## 🛒 Product Data Model (mock/local vs API)
-`src/services/productService.js` is the single entry point pages use to fetch products — it auto-switches based on `VITE_API_URL`:
-- **API mode** (`VITE_API_URL` set): calls the real backend via `src/services/api.js`.
-- **Local mode** (default): merges two sources — `src/data/products.js` (static catalog mock) and `src/data/sellerProducts.js` (user-generated listings persisted in `localStorage` under `creaciones_seller_products`, with product photos stored as Blobs in IndexedDB via `src/utils/imageStore.js`, not localStorage, to avoid quota limits).
+---
 
-### Seller module ("Panel de Vendedor")
-A self-serve flow letting anyone add/edit/delete product listings client-side (no backend required):
-- Routes: `/vendedor` (dashboard, list + delete), `/vendedor/nuevo` (create), `/vendedor/:id/editar` (edit) → `src/pages/SellerDashboard.jsx`, `src/pages/SellerProductForm.jsx`.
-- Components: `SellerProductCard.jsx`, `ImageDropzone.jsx` (drag/drop + preview, backed by `imageStore.js`).
-- Seller products flow into the normal catalog transparently (`isSellerProduct: true` flag) and show up alongside mock products in `Products`, `Home`, `ProductDetail` related items, etc.
+## 🚀 Getting started
 
-## 🗺️ Routes (src/App.jsx)
-`/`, `/products`, `/product/:id`, `/cart`, `/checkout`, `/account`, `/orders`, `/streaming`, `/atencion-al-cliente(/:slug)`, `/legal(/:slug)`, `/vendedor`, `/vendedor/nuevo`, `/vendedor/:id/editar`.
+Full sequence in [CLAUDE.md § 3](CLAUDE.md). The short version:
 
-## ⚡ Quality & Code Standards
-- **Linter**: `npm run lint` (`oxlint`) — must pass clean (no unused imports/dead code) before committing. **No test runner is configured** — verify changes manually via `npm run dev`.
-- Business logic goes in `src/hooks/`, not in components/pages — see [SKILLS.md](SKILLS.md) for the full clean-code/architecture rules (SRP, container/presenter split, a11y, dark mode, Tailwind mobile-first) and for the `backend/` API conventions (Zod validation, ownership/role checks, transactions, migrations).
-- Global/shared state goes through Context providers in `src/context/`, synced to `localStorage`/IndexedDB inside the provider or a dedicated `src/utils/` or `src/data/` module — never scattered `localStorage` calls in components.
-- New pages must be registered in `src/App.jsx` (lazy-loaded) and in `src/hooks/usePageTitle.js` usage for the document title.
+```bash
+podman start creaciones-baby-db
+cd backend && npm install && cp .env.example .env
+npx prisma migrate deploy && npx prisma generate && npm run seed:admin && npm run dev
+cd ../admin && npm install && cp .env.example .env && npm run dev
+```
 
-## 🖥️ Backend (`backend/`)
-A Fastify + Prisma + PostgreSQL API lives in [backend/](backend/) (branch `feature/backend-api-setup`), matching the REST shape `src/services/api.js` already expects — once it's running, pointing the frontend's `VITE_API_URL` at it is the only frontend change needed.
-- **Stack**: Fastify 5, Prisma 6, PostgreSQL, `@fastify/jwt` + `bcryptjs` for auth, `zod` for request validation.
-- **Local database (Podman)**: Postgres runs in a Podman container, not installed natively. On this machine `podman-machine-default` is a **`libkrun` VM (macOS)** — normal `-p` port publishing works fine here and forwards to the Mac's `localhost` as expected. (Earlier notes here described a `--network host` workaround for a rootful/WSL2 netavark bug; that doesn't apply to this libkrun setup — `--network host` only exposes the port inside the VM on macOS, not out to the host, which is why the container was unreachable until switched back to `-p`.) Standard setup:
-  ```
-  podman run -d --name creaciones-baby-db -p 5432:5432 \
-    -e POSTGRES_USER=creaciones -e POSTGRES_PASSWORD=creaciones_dev_pw \
-    -e POSTGRES_DB=creaciones_baby \
-    -v creaciones-baby-db-data:/var/lib/postgresql/data \
-    docker.io/library/postgres:16-alpine
-  ```
-  Start/stop day-to-day with `podman start|stop creaciones-baby-db` (data persists in the `creaciones-baby-db-data` volume). If `podman machine` isn't running, `podman machine start` first. Sanity check the port is actually published with `podman ps --filter name=creaciones-baby-db` — the `PORTS` column should read `0.0.0.0:5432->5432/tcp`, not just `5432/tcp`.
-- **Setup**: `cd backend`, `npm install`, copy `.env.example` → `.env` (needs `DATABASE_URL`, `JWT_SECRET`, `PORT`, `CORS_ORIGIN` — already done locally, matching the container credentials above), `npm run prisma:migrate` to create/update the schema, `npm run seed` to load the mock catalog (`src/data/products.js`) into the DB, `npm run dev` to start the API (default `http://localhost:4000`).
-- **Status**: initial migration applied, DB seeded with the 14 mock products, server verified live against the real database (`/health`, `/categories`, `/products` all return real data). A second migration (`20260805020000_add_order_details`) adding the `Order`/`OrderItem` columns below was authored by hand (no network access to Prisma's engine binaries to run `prisma migrate dev` interactively from the dev sandbox that wrote it) — apply it locally with `npm run prisma:migrate` against the Podman DB; the orders route logic itself was verified with a full mocked-Prisma integration test (fastify `inject` against the real route handlers), separately from a live Postgres run.
-- **Schema** ([backend/prisma/schema.prisma](backend/prisma/schema.prisma)): `User` (with `Role`: USER/SELLER/ADMIN), `Product` + `ProductImage`, `Order` + `OrderItem`. `Product.sellerId` nullable — null means official catalog item, set means a seller listing (replaces the client-only `sellerProducts.js`/IndexedDB approach once wired up). `Order` now also carries `discount`/`shipping`/`promoCode` and a flat shipping-address snapshot (`addressName/Email/Line/City/Zip`, not a separate `Address` table — matches the shape `useCheckoutLogic.js` already builds client-side); `OrderItem` carries `selectedColor`/`selectedSize` per line.
-- **Routes** (`backend/src/routes/`): `GET/POST/PUT/DELETE /products`, `GET /categories`, `POST /auth/register`, `POST /auth/login`, `GET /auth/me`, and now `POST/GET /orders` + `GET /orders/:id` (all `orders.js` routes require auth). Product responses are serialized to the same shape the frontend already consumes (`image`/`images`, `inStock`, `isSellerProduct`, etc.); order responses match the shape `Orders.jsx`/`useCheckoutLogic.js` already expect (`id`, `date`, `items[]` with `name`/`image`/`price`/`quantity`, `subtotal`, `discount`, `shipping`, `total`, `address`).
-- **`GET /products?mine=true`**: added for the seller portal's product dashboard — requires auth (401 without a valid token) and scopes the list to `sellerId === request.user.sub`, unlike the plain public `GET /products` (no auth, returns the whole catalog). Verified with a mocked-Prisma Fastify `inject` test (public listing unaffected, unauthenticated `mine=true` rejected, two different sellers each only see their own products).
-- **`CORS_ORIGIN`** now needs both dev origins comma-separated: `http://localhost:5173` (storefront) and `http://localhost:5174` (seller-portal) — already updated in `.env.example`; if your local `backend/.env` predates this, add the second origin by hand.
-- **`POST /orders` behavior**: trusts only `productId`/`quantity` from the client — looks up real prices server-side (never trusts a client-sent price), rejects unknown product ids (400) and insufficient stock (409), decrements `Product.stock` (flips `inStock` to `false` at 0) and creates the `Order` + `OrderItem` rows inside a single `prisma.$transaction`. **Auth is optional on this one route** (unlike every other protected route): it calls `request.jwtVerify()` in a try/catch and proceeds as a guest (`userId: null`) if there's no token or it's invalid, or attaches `request.user.sub` if there is one. Deliberate — the storefront has no customer accounts, so checkout is guest-only for now; `Order.userId` is nullable in the schema for exactly this reason (migration `20260805050000_guest_checkout`, FK changed from `ON DELETE CASCADE` to `ON DELETE SET NULL` since deleting a user shouldn't delete their past guest-linked orders). `GET /orders` and `GET /orders/:id` are unchanged — still auth-required, still scope to `request.user.sub` (`role === 'ADMIN'` can view any order); guest orders (`userId: null`) aren't retrievable through these by design, there's no guest account to authenticate as — see the storefront integration note below for how "Mis Pedidos" still works without them.
-- **Admin section (planned)**: a role-gated `/admin` route inside this same app (not a separate site) — reuses the existing seller-dashboard pattern (`SellerDashboard.jsx`/`SellerProductForm.jsx`) but backed by the real API and requiring `role === 'ADMIN'`, for uploading/managing the official product catalog.
+**Local database (Podman).** Postgres runs in a container, not installed natively. On this
+machine `podman-machine-default` is a `libkrun` VM (macOS), where normal `-p` port publishing
+works and forwards to the Mac's `localhost`. First-time setup:
 
-### Frontend ↔ backend integration status (storefront)
-- **Already wired, works automatically once `VITE_API_URL` is set and the API is reachable**: `src/services/productService.js` checks `VITE_API_URL` and switches `fetchProducts`/`fetchProductById`/`fetchRelatedProducts`/`fetchFeaturedProducts`/`fetchCategories` from local mock data to real `api.get(...)` calls — no code changes needed for read-only product/category browsing.
-- **Checkout — now wired to the real backend too**: `useCheckoutLogic.js` has the same `USE_API = Boolean(VITE_API_URL)` toggle as `productService.js`. When set, submitting checkout calls `POST /orders` (guest, no login — see backend note above) with `items` mapped to `{productId, quantity, selectedColor, selectedSize}` (`item.id` is the cart item's product id, a real backend id once `VITE_API_URL` is on since the cart was populated from real product data); the server's response — already shaped to match what `Orders.jsx` renders — is what gets used, not a client-computed total. Added `submitting`/`submitError` state to the hook and wired a disabled/spinner button state + inline error into `Checkout.jsx` for the network round-trip (submit handler is now `async`). New `src/utils/apiError.js` (same pattern as `seller-portal/`'s) turns backend Zod/plain errors into a readable message. **`Orders.jsx` ("Mis Pedidos") itself wasn't changed** — it still reads `creaciones_orders` from `localStorage` only, since there's no customer login to look orders up by from the server; `useCheckoutLogic.js` still writes the (now server-confirmed) order into `localStorage` after a successful `POST /orders`, specifically so this keeps working unchanged. In mock mode (`VITE_API_URL` unset) checkout behaves exactly as before this change.
-- **Not wired yet (needs real frontend work, not just env config)**:
-  - **Auth**: there is no login/register UI anywhere in `src/` and `src/services/api.js` has no request interceptor to attach a `Bearer` token — the storefront doesn't need seller auth (that's what `seller-portal/` is for). It could get its own customer-facing auth eventually (the guest-checkout `POST /orders` already accepts an optional token in anticipation of this), but that's not built and isn't required for checkout to work today.
-  - **Old seller module** (`SellerDashboard.jsx`/`SellerProductForm.jsx`/`useSellerProducts`/`useSellerProductForm`, routes `/vendedor*`): still goes through `src/data/sellerProducts.js` (`localStorage` + IndexedDB via `imageStore.js`), fully client-only. **This is now superseded by `seller-portal/`** (see below), which does the same job for real against the backend. The old `/vendedor*` pages haven't been removed yet — that's a deliberate open decision (redirect them to the new app's URL? delete outright? keep as a fallback?), not an oversight.
-- **Not yet done on the backend itself**: order status transitions (`PENDING → PAID → SHIPPED → DELIVERED/CANCELLED` — no route updates `status` yet), a way for a guest to look up their own order from a different device/browser (today it only lives in that browser's `localStorage`, plus the server record an ADMIN could pull up — no "look up my order by email + order id" endpoint), linking `Order`/`Product` back to the selling `User` for seller-scoped sales reports (see Reports note below), the admin `/admin` route, and real image upload (currently seed data reuses the mock catalog's external image URLs, and the seller portal's product form only accepts pasted image URLs for the same reason).
+```bash
+podman run -d --name creaciones-baby-db -p 5432:5432 \
+  -e POSTGRES_USER=creaciones -e POSTGRES_PASSWORD=creaciones_dev_pw \
+  -e POSTGRES_DB=creaciones_baby \
+  -v creaciones-baby-db-data:/var/lib/postgresql/data \
+  docker.io/library/postgres:16-alpine
+```
 
-## 🧑‍💼 Seller Portal (`seller-portal/`)
-A second, independent React app — separate `package.json`, separate `npm run dev` (port **5174**, vs. the storefront's 5173), separate deploy target later. It's where sellers log in and manage their own store; end customers never see it. Shares the same `backend/` API and the same visual design tokens (Tailwind CDN config duplicated in its `index.html`, Manrope + Material Symbols) so it feels like the same product family, but has **no offline/mock mode** — unlike the storefront, it requires `VITE_API_URL` to function at all.
-- **Setup**: `cd seller-portal`, `npm install`, copy `.env.example` → `.env` (`VITE_API_URL=http://localhost:4000`), `npm run dev`. Needs `backend/` running (see above) — including `CORS_ORIGIN` including `http://localhost:5174`.
-- **Auth** (`src/context/AuthContext.jsx` + `useAuth`): JWT stored in `localStorage` (`creaciones_seller_token`, via `src/services/api.js`'s `getStoredToken`/`setStoredToken`), attached to every request through an axios request interceptor. `/registro` calls `POST /auth/register` with `role: 'SELLER'` hardcoded; `/login` calls `POST /auth/login` and rejects (client-side) any account whose role isn't `SELLER`/`ADMIN`. On load, if a token exists, `GET /auth/me` validates it and hydrates `user`; a 401 anywhere clears the stored token (see `api.js` response interceptor). `ProtectedRoute` (`src/components/ProtectedRoute.jsx`) gates every route except `/login`/`/registro`.
-- **Products — fully real, no placeholders**: `src/pages/Products.jsx` (list), `ProductForm.jsx` (create/edit), `useProducts`/`useProductForm` hooks call `GET /products?mine=true`, `POST /products`, `PUT /products/:id`, `DELETE /products/:id` directly. Image field is a repeatable **URL** input (not file upload — matches the backend's current `images: string[]` API; real upload is still a backend gap, see above).
-- **Placeholder/partial sections** (per explicit decision to scaffold all navigation now, fill in incrementally later):
-  - **`/inventario`** and **`/reportes`**: not fake placeholders — they're real read-views computed client-side from the same `GET /products?mine=true` data (stock table, inventory value, products-by-category breakdown). Both pages also show an inline `ComingSoon` block (`src/components/ComingSoon.jsx`) for the parts that genuinely need backend work: stock alerts/CSV export for inventory, and sales/revenue reports for reports (blocked on `GET /orders` having no seller-scoped filter — an order's items reference `Product.sellerId` today, but the route doesn't join/filter on it).
-  - **`/promociones`** and **`/pagos`**: pure `ComingSoon` placeholders, no backend model exists for either yet (no `Promotion` entity; no payout-account field on `User`). Deliberately not persisting anything client-side for these (e.g. not faking it with `localStorage`) since that would misrepresent payout info as saved when it isn't.
-- **Structure**: `src/context/` (`AuthContext`, `ToastContext` — same toast pattern as the storefront), `src/services/api.js` (axios + auth interceptor), `src/hooks/` (`useProducts`, `useProductForm`, `usePageTitle`), `src/components/` (`Layout` — sidebar nav + topbar, `ProtectedRoute`, `ProductRow`, `ComingSoon`, `ErrorBoundary`), `src/pages/` (`Login`, `Register`, `Dashboard`, `Products`, `ProductForm`, `Promotions`, `Inventory`, `Reports`, `Payments`), `src/utils/apiError.js` (shared Zod-error → readable-message extraction), `src/utils/currency.js`.
-- **Verified**: `npm run build` and `npx oxlint` both pass clean; the new `GET /products?mine=true` backend behavior was checked with a mocked-Prisma Fastify `inject` test (see backend section above). Not yet exercised against a live Postgres end-to-end (same sandbox limitation as the rest of `backend/` — see its Status note).
+Day to day: `podman start|stop creaciones-baby-db`; data persists in the volume. Sanity-check
+with `podman ps` — the `PORTS` column must read `0.0.0.0:5432->5432/tcp`, not just `5432/tcp`.
 
-## 📁 Key Directories
-- `src/components/`: Reusable, mostly presentational UI components (Header, Footer, ProductCard, QuickView, SellerProductCard, ImageDropzone, TrustBadges, etc.).
-- `src/context/`: Global state providers + hooks (`CartContext`/`useCart`, `WishlistContext`/`useWishlist`, `ToastContext`/`useToast`).
-- `src/data/`: Data-access layer — `products.js` (static mock catalog), `sellerProducts.js` (localStorage/IndexedDB-backed seller listings CRUD), `testimonials.js`.
-- `src/hooks/`: Business-logic layer, one hook per page/complex component (see above).
-- `src/services/`: `api.js` (axios instance), `productService.js` (mock-vs-API switch, the thing pages should actually import).
-- `src/utils/`: `imageStore.js` (IndexedDB image blobs), `analytics.js` (local event log, inspect via `__creacionesAnalytics()` in the browser console; wire real GA by adding `gtag.js` to `index.html`), `currency.js`, `referral.js`, `recentlyViewed.js`, `recentSearches.js`, `socialProof.js`.
-- `src/pages/`: Route-level views, all lazy-loaded except `Home`.
-- `backend/`: Fastify + Prisma + PostgreSQL API shared by both frontends — see its section above.
-- `seller-portal/`: independent Vite app for sellers (auth, product CRUD, inventory/reports/promotions/payments) — see its section above.
-- `AGENTS.md` — this file (dev standards, always keep current).
-- `ANALISIS.md` — architecture deep-dive in Spanish (hooks table, folder structure rationale).
-- `SKILLS.md` — Clean Code / design-pattern / Tailwind / Stitch rules referenced above.
+**Accounts.** `POST /auth/register` only accepts `USER|SELLER` on purpose, so `ADMIN` comes
+from `npm run seed:admin` (`admin@creacionesbaby.test` / `admin12345` by default, override
+with `ADMIN_EMAIL`/`ADMIN_PASSWORD`; safe to re-run). With one operator the role does not
+gate anything today — a token is a token — but the enum and the `requireRole` decorator are
+kept so adding a second person is a code change rather than a migration.
+
+**There is no sample-data seed.** `npm run seed` was removed with the storefront: it imported
+the shop's mock catalog, and seeding a real inventory with invented products is worse than
+starting empty.
+
+---
+
+## 🖥️ API (`backend/`)
+
+**Stack**: Fastify 5, Prisma 6, PostgreSQL, `@fastify/jwt` + `bcryptjs`, `zod` for validation.
+
+**Nothing is public.** Every route except `GET /health` and `POST /auth/*` requires a bearer
+token. There is a test asserting the catalog answers 401 anonymously; keep it passing.
+
+**Tests**: `npm test` → `node --test test/*.test.js`. A fake in-memory Prisma
+(`test/helpers/fakePrisma.js`) is injected into the **real** route handlers via Fastify
+`inject` (`test/helpers/buildTestApp.js`), so auth, Zod validation and all the money/stock
+arithmetic run for real and only the database is swapped out. 34 tests, no PostgreSQL needed.
+`fakePrisma` supports exactly the query shapes the routes use — if a route starts using a new
+filter shape the test fails loudly there, which is intended.
+
+### Routes
+
+| Method and path | Notes |
+|---|---|
+| `POST /auth/register` · `POST /auth/login` · `GET /auth/me` | JWT. Register is capped at `USER\|SELLER`. |
+| `GET /products` · `GET /products/:id` | The internal catalog, including `cost`. `?category=` filters. |
+| `POST /products` · `PUT /products/:id` · `DELETE /products/:id` | Creating with stock writes an `ENTRADA` ("Stock inicial"); editing `stock` writes an `AJUSTE`, so the history has no holes where someone corrected a number by hand. |
+| `GET /sales` | Every sale. Filters `from`/`to`/`channel`/`status`/`q`, paginated. `totals` cover the whole filtered set, not the page, and exclude cancelled sales. |
+| `POST /sales` | Record a sale. See below. |
+| `GET /sales/:id` · `PATCH /sales/:id` | Status transitions plus `paymentMethod`/`channel`/`soldAt`/`notes`. No DELETE. |
+| `GET /stock-movements` · `POST /stock-movements` | The audit trail. POST accepts only manual types. |
+| `GET/POST/PUT/DELETE /finance-entries` | The cash ledger. |
+| `GET /reports/summary?from&to` | Every report figure in one round trip. |
+| `GET /health` | Public. |
+
+### The sales model
+
+`Order` **is** the sale, whatever channel it came from. There is deliberately no separate
+`Sale` model: "all my sales" has to be one query, or every report becomes a union of two
+sources that drift apart.
+
+- `channel` (`SaleChannel`: WEB / WHATSAPP / PRESENCIAL / FERIA / REDES / OTRO). **`WEB` means
+  the external selling platform** — this system has no storefront. It's what a future sync
+  would write.
+- `soldAt` — the **business date**, distinct from `createdAt`. Backdatable (last week's fair
+  entered today lands last week), rejected if in the future. **All reports group by `soldAt`.**
+- `paymentMethod`, `customerPhone`, `notes`, `recordedById`.
+- The `address*` columns are nullable — a cash sale at a fair has no shipping address.
+- `OrderItem.cost` snapshots the unit cost at sale time, so historical margin stays correct
+  after a product's cost changes. `Product.cost` is the current cost (nullable — much of the
+  catalog predates it).
+
+**`POST /sales`** looks prices up server-side, rejects unknown ids (400) and insufficient
+stock (409), and in one `prisma.$transaction` creates the `Order` + `OrderItem`s, decrements
+stock and writes a `StockMovement` per line. Two things worth knowing: an explicit
+`unitPrice` override per line is allowed *by design* (real sales get negotiated), and
+quantities are **netted per product** before the stock check, so two lines of the same item
+can't each pass and jointly oversell. A `CANCELLED` sale reserves no stock at all.
+
+**`PATCH /sales/:id`** moves a sale through `PENDING → PAID → SHIPPED → DELIVERED/CANCELLED`.
+Cancelling **restores stock** and writes `DEVOLUCION` movements; un-cancelling takes it back
+out and 409s if it isn't there. Cancelling twice is idempotent. There is no DELETE — a sale
+is cancelled, never erased, so the ledger stays auditable.
+
+### Inventory
+
+`StockMovement` records every change to `Product.stock`: `quantity` is a **signed delta**,
+`stockAfter` is stored so history reads without replaying. Types: `ENTRADA`, `SALIDA`,
+`VENTA`, `DEVOLUCION`, `AJUSTE`, `MERMA`. `POST /stock-movements` accepts only the manual
+ones — `VENTA` is written *only* by the sales routes, so a movement and its sale can never
+disagree. `AJUSTE` takes an absolute `newStock` and stores the computed delta; an adjustment
+that changes nothing is a 400, not a silent no-op. Stock is never allowed to go negative.
+
+### The cash ledger
+
+`FinanceEntry` is for money that is **not** a product sale: expenses of every kind, and
+non-sale income (capital, loans, supplier refunds). One table, `direction` (INGRESO/EGRESO)
+plus `category`, and the API **enforces that a category belongs to its direction** — an
+EGRESO tagged `APORTE_CAPITAL` would silently corrupt every by-category report. `amount` is
+always positive; the direction carries the sign. `PUT` re-validates the **merged** entry, not
+just the patch, so changing only `category` is still checked against the stored `direction`.
+
+Sales revenue deliberately does not live here. The reports join the two sources at the end.
+
+### Reports
+
+`GET /reports/summary` returns revenue, COGS, gross profit and margin %, average ticket,
+other income, expenses by category, net result, inventory value at retail **and** at cost,
+top products, sales by channel and a daily series — computed server-side so the browser never
+downloads the whole sales history to add it up.
+
+### Migrations
+
+Any change to `prisma/schema.prisma` needs a matching migration in `prisma/migrations/`
+before the change is done. If there's no reachable database to run `prisma migrate dev`
+interactively, hand-write the SQL in the style of the existing migrations — and then
+**actually execute it** against a throwaway PostgreSQL, applying every migration in order,
+and compare the result against the schema via `information_schema`. A hand-written migration
+that has never been run is a hypothesis, not a migration.
+
+Current migrations: `20260804230028_init`, `20260805020000_add_order_details`,
+`20260805050000_guest_checkout`, `20260813120000_sales_inventory_finance`.
+
+---
+
+## 🧑‍💼 Admin app (`admin/`)
+
+Sidebar + topbar shell (`components/Layout.jsx`), everything behind `ProtectedRoute`, all
+routes lazy-loaded in `App.jsx`.
+
+| Route | What it does |
+|---|---|
+| `/dashboard` | Real KPIs from `/reports/summary` for the current month, plus low-stock and top-product panels. |
+| `/ventas` | The sales list — filters, inline status change, CSV export. Cards below `md`, table above. |
+| `/ventas/nueva`, `/ventas/:id/editar` | The entry form: tabbed (Venta / Productos / Cliente y totales), searchable product picker, catalog price prefilled but editable, oversell warning counting every line of that product, live totals and margin, sticky total on phones, and "Guardar y otra" for entering a batch. |
+| `/finanzas` | The ingresos/egresos ledger with a modal create/edit form and CSV export. |
+| `/inventario` | "Existencias" (stock table with cost and value) and "Movimientos" (the audit trail), plus an "ajustar stock" action. |
+| `/productos`, `/productos/nuevo`, `/productos/:id/editar` | Catalog CRUD. Tab 2 has costo por unidad with a live margin readout. |
+| `/reportes` | Period presets, ingresos-vs-egresos chart, ventas por canal, egresos por categoría, top products, inventory value, CSV of the whole summary. |
+| `/promociones`, `/pagos` | Honest `ComingSoon` placeholders — no backend model exists for either. |
+| `/configuracion` | Account info read-only; `ComingSoon` for editing (no `PATCH /auth/me` yet). |
+
+**Structure**: `src/context/` (`AuthContext`, `ToastContext`), `src/services/api.js` (axios +
+auth interceptor), `src/hooks/` (one per page — `useSales`, `useSaleForm`, `useFinanceEntries`,
+`useStockMovements`, `useReportSummary`, `useProducts`, `useProductForm`, `usePageTitle`),
+`src/components/`, `src/pages/`, `src/utils/` (`salesConstants`, `dates`, `csv`, `currency`,
+`apiError`).
+
+**Design**: Tailwind v4 via CDN with tokens inline in `index.html` (there is no
+`tailwind.config.js`), Manrope + Material Symbols, dark mode on the `class` strategy.
+
+**Chart colours** are CSS custom properties (`--viz-income`, `--viz-expense`, `--viz-neutral`,
+`--viz-track`) in `src/index.css`. Light and dark are separately chosen steps, each validated
+against the surface it sits on for contrast and colour-vision separation — the comment above
+them records the numbers. Don't flip one mode into the other, and don't hardcode the hexes.
+
+---
+
+## ⚠️ Things that will bite you
+
+- **`Product.cost` is optional, so margin can lie.** A product without a cost contributes 0
+  COGS, inflating gross profit and margin. The API returns `inventory.withoutCost`, and every
+  screen showing a margin renders a caveat when it's non-zero. Don't "fix" this by defaulting
+  cost to price.
+- **COGS and expenses can double-count.** A fabric purchase entered in Finanzas *and* also
+  the cost of goods on the products made from it is counted twice in `netResult`. Flagged in
+  UI copy rather than silently deduped — only the owner knows which it was.
+- **Dates are business dates.** `admin/src/utils/dates.js` works in **local time** on purpose:
+  `toInputDate` never round-trips through UTC, because a sale entered at 8pm in Guatemala
+  (UTC-6) would otherwise file itself under tomorrow. The backend's `dateRangeFilter` pushes a
+  bare `to=YYYY-MM-DD` to the end of that day so a same-day range matches an afternoon sale.
+- **Shipping isn't margin.** Gross profit is `total − shipping − cogs`; shipping charged to
+  the customer is a pass-through.
+- **Two concurrent sales can oversell.** `POST /sales` reads stock before opening its
+  transaction. With one operator this is near-impossible, but it's real — see `LAUNCH.md`.
+- **Reports bucket by UTC day.** A sale recorded late in the evening can land on the next
+  day's figures. Also in `LAUNCH.md`.
+
+---
+
+## 📁 Key directories
+
+- `admin/src/hooks/` — the business-logic layer. Pages stay presentational.
+- `admin/src/components/` — reusable UI (`StatCard`, `Badge`, `Modal`, `DateRangeFilter`,
+  `LineItemsEditor`, `MagnitudeBars`, `IncomeExpenseChart`, `Layout`, `ProtectedRoute`,
+  `ComingSoon`, `ErrorBoundary`).
+- `admin/src/utils/salesConstants.js` — Spanish labels for every backend enum, in one place.
+  The `id` values must match `schema.prisma` exactly.
+- `backend/src/lib/sales.js` — shared money serialisation and date-range handling.
+- `backend/test/` — the `node --test` suite over the real handlers with a fake Prisma.
+- `CLAUDE.md` — orientation. **Read first; keep current.**
+- `AGENTS.md` — this file.
+- `SKILLS.md` — the rules.
+- `LAUNCH.md` — what's left before production.
+- `ANALISIS.md` — architecture rationale in Spanish.
+
+---
+
+## 🧭 Roadmap
+
+Ranked. The first three are what the current scope explicitly asks for and aren't built yet;
+the rest is infrastructure. `LAUNCH.md` has the detail and the effort estimates.
+
+1. **Backups.** Nothing else on this list is unrecoverable. Automated off-machine dumps, and
+   a restore you have actually performed.
+2. **SKU + per-product reorder point** (one migration), then **low-stock alerts** — a
+   dashboard panel and an inventory filter driven by each product's own reorder point instead
+   of the hardcoded threshold of 5 that currently applies to everything equally.
+3. **Inventory turnover reporting** — turnover ratio, days of inventory, dead stock, stock-out
+   frequency. Extends `/reports/summary` rather than adding endpoints.
+4. **Auth hardening**: tokens never expire, and `/auth/login` has no rate limiting.
+5. **CSV product import**, so the real catalog doesn't have to be typed in.
+6. **Deployment**: no Dockerfile, no hosting, no HTTPS, no CI.
+7. **Atomic stock decrement** and **timezone-correct day bucketing** (see "Things that will
+   bite you").
+8. **Sales sync from the external platform.** Manual entry only today. Needs SKU matching and
+   idempotency by external order id — which is why SKU is item 2.
+9. **Promotions and payout accounts** — no models exist; those pages are honest placeholders.
+10. **Cross-cutting**: no frontend tests, none on the products or auth routes, no rate
+    limiting, no request size limits.
