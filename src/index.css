@@ -5,6 +5,30 @@ body {
   padding: 0;
 }
 
+/* ---------------------------------------------------------------------------
+   Chart tokens for the /admin back office.
+
+   Same validated values as seller-portal/src/index.css — light and dark are
+   selected steps, each checked against the surface it actually sits on (white
+   card / slate-900) for lightness band, chroma, contrast >= 3:1 and
+   colour-vision separation. Green-in / red-out matches how money is coloured
+   everywhere else, and every chart using them also carries text labels, so
+   identity is never colour-alone.
+   --------------------------------------------------------------------------- */
+:root {
+  --viz-income: #059669;
+  --viz-expense: #dc2626;
+  --viz-neutral: #6b5c4d;
+  --viz-track: #f1f5f9;
+}
+
+.dark {
+  --viz-income: #059669;
+  --viz-expense: #ef4444;
+  --viz-neutral: #a99781;
+  --viz-track: #1e293b;
+}
+
 /* Glassmorphism Header background */
 .glass-header {
   background: rgba(255, 255, 255, 0.8) !important;
