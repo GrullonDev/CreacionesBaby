@@ -5,7 +5,7 @@ import { useToast } from '../context/useToast'
 import { extractApiError } from '../utils/apiError'
 import { SELLER_CATEGORIES } from './useProducts'
 
-const EMPTY_FORM = { name: '', description: '', category: '', brand: '', price: '', stock: '' }
+const EMPTY_FORM = { name: '', description: '', category: '', brand: '', price: '', cost: '', stock: '' }
 
 export function useProductForm(id) {
   const isEditMode = Boolean(id)
@@ -30,6 +30,9 @@ export function useProductForm(id) {
           category: p.category,
           brand: p.brand || '',
           price: String(p.price),
+          // `cost` only comes back when the caller owns the product (the API
+          // keeps it off the public payload), so it can legitimately be absent.
+          cost: p.cost === null || p.cost === undefined ? '' : String(p.cost),
           stock: String(p.stock),
         })
         setImages(p.images?.length ? p.images : [''])
@@ -60,6 +63,12 @@ export function useProductForm(id) {
     if (!form.description.trim()) errs.description = 'La descripción es obligatoria'
     if (!form.category) errs.category = 'Selecciona una categoría'
     if (!(Number(form.price) > 0)) errs.price = 'Ingresa un precio válido'
+    // Cost is optional (much of the catalog predates it) but must be sane, and a
+    // cost above the price is nearly always a typo worth flagging.
+    if (form.cost !== '' && Number(form.cost) < 0) errs.cost = 'El costo no puede ser negativo'
+    else if (form.cost !== '' && Number(form.cost) > Number(form.price)) {
+      errs.cost = 'El costo es mayor que el precio de venta — ¿es correcto?'
+    }
     if (form.stock === '' || Number(form.stock) < 0) errs.stock = 'Ingresa un inventario válido'
     const cleanImages = images.map((u) => u.trim()).filter(Boolean)
     if (cleanImages.length === 0) errs.images = 'Añade al menos una URL de imagen'
@@ -82,6 +91,7 @@ export function useProductForm(id) {
           category: form.category,
           brand: form.brand.trim() || undefined,
           price: Number(form.price),
+          cost: form.cost === '' ? null : Number(form.cost),
           stock: Number(form.stock),
           images: images.map((u) => u.trim()).filter(Boolean),
         }
