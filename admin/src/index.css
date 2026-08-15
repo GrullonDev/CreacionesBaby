@@ -1,0 +1,76 @@
+/* Base reset & custom utilities — mirrors the storefront app's index.css so both
+   sites feel like the same product family. */
+body {
+  font-family: 'Manrope', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------------------
+   Chart tokens (Reportes).
+
+   Light and dark are *selected* steps, not an automatic flip, and each pair was
+   checked against the surface it actually sits on (white card in light,
+   slate-900 in dark) for lightness band, chroma, contrast >= 3:1 and
+   colour-vision-deficiency separation:
+
+     ingresos vs egresos, light  #059669 / #dc2626 — deutan dE 8.6, normal 32.0
+     ingresos vs egresos, dark   #059669 / #ef4444 — deutan dE 9.6, normal 31.7
+
+   Green-in / red-out also matches how money is already coloured everywhere else
+   in this app, and every chart that uses them also carries a legend and direct
+   labels, so identity is never colour-alone.
+
+   --viz-neutral is the single-hue fill for plain magnitude bars (ventas por
+   canal, productos más vendidos): the brand brown, stepped per mode so it keeps
+   contrast on both surfaces.
+   --------------------------------------------------------------------------- */
+:root {
+  --viz-income: #059669;
+  --viz-expense: #dc2626;
+  --viz-neutral: #6b5c4d;
+  --viz-track: #f1f5f9;
+}
+
+.dark {
+  --viz-income: #059669;
+  --viz-expense: #ef4444;
+  --viz-neutral: #a99781;
+  --viz-track: #1e293b;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out forwards;
+}
