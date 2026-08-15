@@ -25,3 +25,7 @@ dist-ssr
 
 # Enviroments
 .env
+
+# MCP config — contains the Stitch API key. Copy .mcp.json.example -> .mcp.json
+# and fill in the real key locally; never commit the real one.
+.mcp.json

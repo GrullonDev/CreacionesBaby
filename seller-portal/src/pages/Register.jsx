@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
 import { usePageTitle } from '../hooks/usePageTitle'
+import AuthLayout from '../components/AuthLayout'
 
 const inputClass =
-  'w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none'
+  'w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-sm p-3 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-shadow'
 const labelClass = 'text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider block mb-2'
 
 export default function Register() {
@@ -41,25 +42,21 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 bg-background-light dark:bg-background-dark">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="font-extrabold text-2xl text-slate-900 dark:text-white">Creaciones Baby</h1>
-          <p className="text-xs text-primary font-bold uppercase tracking-wider mt-1">Panel de Vendedor</p>
+    <AuthLayout>
+      <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5 shadow-sm">
+        <div>
+          <h2 className="font-extrabold text-lg text-slate-900 dark:text-white">Crea tu cuenta de vendedor</h2>
+          <p className="text-xs text-slate-400 mt-1">Empieza a vender en minutos.</p>
         </div>
 
-        <form
-          onSubmit={handleSubmit}
-          className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-2xl p-6 sm:p-8 space-y-5"
-        >
-          <h2 className="font-extrabold text-lg text-slate-900 dark:text-white">Crea tu cuenta de vendedor</h2>
+        {error && (
+          <p className="text-xs font-semibold text-red-500 bg-red-50 dark:bg-red-500/10 rounded-lg px-3 py-2 flex items-start gap-2">
+            <span className="material-symbols-outlined text-sm mt-0.5">error</span>
+            {error}
+          </p>
+        )}
 
-          {error && (
-            <p className="text-xs font-semibold text-red-500 bg-red-50 dark:bg-red-500/10 rounded-lg px-3 py-2">
-              {error}
-            </p>
-          )}
-
+        <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className={labelClass} htmlFor="name">Nombre completo</label>
             <input
@@ -111,15 +108,15 @@ export default function Register() {
             {submitting && <span className="material-symbols-outlined text-lg animate-spin">sync</span>}
             Crear cuenta
           </button>
-
-          <p className="text-xs text-center text-slate-400">
-            ¿Ya tienes cuenta?{' '}
-            <Link to="/login" className="text-primary font-bold hover:underline">
-              Inicia sesión
-            </Link>
-          </p>
         </form>
+
+        <p className="text-xs text-center text-slate-400">
+          ¿Ya tienes cuenta?{' '}
+          <Link to="/login" className="text-primary font-bold hover:underline">
+            Inicia sesión
+          </Link>
+        </p>
       </div>
-    </div>
+    </AuthLayout>
   )
 }
